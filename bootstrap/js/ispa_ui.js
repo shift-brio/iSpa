@@ -1886,8 +1886,8 @@ let home_tab = ()=>{
 		})
 	})
 	bus_items();
-	$(".book-time").click(function(){
-		init_calendar($(".new-appointment").attr("data-business"));						
+	$(".date-sel").click(function(){
+		init_calendar($(".ispa-appt").attr("data-business"));						
 	})
 }
 class system {
@@ -1925,7 +1925,7 @@ class system {
 		})	
 	}
 }
+
 $(document).ready(() =>{
-	let a = new system();
 	home_tab();
 })

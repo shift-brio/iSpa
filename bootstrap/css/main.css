@@ -2416,7 +2416,7 @@ img{
       left: 0;
       top: 0; 
       z-index: 1070; 
-      display: none;
+      display: non;
     }
     .booking-calendar-cont{
       height: 100%;
@@ -2428,7 +2428,7 @@ img{
       overflow-y: hidden;
       height: auto;
       height: 98% !important;
-      animation:slide_up .3s ease-out;
+      animation: slide_left_slow .3s ease-out;
       padding: 0px !important;
     }
     .booked-service{
@@ -2436,16 +2436,22 @@ img{
       width: 100%;
       display: inline-flex;   
     }
-    .calendar{
-      animation: slide_up .45s ease-out;
+    .calendar{     
       background: rgba(0, 0, 0, 1);
       max-height: 310px;
     }
     .calendar-details{
-      height: 20px;
+      height: 50px;
       text-align: center;
       font-weight: 600;
       color: grey;
+      display: inline-flex;
+      width: 100%;
+    }
+    .calendar-name{
+      width: calc(100% - 120px);
+      padding: 8px;
+      font-size: 1.3em;
     }
     .calendar-days{
       background: #0d1317;
@@ -3433,6 +3439,9 @@ a > .welcome-message{
     border:none;
     color: #fff !important;
     box-shadow: none;
+    width: 40px !important;
+    margin-top: 5px !important;
+    height: 40px !important;
   }
   .appoint-load{
     z-index: 1080;
@@ -6016,7 +6025,11 @@ a > .welcome-message{
   border-bottom: 1px solid rgba(0,0,0,.15);
 }
 .ispa-bs-name{
-  width: 100%;
+  width: 100%;  
+  display: inline-flex;
+}
+.ispa-bs-title{
+  width: calc(100% - 60px);
   font-size: 1.3rem;
   font-weight: 600;
   padding: 6px;
@@ -6025,8 +6038,7 @@ a > .welcome-message{
   padding: 6px;
   font-weight: 400;
 }
-.favorite{
-  margin-top: -2.5px;
+.favorite{ 
   font-weight: 500;
   color: #4506ff;
   height: 40px;
@@ -6147,7 +6159,7 @@ a > .welcome-message{
   width: calc((100% - 0px)/2);
 }
 .w-hours{
-  text-align: right;
+  text-align: center;
 }
 .w-item > :first-child{
   font-weight: 500;
@@ -6366,10 +6378,14 @@ a > .welcome-message{
 .input-label{
  margin-top: 5px;
  margin-bottom: 5px;
- font-size: 1.2rem;
+ font-size: 1.2em;
  border-radius: 20px;
  color: #0d1317;
  font-weight: 400;
+}
+.appt-in > .input-label{
+  font-weight: 500;
+  font-size: 1.3em;
 }
 .date-sel{
   border: 1px solid  rgba(0,0,0,.15);
@@ -6406,15 +6422,17 @@ a > .welcome-message{
   box-shadow: -1px 2px 6px rgba(0, 0, 0, 0.05);
   border-bottom-right-radius: 20px;
 }
-/* [contenteditable="true"]:empty::before{
+[contenteditable="true"]:empty::before{
   content: "Leave a note...";
-} */
+}
+.modal-tools > button:first-child{
+  margin-top: 5px !important;
+}
 .appt-tools{
   height: 50px;
   width: calc(100% - 55px);
   margin-left: 55px;
   animation: slide_left .45s cubic-bezier(0, .5, .25, 0);
-
   text-align: right;
 }
 .close{
@@ -6424,6 +6442,7 @@ a > .welcome-message{
   padding: 0px !important;
   color: #fff;
   margin: 0px !important;
+  margin-top: 5px !important;
   line-height: normal !important;
   background: transparent !important;
   width: calc(100%/4) !important;

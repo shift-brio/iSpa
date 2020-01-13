@@ -926,10 +926,7 @@
 		$s = "";
 		if ($serv) {
 			$s .= '
-				<div class="bus-service-item" data-amount="'.$serv["cost"].'" data-duration="'.$serv["duration"].'" data-item="'.$serv["id"].'">
-					<div value="false" class="service-select">
-						<i class="material-icons"></i>
-					</div>
+				<div class="bs-service-item click-btn" data-amount="'.$serv["cost"].'" data-amount="'.$serv["cost"].'" data-duration="'.$serv["duration"].'" data-item="'.$serv["id"].'">
 					<div class="service-item-name">
 						<div class="service-item-name-box">
 							'.$serv["name"].'
@@ -943,7 +940,10 @@
 							'.$serv["duration"].' Min
 						</div>									
 					</div>
-				</div>
+					<div value="true" class="service-select">
+						<i class="material-icons">done</i>
+					</div>
+				</div>				
 			';
 		}
 		return $s;

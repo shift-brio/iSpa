@@ -3,7 +3,7 @@
 		<?php $this->load->view("components/ispa_menu_home"); ?>
 	</div>
 	<nav class="bottom-nav">
-		<button id="home" class="nav-tab click-btn">
+		<button id="home" class="nav-tab click-btn active">
 			<i class="material-icons tab-icon">home</i>
 			<span class="tab-name">Home</span>				
 		</button>
@@ -16,7 +16,7 @@
 			<i class="material-icons tab-icon">notifications</i>
 			<span class="tab-name">Alerts</span>
 		</button>
-		<button id="account" class="nav-tab click-btn active">
+		<button id="account" class="nav-tab click-btn">
 			<i class="material-icons tab-icon">account_circle</i>
 			<span class="tab-name">Account</span>
 		</button>

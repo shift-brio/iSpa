@@ -74,8 +74,10 @@
 	<div class="ipsa-bs-cont">
 		<div class="ispa-bs-details">
 			<div class="ispa-bs-name app-title">
-				JM Barbers
-				<button class="right click-btn favorite">
+				<div class="ispa-bs-title">
+					JM Barbers
+				</div>
+				<button class="click-btn favorite">
 					<i class="material-icons">favorite</i>
 				</button>
 			</div>
@@ -280,7 +282,7 @@
 	</div>
 </div>
 
-<?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "ispa-appt"], true); ?>
+<?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "ispa-appt",], true); ?>
 	<div class="modal-top">
 		<button class="app-bar d-pend"/>
 	</div>
@@ -384,6 +386,7 @@
 			</div>
 		</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
+<?php $this->load->view("components/booking_calendar"); ?>
 
 
 <!-- ispa pay -->

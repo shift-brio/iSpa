@@ -563,10 +563,10 @@ bus_page = function(bus = false){
 				if (response.status) {
 					$(".ispa-bs").show();
 					$(".ispa-bs").attr("data-id",response.m.details.identifier);
-					$(".bus-service-items-view").html(response.m.services);
-					$(".ispa-bus-name,.detail-namer > .explore-name").html(response.m.details.name);
-					$(".detail-namer > .explore-loc").html(response.m.location.name.substr(0,30)+'<i class="material-icons">location_on</i>');
-					$(".wh").html(response.m.details.working_days);
+					$(".bs-tab-cont.serv").html(response.m.services);
+					$(".ispa-bs-title").html(response.m.details.name);
+					$(".ispa-bs-loc").html(response.m.location.name.substr(0,30));
+					$(".w-list").html(response.m.details.working_days);
 					$(".contact-item").html(response.m.details.phone);	
 					if (response.m.rating.count == 1) {
 						txt = "person";

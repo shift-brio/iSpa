@@ -533,9 +533,9 @@ class Business extends CI_Controller {
 				if (is_array($working)) {
 					foreach ($working as $day) {
 						$w .= '
-							<div class="working-hour">
-								'.date("l",strtotime($day->day)).' ->
-								'.date("h:i A",strtotime($day->start)).' - '.date("h:i A",strtotime($day->end)).'
+							<div class="w-item">
+								<div class="w-name">'.date("l",strtotime($day->day)).'</div>				
+								<div class="w-hours">'.date("h:i A",strtotime($day->start)).' - '.date("h:i A",strtotime($day->end)).'</div>							
 							</div>
 						';
 					}
