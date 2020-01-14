@@ -2450,7 +2450,8 @@ img{
     }
     .calendar-name{
       width: calc(100% - 120px);
-      padding: 8px;
+      padding: 9px;
+      color: #fff;
       font-size: 1.3em;
     }
     .calendar-days{
@@ -2461,23 +2462,24 @@ img{
       width: 100%;
       display: inline-flex;  
     }
+    .week{      
+    }
     .calendar-date{
       background: transparent !important;
       cursor: pointer;
     }   
     .calendar-day{
-      height: 38px;
-      margin-top: 1px;
-      margin-left: 1px;
-      margin-right: 1px;
-      width: calc((100% - 14px)/7);        
+      height: 40px;     
+      width: calc((100%)/7);        
       padding: 8px;
+      border-bottom: 1px solid rgba(0,0,0,.15);
+      border-right: 1px solid rgba(0,0,0,.15);
       font-weight: 500;
       color: #f2f2f2;
       text-align: center;
     }
     .calendar-date.past{
-      background: lightgrey !important;
+      background: rgba(0,0,0,.15) !important;
       color: grey;
     }
     .calendar-day::selection{
@@ -2496,14 +2498,14 @@ img{
       background: grey !important;
     }
     .calendar-name{
-      color: lightgrey !important;
+      color: #fff !important;
       font-weight: 600;
     }
     .calendar-day::before{
       animation:zoomer .25s ease-out;
     }
     .calendar-date.active::before,.calendar-date:not(.past):hover::before{
-      content:"✓";    
+      
     }
     .calendar-day:not(.calendar-date){
       background: transparent !important;
@@ -2518,7 +2520,7 @@ img{
     .calendar-dates{
       width: 100%;
       height: auto;
-      background: #f2f2f2;
+      background: #fff;
     }
     .booked-service > .indic{
       height: 25px;
@@ -2532,17 +2534,10 @@ img{
       margin-right: 4px;
     }
     .calendar-date.active{
-      background: green !important;
+      background: #0d1317 !important;
       color: #fff  !important;
       font-weight: 600 !important;
-    }
-    .booked-service > .indic.active{
-      border-radius: 50%;
-      background: green;
-      border:2px solid green;
-      color:#fff;
-      font-weight: 600;
-    }
+    }    
     .service-total{
       color: #fff;
       background: #000;
@@ -3377,44 +3372,29 @@ a > .welcome-message{
   overflow-y: auto;
   margin-top: 6px !important;
   padding: 5px !important;
-  }.suggest-group > .suggest-title{
+  }
+  .suggest-group > .suggest-title{
     text-align: center;
     font-weight: 600;
     color: grey;
     width: 100%;
     animation:slide_up .5s ease-out;  
   }
-/* .suggest-title::before{
-  width: 100px;
-  margin-left: -120px;
-  margin-top: 8px;
-  height: 1px;
-  background: lightgrey;
-  content:" ";
-}
-.suggest-title::after{
-  width: 100px;
-  margin-left: 25px;
-  margin-top: 8px;
-  height: 1px;  
-  background: lightgrey;
-  content:" ";
-  } */
   .book-suggestion{
     height: 40px;
     text-align: center;  
-    font-weight: 600;
-    margin-right: 4px;
-    margin-bottom: 4px;
-    width: calc(50% - 4px) !important;
-    animation:slide_up .5s ease-out;
-
+    font-weight: 500;
+    margin-right: 5px;
+    margin-bottom: 8px;
+    width: calc(50% - 5px) !important;    
     padding: 8px !important;
-    background: #fafafa;
+    background: rgba(0,0,0,.05) !important;
     border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0px 0px 2px #000;
+    cursor: pointer;  
+    border: 1px solid rgba(0,0,0,.15) !important;  
     transition: transform .25s ease-out ,background .25s ease-out, color .15s ease-out;;
+    animation: slide_up .5s ease-out;
+    letter-spacing: .5px;
   }
   .book-suggestion.active::before{
     content: "✓";
@@ -6403,7 +6383,7 @@ a > .welcome-message{
   color: rgba(0,0,0,.75);
 }
 .service-list{
-  max-height: 150px;
+  max-height: 450px;
   background: rgba(0,0,0,.05);
   overflow-y: auto;
 }
@@ -6427,7 +6407,7 @@ a > .welcome-message{
   content: "Leave a note...";
 }
 .modal-tools > button:first-child{
-  margin-top: 5px !important;
+  margin-top: 2.5px !important;
 }
 .appt-tools{
   height: 50px;
@@ -6475,6 +6455,9 @@ a > .welcome-message{
   color: #4506ff;
   font-size: 1.2rem;
 }
+.payable::before{
+  content: "Ksh. ";
+}
 
 /*ispa-pay*/
 #ispa-pay{
@@ -6513,14 +6496,13 @@ a > .welcome-message{
 .pay-vendor{
   margin-top: 30px;
   text-align: unset;
-  border: 1px solid rgba(0,0,0,.05);
+  border: 1px solid rgba(0,0,0,.15);
   width: 300px !important;
   margin-left: calc(50% - 150px);
   height: auto;
   padding-top: 10px;
   padding-left: 5px;
-  border-radius: 20px;
-  box-shadow: 0 0 5px rgba(13, 19, 23, 0.15);
+  border-radius: 20px;  
 }
 .vendor-name{
   padding: 3px;

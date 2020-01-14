@@ -880,22 +880,37 @@
 	}
 	static function renderService($service = false,$type = "client", $selected = false){
 		if ($service) {
+			$serv = $service;
 			if ($type == "client") {
 				if ($selected) {
 					$cl = 'active';
 					$txt = "done";
+					$vl = true;
 				}else{
 					$cl = "";
 					$txt = "";
+					$vl = false;
 				}
 				return '
-					<div class="booked-service" data-item="'.$service["id"].'" data-amount="'.$service["cost"].'" data-duration="'.$service["duration"].'">
-						<div class="indic material-icons click-btn '.$cl.'">'.$txt.'</div>
-						<input value="'.$service["name"].'" readonly="true" placeholder="Service name" type="text" class="browser-default new-shop-services-item-name ispa-in">
-						<input value="'.$service["duration"].' minutes" readonly="true" min="0" placeholder="Duration (minutes)" type="text" class="browser-default new-shop-services-item-duration ispa-in">
-						<input value="Ksh. '.$service["cost"].'" readonly="true" placeholder="Cost (Ksh.)" type="text" class="browser-default new-shop-services-item-cost ispa-in">
-					</div>
-				';
+						<div class="bs-service-item click-btn" data-amount="'.$serv["cost"].'" data-amount="'.$serv["cost"].'" data-duration="'.$serv["duration"].'" data-item="'.$serv["id"].'">
+							<div class="service-item-name">
+								<div class="service-item-name-box">
+									'.$serv["name"].'
+								</div>
+							</div>
+							<div class="service-item-detail">
+								<div class="service-item-detail-item">
+									Ksh. '.(number_format((Int)$serv["cost"],2)).'
+								</div>
+								<div class="service-item-detail-item">
+									'.$serv["duration"].' Min
+								</div>									
+							</div>
+							<div value="'.$vl.'" class="service-select '.$cl.'">
+								<i class="material-icons">done</i>
+							</div>
+						</div>				
+					';
 			}
 		}
 		return false;
@@ -954,7 +969,7 @@
 							'.$serv["duration"].' Min
 						</div>									
 					</div>
-					<div value="true" class="service-select">
+					<div value="false" class="service-select">
 						<i class="material-icons">done</i>
 					</div>
 				</div>				

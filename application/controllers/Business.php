@@ -249,7 +249,7 @@ class Business extends CI_Controller {
 	public function get_calendar(){
 		if (isset($_SESSION["user"]) && isset($_POST["dur"]) && $_POST["dur"] >= 0 && isset($_POST["business"]) && isset($_POST["month"]) && isset($_POST["year"])) {
 			$r["status"] = false;
-			$r["m"] = "";
+			$r["m"] = [];
 
 			$get_bus = common::getBus($_POST["business"]);
 			if ($get_bus) {
@@ -336,10 +336,10 @@ class Business extends CI_Controller {
 					$slots = $avail;							
 				}				
 				if (!isset($r)) {								
-					for ($i=0; $i < sizeof($slots); $i++) { 
+					for ($i=0; $i < sizeof($slots); $i++) {						
 						$slots[$i]["sl_data"] = [
 							"staff" => $staff,
-							"dur" => $slots[$i]["start"] - $slots[$i]["end"],
+							"dur" => $slots[$i]["start"]." - ".$slots[$i]["end"],
 							"start_time" => $slots[$i]["start"],
 							"date" => $slots[$i]["start"], 
 							"shop" => $business

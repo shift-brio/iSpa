@@ -589,47 +589,7 @@ new_appointment = function(){
 	})
 	$(".book-go").click(function(){				
 		make_appointment();
-	})
-	book_sel = function(){
-		$(".booked-service > .indic").each(function(){
-			$(this).click(function(){
-				if ($(this).hasClass("active")) {
-					$(this).html("");
-				}else{
-					$(this).html("done");
-				}
-				$(this).toggleClass("active");				
-				$(".service-tot-val").html(get_booked().amnt);
-				$(".book-time").val("");
-			})
-		})
-	}
-	book_sel();
-	get_booked = function(){
-		var booked = {};
-		var booked_items = [];
-		var booked_dur = 0;
-		var booked_amnt = 0;
-		$(".booked-service").each(function(){
-			if ($(this).children(".indic").hasClass("active")) {
-				var b = {
-					dur: Number($(this).attr("data-duration")),
-					amnt: Number($(this).attr("data-amount")),
-					id: Number($(this).attr("data-item"))
-				}
-				booked_dur += b.dur;
-				booked_amnt += b.amnt;
-				booked_items.push(b);
-			}
-		})
-
-		booked= {
-			items: booked_items,
-			dur: booked_dur,
-			amnt: booked_amnt
-		};
-		return booked;
-	}
+	})	
 	$(".next-month").click(function(){	
 		init_calendar($(".new-appointment").attr("data-business"), (Number($(".calendar").attr("data-month")) + 1), Number($(".calendar").attr("data-year")));
 	})
@@ -641,61 +601,7 @@ new_appointment = function(){
 			$(".book-time").val("");
 		})
 	}
-	staff_sel();
-	calendar = function(){
-		init_calendar = function(bus = false, month = false, year = false){
-			if (bus) {
-				var selected_sevices = get_booked();
-				if (selected_sevices.dur > 0) {
-					var data = {
-						dur: selected_sevices.dur,
-						business: bus,
-						month:month,
-						year: year
-					}
-					get_calendar(data);
-					$(".booking-calendar").show();
-				}else{
-					notify("Kindly select services you want to book an appointment for first.")
-				}
-			}
-		}
-		date_sel = function(){
-			$(".calendar-date:not(.past)").each(function(){
-				$(this).click(function(){
-					var day = $(this).attr("data-day");
-					var business = "";
-					var month = $(".calendar").attr("data-month");
-					var year = $(".calendar").attr("data-year");
-					$(".calendar-date.active").removeClass("active");
-					$(this).addClass("active");
-					var data = {
-						day: day,
-						business: $(".new-appointment").attr("data-business"),
-						month:month,
-						year: year,
-						dur: get_booked().dur,
-						staff: $(".book-staff").val()
-					}
-					get_suggests(data);
-				})
-			})
-		}
-		date_sel();
-		dur_sel = function(){
-			$(".book-suggestion").each(function(){
-				$(this).click(function(){
-					$(".book-suggestion.active").removeClass("active");
-					$(this).addClass("active");
-					var sel_date = $(this).attr("data-tooltip");
-					$(".book-time").val(sel_date);
-					$(".booking-calendar").hide();
-				})
-			})
-		}
-		dur_sel();
-	}
-	calendar();
+	staff_sel();	
 }
 ispa_mapping = function(){
 	var selected_location = $(".selected-location");
@@ -1887,7 +1793,7 @@ let home_tab = ()=>{
 	})
 	bus_items();
 	$(".date-sel").click(function(){
-		init_calendar($(".ispa-appt").attr("data-business"));						
+		init_calendar($("#ispa-appt").attr("data-business"));						
 	})
 	$(".sl").click(() =>{
 		$(".gallery").show();
@@ -1927,7 +1833,148 @@ let home_tab = ()=>{
 			});
 		}
 	})
+	$(".bs-book").click(function(){
+		var sel = bus_book();
+		appoint_bus($(".ispa-bs").attr("data-id"),sel, (res = false) =>{
+			if (res) {
+				console.log(res.staff);
+				$("#ispa-appt").show();
+				$("#ispa-appt").attr("data-business",$(".ispa-bs").attr("data-id"));
+				$(".service-list").html(res.m);	
+				$(".staff-sel").html(res.staff);
+				$(".appt-shop").html(res.name);										
+				$(".can-appt, .re-appt").hide();												
+				book_sel();	
+				$(".payable").html(get_booked().amnt);
+			}
+		});
+	})
 }
+book_sel = function(){
+	$(".service-list .bs-service-item > .service-select").each(function(){
+		$(this).click(function(){
+			if ($(this).hasClass("active")) {
+				$(this).children("i").html("");
+			}else{
+				$(this).children("i").html("done");
+			}
+			$(this).toggleClass("active");				
+			$(".payable").html(get_booked().amnt);
+			$(".date-sel").val("Date of appointment");
+		})
+	})
+}
+calendar = function(){
+	init_calendar = function(bus = false, month = false, year = false){
+		if (bus) {
+			var selected_sevices = get_booked();
+			if (selected_sevices.dur > 0) {
+				var data = {
+					dur: selected_sevices.dur,
+					business: bus,
+					month:month,
+					year: year
+				}
+				get_calendar(data);
+				$(".booking-calendar").show();
+			}else{
+				notify("Kindly select services you want to book an appointment for first.")
+			}
+		}
+	}
+	date_sel = function(){
+		$(".calendar-date:not(.past)").each(function(){
+			$(this).click(function(){
+				var day = $(this).attr("data-day");
+				var business = "";
+				var month = $(".calendar").attr("data-month");
+				var year = $(".calendar").attr("data-year");
+				$(".calendar-date.active").removeClass("active");
+				$(this).addClass("active");
+				var data = {
+					day: day,
+					business: $("#ispa-appt").attr("data-business"),
+					month:month,
+					year: year,
+					dur: get_booked().dur,
+					staff: $(".staff-sel").val()
+				}
+				get_suggests(data);
+			})
+		})
+	}	
+	dur_sel = function(){
+		$(".book-suggestion").each(function(){
+			$(this).click(function(){
+				$(".book-suggestion.active").removeClass("active");
+				$(this).addClass("active");
+				var sel_date = $(this).attr("data-tooltip");
+				$(".date-sel").html(sel_date);
+				$(".booking-calendar").hide();
+			})
+		})
+	}	
+}
+calendar();
+
+
+get_booked = function(){
+	var booked = {};
+	var booked_items = [];
+	var booked_dur = 0;
+	var booked_amnt = 0;
+	$(".service-list > .bs-service-item").each(function(){
+		if ($(this).children(".service-select").hasClass("active")) {
+			var b = {
+				dur: Number($(this).attr("data-duration")),
+				amnt: Number($(this).attr("data-amount")),
+				id: Number($(this).attr("data-item"))
+			}
+			booked_dur += b.dur;
+			booked_amnt += b.amnt;
+			booked_items.push(b);
+		}
+	})
+
+	booked= {
+		items: booked_items,
+		dur: booked_dur,
+		amnt: booked_amnt
+	};
+	return booked;
+}
+bus_book = function(){
+	var selected = 0;
+	var total = 0;
+	var tot_time = 0;
+	var pre_services = [];
+
+	$(".serv > .bs-service-item").each(function(){
+		if ($(this).children(".service-select").hasClass("active")) {
+			x = {
+				item : $(this).attr("data-item") 
+			}
+			total += Number($(this).attr("data-amount"));
+			tot_time += Number($(this).attr("data-duration"));
+			selected += 1;
+			pre_services.push(x);
+		}
+	})
+	if (selected > 0) {
+		$(".bus-service-book").show();
+	}else{
+		$(".bus-service-book").hide();
+	}
+	if (selected == 1) {
+		txt = "Service";
+	}else{
+		txt = "Services";
+	}
+	$(".stat-count").html(selected+" "+txt);
+	$(".stat-amount").html("Ksh. "+total);
+	return pre_services;
+}	
+
 class system {
 	constructor(){
 		this.menuManager();

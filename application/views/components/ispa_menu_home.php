@@ -175,7 +175,7 @@
 			<div class="search-res">
 				<div class="search-res-t">Search results</div>
 				<div class="search-list">
-										
+
 				</div>
 			</div>
 		</div>
@@ -200,61 +200,32 @@
 			<div class="appt-content">
 				<div class="appt-in">
 					<label class="input-label">Shop</label>
-					<div class="input-content">
-						Jm Barbers
+					<div class="input-content appt-shop">
+						
 					</div>
 				</div>				
 				<div class="appt-in">
 					<label class="input-label">Services</label>
 					<div class="input-content service-list">
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
+						
 					</div>
+				</div>
+				<div class="appt-in">
+					<label class="input-label">Staff</label>
+					<select class="input-content browser-default staff-sel">
+						
+					</select>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">Date</label>
 					<div class="input-content date-sel click-btn">
-						<?php echo date("jS F Y"); ?>
+						Date of appointment
 					</div>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">
 						Payment
-						<label class="right payable">Ksh. 300.00</label>
+						<label class="right payable"></label>
 					</label>
 					<div class="input-content">
 						Not paid

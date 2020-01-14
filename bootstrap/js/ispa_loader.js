@@ -436,7 +436,7 @@ get_calendar = function(data){
 		})
 	}
 }
-appoint_bus = function(business  = false, sel = false){
+appoint_bus = function(business  = false, sel = false, c = false){
 	if (business) {		
 		loading(true);
 		$.ajax({
@@ -448,16 +448,9 @@ appoint_bus = function(business  = false, sel = false){
 			},
 			success:function(response){
 				if (response.status) {
-					$(".new-appointment").show();
-					$(".new-appointment").attr("data-business",business);
-					$(".appointment-services").html(response.m);
-					$(".book-staff").html(response.staff);
-					$(".book-shop").val(response.name);										
-					$(".appointment-more").hide();	
-					$(".appointment-tools").css("display","block");		
-					$(".book-go").html("Book");	
-					book_sel();	
-					$(".service-tot-val").html(get_booked().amnt);
+					if (c) {
+						c(response);
+					}
 				}else{
 					notify(response.m,10000);
 				}
