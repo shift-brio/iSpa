@@ -7,7 +7,7 @@ class Slider {
 		this.init();			
 	}	
 	init(){		
-		if (this.config.prev) {
+		if (this.config.prev) {			
 			$(`.${this.config.prev}`).click(() => {
 				this.prev();
 			});
@@ -21,7 +21,7 @@ class Slider {
 		$(`.${this.config.title}`).html(this.list[this.c_i].title)
 		$(`.${this.config.img}`).attr("src", this.list[this.c_i].img);
 	}
-	prev(){
+	prev(){		
 		if (this.c_i > 0) {			
 			this.c_i -= 1;
 			this.update();
@@ -61,7 +61,3 @@ let cfg = {
 	prev: "onb-control.back",
 	next: "onb-control.next"
 }
-
-$(document).ready(function(){
-	let onboard = new Slider(lst, cfg);	
-})

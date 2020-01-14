@@ -75,14 +75,14 @@
 		<div class="ispa-bs-details">
 			<div class="ispa-bs-name app-title">
 				<div class="ispa-bs-title">
-					JM Barbers
+					
 				</div>
 				<button class="click-btn favorite">
-					<i class="material-icons">favorite</i>
+					<i class="material-icons">favorite_outline</i>
 				</button>
 			</div>
 			<div class="ispa-bs-loc">
-				Highrise, Nairobi, Kenya
+				
 			</div>
 		</div>
 		<div class="ispa-bs-body">
@@ -90,80 +90,38 @@
 				<div class="image-date"><?php echo date("jS F Y");?></div>
 				<div class="image-slider main">		
 					<div class="slider-img">
-						<img class="sl" src="<?php echo base_url("uploads/showcase/jm_barbers.jpeg"); ?>">
+						<img class="sl" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
 					</div>
 					<div class="slider-control">
-						<button class="click-btn prev left">
+						<button class="click-btn sh-tool prev left">
 							<i class="material-icons">keyboard_arrow_left</i>
 						</button>		
-						<button class="click-btn next right">
+						<button class="click-btn sh-tool next right">
 							<i class="material-icons">keyboard_arrow_right</i>
 						</button>
 					</div>
 				</div>
 			</div>
 			<div class="ispa-bs-tabs">
-				<button class="ispa-bs-tab click-btn">
+				<button class="ispa-bs-tab click-btn active">
 					Services
 				</button>
-				<button class="ispa-bs-tab click-btn active">
+				<button class="ispa-bs-tab click-btn">
 					Details
 				</button>
 			</div>
-			<div class="bs-tab-cont serv">
-				<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-					<div class="service-item-name">
-						<div class="service-item-name-box">
-							Manicure
-						</div>
-					</div>
-					<div class="service-item-detail">
-						<div class="service-item-detail-item">
-							Ksh. 150.00
-						</div>
-						<div class="service-item-detail-item">
-							20 Min
-						</div>									
-					</div>
-					<div value="false" class="service-select">
-						<i class="material-icons">done</i>
-					</div>
-				</div>
-				<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-					<div class="service-item-name">
-						<div class="service-item-name-box">
-							Hair Cut
-						</div>
-					</div>
-					<div class="service-item-detail">
-						<div class="service-item-detail-item">
-							Ksh. 150.00
-						</div>
-						<div class="service-item-detail-item">
-							20 Min
-						</div>									
-					</div>
-					<div value="false" class="service-select active">
-						<i class="material-icons">done</i>
-					</div>
-				</div>
+			<div class="bs-tab-cont serv active">
+				
 			</div>
-			<div class="bs-tab-cont det active">
+			<div class="bs-tab-cont det">
 				<div class="app-title det-t">Working Days</div>
 				<div class="w-list">
-					<div class="w-item">
-						<div class="w-name">Monday</div>				
-						<div class="w-hours">07:00 AM - 05:00 PM</div>
-					</div>
-					<div class="w-item">
-						<div class="w-name">Tuesday</div>			
-						<div class="w-hours">07:00 AM - 05:00 PM</div>
-					</div>
+					
 				</div>
 				<div class="app-title det-t">Contacts</div>
-				<div class="c-item">
+				<div class="c-item c-phone">
 					<div class="c-title">Phone</div>
-					<div class="c-val">+254718457135</div>
+					<div class="c-val"></div>
 				</div>
 			</div>
 		</div>
@@ -186,10 +144,10 @@
 			<img class="sl" src="<?php echo base_url("uploads/showcase/jm_barbers.jpeg"); ?>">
 		</div>
 		<div class="slider-control">
-			<button class="click-btn prev left">
+			<button class="click-btn sh-tool prev left">
 				<i class="material-icons">keyboard_arrow_left</i>
 			</button>		
-			<button class="click-btn next right">
+			<button class="click-btn sh-tool next right">
 				<i class="material-icons">keyboard_arrow_right</i>
 			</button>
 		</div>
@@ -211,65 +169,13 @@
 			<div class="search-recents">
 				<div class="recent-t">Recents & Favorites</div>
 				<div class="recent-list">
-					<div class="ispa-shop click-btn">
-						<div class="shop-body">
-							<img class="shop-img" src="<?php echo base_url("uploads/logo/ispa.svg"); ?>" />
-							<div class="shop-details">
-								<div class="shop-name">
-									JM Barbers
-								</div>
-								<div class="shop-loc">
-									Highrise, Nairobi
-								</div>
-								<div class="shop-servs">
-									<div class="serves-title">
-										Services
-									</div>
-									<div class="servs-list">
-										Haircut, Manicure, Pedicure, Facial scrub
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="shop-tools">
-							<button class="click-btn shop-tool right">
-								4.3k 
-								<i class="material-icons right">favorite</i>
-							</button>
-						</div>
-					</div>
+					
 				</div>
 			</div>
 			<div class="search-res">
 				<div class="search-res-t">Search results</div>
 				<div class="search-list">
-					<div data-id="lllllllm" class="ispa-shop click-btn">
-						<div class="shop-body">
-							<div class="shop-details">
-								<div class="shop-name">
-									JM Barbers
-								</div>
-								<div class="shop-loc">
-									Highrise, Nairobi
-								</div>
-								<div class="shop-servs">
-									<div class="serves-title">
-										Services
-									</div>
-									<div class="servs-list">
-										Haircut, Manicure, Pedicure, Facial scrub
-									</div>
-								</div>
-							</div>
-							<img class="shop-img" src="<?php echo base_url("uploads/logo/ispa.svg"); ?>" />
-						</div>
-						<div class="shop-tools">
-							<button class="click-btn shop-tool right">
-								4.3k 
-								<i class="material-icons right">favorite_outline</i>
-							</button>
-						</div>
-					</div>
+										
 				</div>
 			</div>
 		</div>
@@ -297,13 +203,7 @@
 					<div class="input-content">
 						Jm Barbers
 					</div>
-				</div>
-				<div class="appt-in">
-					<label class="input-label">Date</label>
-					<div class="input-content date-sel click-btn">
-						<?php echo date("jS F Y"); ?>
-					</div>
-				</div>
+				</div>				
 				<div class="appt-in">
 					<label class="input-label">Services</label>
 					<div class="input-content service-list">
@@ -343,6 +243,12 @@
 								<i class="material-icons">done</i>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="appt-in">
+					<label class="input-label">Date</label>
+					<div class="input-content date-sel click-btn">
+						<?php echo date("jS F Y"); ?>
 					</div>
 				</div>
 				<div class="appt-in">

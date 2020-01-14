@@ -736,16 +736,16 @@
 		$rate_count = 0;
 		if ($bus) {
 			$CI = &get_instance();
-			$ratings = $CI->commonDatabase->get_data("ispa_ratings",1,false,"shop",$bus);
+			$ratings = $CI->commonDatabase->get_data("ispa_favorites",1,false,"shop",$bus);
 			if ($ratings) {				
 				foreach ($ratings as $rating) {
-					$tot_rate += $rating["rating"];
+					/*$tot_rate += $rating["rating"];*/
 					$rate_count += 1;
 				}
 			}
 		}
 		if ($rate_count > 0) {
-			$r = number_format(($tot_rate/$rate_count),1);
+			$r = number_format(($rate_count/$rate_count),1);
 		}else{
 			$r = 0;
 		}
@@ -788,28 +788,42 @@
 				$user = $_SESSION["user"]->ispa_id;
 				$shop = $item["shop"];
 				$ch_f = $CI->commonDatabase->get_data("ispa_favorites",1,false,"user", $user,"shop",$shop);
+				$logo = base_url()."uploads/profiles/".$bus["profile"];
 				if ($ch_f) {
-					$fav = "active";
+					$fav = "favorite";
+				}else{
+					$fav = "favorite_outline";
 				}
 			}
 			if ($services && $bus && $loc && $rating) {
 				return '
-					<div class="explore-item" data-item="'.$item["shop"].'">
-						<div class="explore-banner">
-							
+					<div data-id="'.$item["shop"].'" class="ispa-shop click-btn">
+						<div class="shop-body">
+							<div class="shop-details">
+								<div class="shop-name">
+									'.$bus["name"].'
+								</div>
+								<div class="shop-loc">
+									'.(strlen($loc->name) > 30 ? mb_substr($loc->name, 0,30)." ...": $loc->name).'
+								</div>
+								<div class="shop-servs">
+									<div class="serves-title">
+										Services
+									</div>
+									<div class="servs-list">
+										'.$services.'
+									</div>
+								</div>
+							</div>
+							<img class="shop-img" src="'.$logo.'">
 						</div>
-						<div class="explore-details">
-							<div class="explore-name">'.$bus["name"].'</div>
-							<div class="right explore-loc">'.(strlen($loc->name) > 30 ? mb_substr($loc->name, 0,30)." ...": $loc->name).'<i class="material-icons">location_on</i></div>
+						<div class="shop-tools">
+							<button class="click-btn shop-tool right">
+								'.$rating->count.'
+								<i class="material-icons right">'.$fav.'</i>
+							</button>
 						</div>
-						<div class="explore-more">
-							<div class="explore-service">'.$services.'</div>
-						</div>
-						<div class="explore-more">'.$rating->rating.' ~ '.$rating->count.' '.$txt.'
-							<button data-position="left" data-tooltip="Book appointment" class="explore-item-book right click-btn tooltipped">Book</button> 
-							<button data-tooltip="Add to Favourites" data-position="left" class="material-icons explore-rate tooltipped click-btn '.$fav.'">star</button>						
-						</div>
-					</div>
+					</div>					
 				';
 			}
 		}

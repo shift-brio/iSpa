@@ -524,7 +524,7 @@ get_explore = function(item = false, type ='list'){
 		})
 	}
 }
-search_bus = function(key = false){
+search_bus = function(key = false, c = false){
 	if (key) {
 		loading(true);
 		$.ajax({
@@ -536,9 +536,9 @@ search_bus = function(key = false){
 			},
 			success:function(response){
 				if (response.status) {					
-					$(".explore-body").html(response.m)
-					explore_items();
-					booking();
+					if (c) {
+						c(response.m);
+					}										
 				}else{
 					alert(response.m);
 				}
@@ -567,12 +567,26 @@ bus_page = function(bus = false){
 					$(".ispa-bs-title").html(response.m.details.name);
 					$(".ispa-bs-loc").html(response.m.location.name.substr(0,30));
 					$(".w-list").html(response.m.details.working_days);
-					$(".contact-item").html(response.m.details.phone);	
+					$(".c-phone > .c-val").html(response.m.details.phone);	
 					if (response.m.rating.count == 1) {
 						txt = "person";
 					}else{
 						txt = "people";
-					}		
+					}	
+					$(".favorite > i").html("favorite_outline");
+					if (response.m.favorite) {
+						$(".favorite > i").html("favorite");
+					}
+					if (response.m.showcase.length > 0) {
+						var list = response.m.showcase;
+						var conf = {
+							title : "image-date",
+							img: "sl",
+							prev: "sh-tool.prev",
+							next: "sh-tool.next"
+						}
+						new Slider(list, conf);	
+					}	
 					$(".review-all").html(response.m.rating.rating +" - "+response.m.rating.count+" "+txt);
 					$(".review-items").html(response.m.reviews);
 					if (response.m.u_rating) {
@@ -618,28 +632,19 @@ send_rating = function(data = false){
 		})
 	}
 }
-fovorite = function(bus = false, target = false){
+favorite = function(bus = false, target = false){
 	if (bus && target) {
 		loading(true);
 		$.ajax({
-			url:base_url+"fovorites",
+			url:base_url+"favorites",
 			type:"POST",
 			data:{bus:bus},
 			complete:function(){
 				loading(false);
 			},
 			success:function(response){
-				if (response.status) {
-					if (response.m == "added") {
-						target.addClass("active");
-					}else{
-						target.removeClass("active");						
-					}					
-					if (!$(".ispa-explore").is(":visible")) {
-						$(".menu-item[data-item='home']").click();
-					}
-					notify(response.m);
-					$(".material-tooltip").hide();
+				if (response.status) {	
+					target(response);									
 				}else{
 					alert(response.m,5000,"error");
 				}

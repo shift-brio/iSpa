@@ -24,6 +24,7 @@
 	  <script type="text/javascript" src="<?php echo base_url('bootstrap/js/lazyload.js'); ?>"></script> 
 	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/ispa_loader.js')."?".time(); ?>"></script> 
 	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/ispa_ui.js')."?".time(); ?>"></script>	
+	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/slider.js')."?".time(); ?>"></script>	
 	 <script data-ref="map-js" type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmTgK1EOZSTwsmBNnobBJ9tM4GZowxGm8&libraries=places"></script>
 	 <script type="text/javascript" src="<?php echo base_url("bootstrap/js/map_picker.js") ?>"></script> 	   	
 </head>

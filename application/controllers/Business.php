@@ -456,7 +456,7 @@ class Business extends CI_Controller {
     common::emitData($r);
 	}
 	public function search_bus(){
-		if (isset($_POST["key"])) {
+		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
 			$r['status'] = true;
 			$r["m"] = "";
 			$key = $_POST["key"];
@@ -470,21 +470,25 @@ class Business extends CI_Controller {
 			$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
 			if ($bus_locs) {
 				foreach ($bus_locs as $item) {
-					array_push($searched, ["shop" => $item["business"]]);
+					if (!in_array($item["business"], $searched)) {
+						array_push($searched, ["shop" => $item["business"]]);
+					}
 				}
 			}
 			$bus_types = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%'");
 			if ($bus_types) {
 				foreach ($bus_types as $item) {
-					array_push($searched, ["shop" => $item["identifier"]]);
+					if (!in_array($item["identifier"], $searched)) {
+						array_push($searched, ["shop" => $item["identifier"]]);
+					}					
 				}
-			}
+			}			
 			if (sizeof($searched) > 0) {
 				foreach ($searched as $item) {					
 					$r["m"] .= common::renderExplore($item);
 				}
 			}else{
-				$r["m"] .= '<div class="flow-text cetnter explore-none">No shops found</div>';
+				$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
 			}
 		}else{
       $r['status'] = false;
@@ -539,7 +543,19 @@ class Business extends CI_Controller {
 							</div>
 						';
 					}
-				}				
+				}	
+				$shc = [];
+				$sh_list 	= $this->commonDatabase->get_data("ispa_showcase",false,false,"shop",$identifier);	
+				if ($sh_list) {
+					for ($i=0; $i < sizeof($sh_list); $i++) { 
+						$s = [
+							'img' => base_url()."uploads/showcase/".$sh_list[$i]["link"],
+							'title' => date("jS F Y", $sh_list[$i]["date_added"])
+						];
+						array_push($shc, $s);
+					}
+				}
+				$ch_f = $this->commonDatabase->get_data("ispa_favorites",1,false,"user", $user,"shop",$identifier);
 				$r["m"] = [
 					"details" => [
 						"name" => $bus["name"],
@@ -548,11 +564,13 @@ class Business extends CI_Controller {
 						"profile" => $bus["profile"],
 						"working_days" => $w
 					],
+					"favorite" => $ch_f ? true: false,
 					"location" => [
 						"lat" => $loc->lat,
 						"lng" => $loc->lng,
 						"name" => $loc->name
 					],
+					"showcase" => $shc,
 					"rating" => $rating,
 					"reviews" => $revs,
 					"services" => $serv,
@@ -569,7 +587,7 @@ class Business extends CI_Controller {
     common::emitData($r);
 	}
 	public function send_rating(){
-		if (isset($_SESSION["user"]) && isset($_POST["rating"]) && is_numeric($_POST["rating"]) && isset($_POST["note"]) && isset($_POST["bus"])) {
+		if (isset($_SESSION["user"]) && isset($_POST["rating"]) && is_numeric($_POST["rating"]) && isset($_POST["note"]) && isset($_POST["item"])) {
 			$user = $_SESSION["user"]->ispa_id;
 			$identifier = $_POST["bus"];
 			$rating = $_POST["rating"] >= 1 && $_POST["rating"] <= 5 ? $_POST["rating"] : 1;
@@ -606,33 +624,39 @@ class Business extends CI_Controller {
     }
     common::emitData($r);
 	}
-	public function fovorites(){
+	public function favorites(){
 		if (isset($_SESSION["user"]) && isset($_POST["bus"])) {
 			$bus = $_POST["bus"];
-			$user = $_SESSION["user"]->ispa_id;
-			$ch_f = $this->commonDatabase->get_data("ispa_favorites",1,false,"user", $user,"shop",$bus);
-
-			if ($ch_f) {
-				$this->commonDatabase->delete("ispa_favorites","user", $user,"shop",$bus);
-				$r["m"] = "removed";
+			$shop = common::getBus($bus);
+			if ($shop) {
+				$user = $_SESSION["user"]->ispa_id;
+				$ch_f = $this->commonDatabase->get_data("ispa_favorites",1,false,"user", $user,"shop",$bus);
+				$r["shop"] = $shop["name"];
+				if ($ch_f) {
+					$this->commonDatabase->delete("ispa_favorites","user", $user,"shop",$bus);
+					$r["m"] = "removed";
+				}else{
+					$data = [
+						"user" => $user,
+						"shop" => $bus,
+						"date_added" => time(),
+					];
+					$this->commonDatabase->add("ispa_favorites",$data);
+					$r["m"] = "added";
+				}
+				$r["status"] = true;
 			}else{
-				$data = [
-					"user" => $user,
-					"shop" => $bus,
-					"date_added" => time(),
-				];
-				$this->commonDatabase->add("ispa_favorites",$data);
-				$r["m"] = "added";
+				$r['status'] = false;
+	      		$r["m"] = "Shop not found";
 			}
-			$r["status"] = true;
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
+	      $r['status'] = false;
+	      $r["m"] = "Invalid access";
     }
     common::emitData($r);
 	}
 	public function service_lookup(){
-		if (isset($_POST["key"])) {
+		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
 			$key = $_POST["key"];
 			$lookups = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%' group by name");			
 			$r["status"] = true;

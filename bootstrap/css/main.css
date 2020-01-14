@@ -2416,7 +2416,7 @@ img{
       left: 0;
       top: 0; 
       z-index: 1070; 
-      display: non;
+      display: none;
     }
     .booking-calendar-cont{
       height: 100%;
@@ -2437,7 +2437,7 @@ img{
       display: inline-flex;   
     }
     .calendar{     
-      background: rgba(0, 0, 0, 1);
+      background: #4506ff;
       max-height: 310px;
     }
     .calendar-details{
@@ -6029,7 +6029,7 @@ a > .welcome-message{
   display: inline-flex;
 }
 .ispa-bs-title{
-  width: calc(100% - 60px);
+  width: calc(100% - 50px);
   font-size: 1.3rem;
   font-weight: 600;
   padding: 6px;
@@ -6086,7 +6086,7 @@ a > .welcome-message{
   content: "Image date";
 }
 .image-slider{
-  max-height: calc(100% - 80px);
+  height: calc(100% - 80px);
   width: 100%;
 }
 .image-slider.main > div, .image-slider.main > div > img{
@@ -6105,11 +6105,12 @@ a > .welcome-message{
 }
 .slider-img{
   width: 100%;
+  height: calc(100% - 50px);
   text-align: center;
 }
 .sl{
-  max-width: 100%;
-  max-height: 100%;
+  max-width: calc(100% - 6px);
+  max-height: 100%;  
 }
 .ispa-bs-tabs{
   width: 100%;

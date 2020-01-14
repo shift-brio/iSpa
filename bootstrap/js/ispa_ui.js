@@ -1889,6 +1889,44 @@ let home_tab = ()=>{
 	$(".date-sel").click(function(){
 		init_calendar($(".ispa-appt").attr("data-business"));						
 	})
+	$(".sl").click(() =>{
+		$(".gallery").show();
+	})
+	$(".close-g").click(() =>{
+		$(".gallery").hide();
+	})
+	$(".favorite").click(function(){
+		var item = $(".ispa-bs").attr("data-id");
+		if (item) {
+			favorite(item, (res = false) =>{
+				if (res) {
+					if (res.m == "added") {
+						$(".favorite > i").html("favorite");
+						var s = "to";
+					}else{
+						$(".favorite > i").html("favorite_outline");
+						var s = "from";
+					}
+					notify(`${res.shop} has been ${res.m} ${s} your favorites`);
+				}
+			});
+		}
+	})
+	$(".search-input").on("keyup",function(){
+		var key = $(this).val();		
+		if (key.length != "") {
+			$(".search-list").html("");
+			search_bus(key, (res = false) =>{
+				$(".search-list").html(res);
+				$(".search-list > .ispa-shop").each(function(){
+					$(this).click(function(){
+						var id = $(this).attr("data-id");
+						bus_page(id);
+					})
+				})
+			});
+		}
+	})
 }
 class system {
 	constructor(){
@@ -1928,4 +1966,5 @@ class system {
 
 $(document).ready(() =>{
 	home_tab();
+	new system().menuManager();
 })
