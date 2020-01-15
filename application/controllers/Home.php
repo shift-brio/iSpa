@@ -277,15 +277,17 @@ class Home extends CI_Controller {
 		common::emitData($r);
 	}	
 	public function submit_appointment(){
-		if (isset($_POST["shop"]) && isset($_SESSION["user"]) && isset($_POST["note"]) && isset($_POST["services"]) && is_array($_POST["services"]) && isset($_POST["services"]["items"]) && isset($_POST["staff"]) && isset($_POST["time"]) && $_POST["location"] && isset($_POST['payment']) && ($_POST["payment"] == "cash" || $_POST["payment"] == "wallet") && common::getBus($_POST["shop"])) {
+		if (isset($_POST["shop"]) && isset($_SESSION["user"]) && isset($_POST["note"]) && isset($_POST["services"]) && is_array($_POST["services"]) && isset($_POST["services"]["items"]) && isset($_POST["staff"]) && isset($_POST["time"]) && common::getBus($_POST["shop"])) {
 			
 			$shop = $_POST["shop"];
 			$note = $_POST["note"];
 			$services = $_POST["services"];
-			$location = $_POST["location"];
+			$location = "shop";
 			$service_items = isset($_POST["services"]["items"]) && is_array($_POST["services"]["items"]) ? $_POST["services"]["items"] : false;
 			$staff = $_POST["staff"];
 			$payment = $_POST['payment'];
+
+			
 			$time = common::dateString($_POST["time"]);
 			$editing = false;
 			if (isset($_POST["editing"]) && ($_POST["editing"] == true || $_POST["editing"] == "true") && isset($_POST["edited"])) {

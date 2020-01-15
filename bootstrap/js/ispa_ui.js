@@ -514,61 +514,43 @@ ispa_home = function(){
 	booking();
 }
 make_appointment = function(editing = false){
-	var shop = $(".new-appointment").attr("data-business");
-	var location = $(".book-place").val();
+	var shop = $("#ispa-appt").attr("data-business");
+	/*var location = $(".book-place").val();*/
 	var services = get_booked();
-	var staff = $(".book-staff").val();
-	var time = $(".book-time").val();
-	var payment = $(".book-payment").val();
-	var note  = $(".book-note").val();
+	var staff = $(".staff-sel").val();
+	var time = $(".date-sel").html();
+	var note  = $(".book-note").html();	
 
-	if (shop) {
-		if (location) {
-			if (services.items && services.items.length > 0) {
-				if (staff) {
-					if (time != "") {
-						if (payment && (payment == "wallet" || payment == "cash")) {
-							data = {
-								shop: shop,
-								location:location,
-								services:services,
-								staff: staff,
-								time: time,
-								payment: payment,
-								note: note
-							}							
-							if (editing) {
-								submit_appointment(data,true);
-							}else{
-								submit_appointment(data);
-							}
-						}else{
-							notify("Kindly specify a payment method.");
-						}
+	if (shop) {		
+		if (services.items && services.items.length > 0) {
+			if (staff) {
+				if (time != "") {
+					data = {
+						shop: shop,						
+						services:services,
+						staff: staff,
+						time: time,						
+						note: note
+					}							
+					if (editing) {
+						submit_appointment(data, true);
 					}else{
-						notify("Kindly specify the appointment time.");
+						submit_appointment(data);
 					}
 				}else{
-					notify("Kindly select a staff first");
+					notify("Kindly specify the appointment time.");
 				}
 			}else{
-				notify("Kindly select a service first");
+				notify("Kindly select a staff first");
 			}
 		}else{
-			notify("Kindly specify where you want to recieve the services.")
-		}
+			notify("Kindly select a service first");
+		}		
 	}else{
 		notify("No shop selected.");
 	}
 }
-new_appointment = function(){
-	explore_t = function(){
-		$(".add-item:first-child , .green-text.next-ap-tool,.new-apt").click(function(){
-			$(".ispa-explorer").click();
-			$(".ispa-explorer").select();
-		})
-	}
-	explore_t();
+new_appointment = function(){	
 	$(".cancel-new-app").click(function(){
 		$(".new-appointment").slideUp("fast");
 		$(".book-time").val("");
@@ -590,12 +572,7 @@ new_appointment = function(){
 	$(".book-go").click(function(){				
 		make_appointment();
 	})	
-	$(".next-month").click(function(){	
-		init_calendar($(".new-appointment").attr("data-business"), (Number($(".calendar").attr("data-month")) + 1), Number($(".calendar").attr("data-year")));
-	})
-	$(".prev-month").click(function(){
-		init_calendar($(".new-appointment").attr("data-business"), (Number($(".calendar").attr("data-month")) - 1), Number($(".calendar").attr("data-year")));
-	})
+
 	staff_sel = function(){
 		$(".book-staff").change(function(){
 			$(".book-time").val("");
@@ -1751,7 +1728,7 @@ let bus_items = (item = "ispa-shop") =>{
 }
 let home_tab = ()=>{
 	$(".new-apt").click((x)=>{
-		$("#ispa-appt").show();
+		$(".search-area").show();
 	})
 	$(".ispa-appt > div.modal-tools > button.close").click(() =>{
 		$("#ispa-appt").hide();
@@ -1836,8 +1813,7 @@ let home_tab = ()=>{
 	$(".bs-book").click(function(){
 		var sel = bus_book();
 		appoint_bus($(".ispa-bs").attr("data-id"),sel, (res = false) =>{
-			if (res) {
-				console.log(res.staff);
+			if (res) {				
 				$("#ispa-appt").show();
 				$("#ispa-appt").attr("data-business",$(".ispa-bs").attr("data-id"));
 				$(".service-list").html(res.m);	
@@ -1848,6 +1824,12 @@ let home_tab = ()=>{
 				$(".payable").html(get_booked().amnt);
 			}
 		});
+	})
+	$(".staff-sel").on("change",() =>{
+		$(".date-sel").html("");
+	})
+	$("#appt-go").click(function(){				
+		make_appointment();
 	})
 }
 book_sel = function(){
@@ -1860,7 +1842,7 @@ book_sel = function(){
 			}
 			$(this).toggleClass("active");				
 			$(".payable").html(get_booked().amnt);
-			$(".date-sel").val("Date of appointment");
+			$(".date-sel").html("");			
 		})
 	})
 }
@@ -1914,8 +1896,13 @@ calendar = function(){
 			})
 		})
 	}	
+	$(".next-month").click(function(){	
+		init_calendar($("#ispa-appt").attr("data-business"), (Number($(".calendar").attr("data-month")) + 1), Number($(".calendar").attr("data-year")));
+	})
+	$(".prev-month").click(function(){
+		init_calendar($("#ispa-appt").attr("data-business"), (Number($(".calendar").attr("data-month")) - 1), Number($(".calendar").attr("data-year")));
+	})
 }
-calendar();
 
 
 get_booked = function(){
@@ -2014,4 +2001,5 @@ class system {
 $(document).ready(() =>{
 	home_tab();
 	new system().menuManager();
+	calendar();
 })

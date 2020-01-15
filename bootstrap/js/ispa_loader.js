@@ -131,7 +131,7 @@ get_menu = function(item = false, type = "client", callback = false){
 					}else if(item == "wallet"){
 						ispa_wallet();
 					}
-					ispa_help();
+					/*ispa_help();
 					ispa_home();
 					ispa_inits();
 					explore_items();
@@ -139,7 +139,7 @@ get_menu = function(item = false, type = "client", callback = false){
 					ispa_new();
 					ispa_appointment();
 					next_appointment();
-					bus_calendar();
+					bus_calendar();*/
 				}else{					
 					notify(response.m)
 				}	
@@ -465,23 +465,23 @@ submit_appointment =  function(data = false,editing = false){
 	if (data) {		
 		if (editing) {
 			data.editing = true;
-			data.edited = $(".new-appointment").attr("data-edited");
+			data.edited = $("#ispa-appt").attr("data-edited");
 		}
 		loading(true);		
-		$(".book-go").attr("disabled","true");
+		$("#appt-go").attr("disabled","true");		
 		$.ajax({
 			url:base_url+"submit_appointment",
 			type:"POST",
-			data:data,
+			data: data,
 			complete:function(){
 				loading(false);
-				$(".book-go").removeAttr("disabled");
+				$("#appt-go").removeAttr("disabled");
 			},
 			success:function(response){
 				if (response.status) {
-					location.reload();					
+					//location.reload();					
 				}else{
-					notify(response.m,10000);
+					notify(response.m, 8000);
 				}
 			},
 			error:function(){

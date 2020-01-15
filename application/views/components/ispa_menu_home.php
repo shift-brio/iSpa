@@ -4,63 +4,19 @@
 			<input placeholder="Find shops" class="click-btn search_dummy" type="text" />
 			<div class="home-header upcoming-t">Upcoming appointment</div>
 			<div class="upc-conr">
-				<div class="ispa-appointments-item d-done click-btn" data-item="bc4f28310aeb3b8eb70880814a755ef0">
-					<div class="appointment-timing">
-						<div class="timing-item">Mar</div>
-						<div class="timing-item">29th</div>
-						<div class="timing-item">10:00</div>
-					</div>
-					<div class="appointment-details">
-						<div class="appointment-shop">
-							JM barbers
-						</div>
-						<div class="appointment-status d-con">
-							Confirmed
-						</div>					
-						<div class="appointment-servs">
-							Hair cut, Manicure
-						</div>
-					</div>
-					<div class="appointment-tools">
-						<button data-tooltip="View appointment" data-position="left" class="appointment-tool tooltipped click-btn" data-tooltip-id="241f4c2c-5f42-c67a-4523-c389d87b2771">
-							<i class="material-icons">more_horiz</i>
-						</button>
-						<button data-tooltip="Cancel appointment" data-position="left" class="appointment-tool rem-appointment tooltipped  click-btn" data-tooltip-id="84820a12-1400-2645-3656-acb42fd18fd7">
-							<i class="material-icons">delete</i>
-						</button>
-					</div>
-				</div>
+				<?php $this->load->view("components/next_appointment"); ?>
 			</div>
-			<div class="home-header">Recents & Favorites</div>	
+			<div class="home-header res-h">Recents & Favorites</div>	
 		</div>
 		<div class="recents">			
-			<div data-id="6950e639d75dc2623b7fd936eb23c172" class="ispa-shop click-btn">
-				<div class="shop-body">
-					<div class="shop-details">
-						<div class="shop-name">
-							JM Barbers
-						</div>
-						<div class="shop-loc">
-							Highrise, Nairobi
-						</div>
-						<div class="shop-servs">
-							<div class="serves-title">
-								Services
-							</div>
-							<div class="servs-list">
-								Haircut, Manicure, Pedicure, Facial scrub
-							</div>
-						</div>
-					</div>
-					<img class="shop-img" src="<?php echo base_url("uploads/logo/ispa.svg"); ?>" />
-				</div>
-				<div class="shop-tools">
-					<button class="click-btn shop-tool right">
-						4.3k 
-						<i class="material-icons right">favorite_outline</i>
-					</button>
-				</div>
-			</div>			
+			<?php 
+				$favs = $this->commonDatabase->get_data("ispa_favorites",false,false,"user", $_SESSION["user"]->ispa_id);
+				if ($favs) {
+					foreach ($favs as $fav) {						
+						echo common::renderExplore(["shop" => $fav["shop"]]);
+					}
+				}
+			 ?>		
 		</div>
 	</div>		
 	<div class="home-tools">
@@ -218,9 +174,7 @@
 				</div>
 				<div class="appt-in">
 					<label class="input-label">Date</label>
-					<div class="input-content date-sel click-btn">
-						Date of appointment
-					</div>
+					<div class="input-content date-sel click-btn"></div>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">
@@ -238,21 +192,21 @@
 				<div class="appt-in">
 					<br>
 					<label class="input-label"></label>
-					<div contenteditable="true" class="input-content"></div>
+					<div contenteditable="true" class="input-content book-note"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+	<div class="modal-tools appt-t">
+		<button class="modal-tool close-appt left click-btn close">
 			<i class="material-icons">arrow_back</i>
 		</button>
 		<div class="appt-tools in-f">
-			<button id="can-appt" class="appt-tool click-btn">
-				<i class="material-icons">close</i>
-				<div class="tool-name">Cancel</div>
+			<button id="can-appt" class="appt-tool hidden click-btn">
+				<i class="material-icons">delete</i>
+				<div class="tool-name">Delete</div>
 			</button>			
-			<button id="re-appt" class="appt-tool click-btn">
+			<button id="re-appt" class="appt-tool hidden click-btn">
 				<i class="material-icons">refresh</i>
 				<div class="tool-name">Rebook</div>
 			</button>

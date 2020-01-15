@@ -359,9 +359,9 @@ class Business extends CI_Controller {
     common::emitData($r);
 	}
 	public function appoint_bus(){
-		if (isset($_SESSION["user"]) && isset($_POST["business"]) && isset($_POST["sel"])) {
+		if (isset($_SESSION["user"]) && isset($_POST["business"])) {
 			$bus = common::getBus($_POST["business"]);
-			$sel = $_POST["sel"];
+			$sel = isset($_POST["sel"]) ? $_POST["sel"] : [];
 			if ($bus) {
 				$identifier = $_POST["business"];
 				$services = $this->commonDatabase->get_cond("ispa_services","added_by='$identifier' AND status='1' order by id DESC");

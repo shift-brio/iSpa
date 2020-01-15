@@ -1016,6 +1016,10 @@
 			$CI = &get_instance();
 			$time = time();
 			$class = "";
+			$cancel = "";
+			$c_btn = '<button data-tooltip="Cancel appointment" data-position="left" class="appointment-tool rem-appointment tooltipped  click-btn">
+								<i class="material-icons">delete</i>
+							</button>';
 			if ($appointment["status"] == 1) {
 				$status = "DONE";
 				$text =  "d-done";
@@ -1031,18 +1035,21 @@
 					if ($appointment["confirmed"] == 1) {
 						$text = "d-con";
 						$status = "CONFIRMED";
-						$class = "";
+						$class = ""; 
+						$cancel = $c_btn;
 						$s_class = "s-con";
 					}else{
 						if ($appointment["confirmed"] == 2) {
 							$text = "d-pend";
 							$status = "CANCELLED";
 							$class = "";
+							$cancel = $c_btn;
 							$s_class = "s-pend";								
 						}else{
 							$text = "d-pend";
 							$status = "PENDING CONFIRMATION";
 							$class = "";
+							$cancel = $c_btn;
 							$s_class = "s-pend";
 						}
 					}
@@ -1067,32 +1074,31 @@
 				$s = $s[0];
 				$ss .= sizeof($services) == 1 ? $s["name"] : $serv["service_id"] == $services[sizeof($services) -1]["service_id"] ? $s["name"] : $s["name"].", ";
 			}
-			return '<div class="ispa-appointments-item '.$status.'" data-item="'.$appointment["identifier"].'">
-							<div class="appointment-timing">
-								<div class="timing-item">'.date("M",$appointment["app_time"]).'</div>
-								<div class="timing-item">'.date("jS",$appointment["app_time"]).'</div>
-								<div class="timing-item">'.date("H:i",$appointment["app_time"]).'</div>
+			return '
+					<div class="ispa-appointments-item d-done click-btn '.$status.'" data-item="'.$appointment["identifier"].'">
+						<div class="appointment-timing">
+							<div class="timing-item">'.date("M",$appointment["app_time"]).'</div>
+							<div class="timing-item">'.date("jS",$appointment["app_time"]).'</div>
+							<div class="timing-item">'.date("H:i",$appointment["app_time"]).'</div>
+						</div>
+						<div class="appointment-details">
+							<div class="appointment-shop">
+								'.$shop.'
 							</div>
-							<div class="appointment-details">
-								<div class="appointment-status '.$status.'">
-									'.$text.'
-								</div>
-								<div class="appointment-shop">
-									'.$shop.'
-								</div>
-								<div class="appointment-servs">
-									'.$ss.'
-								</div>
-							</div>
-							<div class="appointment-tools">
-								<button data-tooltip="View appointment" data-position="left" class="appointment-tool tooltipped click-btn">
-									<i class="material-icons">more_horiz</i>
-								</button>
-								<button data-tooltip="Cancel appointment" data-position="left"  class="appointment-tool rem-appointment tooltipped '.$class.' click-btn">
-									<i class="material-icons">close</i>
-								</button>
+							<div class="appointment-status '.$status.'">
+								'.$text.'
+							</div>					
+							<div class="appointment-servs">
+								'.$ss.'
 							</div>
 						</div>
+						<div class="appointment-tools">
+							<button data-tooltip="View appointment" data-position="left" class="appointment-tool tooltipped click-btn">
+								<i class="material-icons">more_horiz</i>
+							</button>
+							'.$cancel.'
+						</div>
+					</div>			
 					';
 		}
 		return $appointment;
