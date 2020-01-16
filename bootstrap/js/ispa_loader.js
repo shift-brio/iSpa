@@ -831,29 +831,38 @@ get_appointment = function(item = false){
 			},
 			success:function(response){
 				if (response.status) {
-					$(".new-appointment").show();		
-					$(".new-appointment").attr("data-editing",true);
-					$(".new-appointment").attr("data-edited",item);
-					$(".book-shop").val(response.m.business.name);
-					$(".book-place").val(response.m.place);
-					$(".book-staff").html(response.m.staff);
-					$(".appointment-services").html(response.m.services);
-					$(".book-time").val(response.m.time);
-					$(".service-tot-val").html(get_booked().amnt);
-					$(".new-appointment").attr("data-business",response.m.business.identifier);
-					book_sel();
-					$(".appointment-more").show();
-					if (response.m.class == "") {
-						$(".change-app").removeClass("hidden");
+					$("#ispa-appt").show();		
+					$("#ispa-appt").attr("data-editing",true);
+					$("#ispa-appt").attr("data-business",response.m.business.identifier);
+					$("#ispa-appt").attr("data-edited",item);
+					$(".appt-shop").html(response.m.business.name);					
+					$(".staff-sel").html(response.m.staff);
+					$(".service-list").html(response.m.services);
+					$(".date-sel").html(response.m.time);
+					$(".payable").html(get_booked().amnt);					
+					$("#appt-go").hide();
+					$(".appt-bar").attr("class","app-bar appt-bar");
+
+					$(".date-sel").addClass("editable");
+					if (response.m.status == 0) {						
+						$("#can-appt").removeClass("hidden");						
+						if (response.m.confirmed == 0) {												
+							$(".appt-bar").attr("class","app-bar appt-bar d-pend");
+						}else if(response.m.confirmed == 1){
+							$(".date-sel").removeClass("editable");
+							$(".appt-bar").attr("class","app-bar appt-bar d-con");
+						}else{	
+							$(".date-sel").removeClass("editable");						
+							$(".appt-bar").attr("class","app-bar appt-bar d-can");
+						}
 					}else{
-						$(".change-app").addClass("hidden");
-					}
-					$(".book-go").html("Rebook");	
-					if (response.m.confirmed == 0) {
-						$(".change-app").show();
-					}	else{
-						$(".change-app").hide();
-					}			
+						$(".date-sel").removeClass("editable");
+						if (response.m.status == 1) {
+							$(".appt-bar").attr("class","app-bar appt-bar d-done");
+						}else{
+							$(".appt-bar").attr("class","app-bar appt-bar d-can");
+						}
+					}				
 				}else{
 					notify(response.m);
 				}

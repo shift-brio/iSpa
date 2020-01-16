@@ -1253,7 +1253,7 @@ img{
   transition:background .25s ease, transform .25s ease, opacity .25s;
 }
 .click-btn:active{  
-  background: rgba(0,0,0,.15) !important;
+  
   opacity: .25;
   transform: scale3d(.95,.95,.95) !important;
 }
@@ -1365,7 +1365,7 @@ img{
 }
 .menu-name{
   color: #313435;
-  font-weight: 450;
+  font-weight: 600;
   font-size: 1.1em;
   height: 100%;  
   text-align: left;
@@ -5775,7 +5775,7 @@ a > .welcome-message{
   line-height: normal !important;
   font-size: .9rem;
   letter-spacing: 1px;
-  font-weight: 300;
+  font-weight: 450;
 }
 .nav-tab > .tab-icon{
   height: 30px;
@@ -5847,16 +5847,16 @@ a > .welcome-message{
   overflow-x: hidden;
 }
 .home-content{
-  height: calc(100% - 50px);
+  height: calc(100%);
   width: 100%;
 }
 .home-top{
-  height: 205px;
+  height: 230px;
   width: 100%;
-  background: rgba(0,0,0,.05);
+  background: rgba(0,0,0,.00);
 }
 .recents{
-  height: calc(100% - 205px);
+  height: calc(100% - 230px);
   overflow-y: auto;
   padding-top: 10px;
 }
@@ -5932,7 +5932,7 @@ a > .welcome-message{
 }
 .home-tools{
   border-radius: 0px 0px 20px 20px;
-  background: rgba(0,0,0,.05);
+  background: rgba(0,0,0,.00);
   width: 100%;
   height: 50px;
   text-align: center;
@@ -5966,7 +5966,7 @@ a > .welcome-message{
   text-align: right;
   padding-right: 12px !important;
   border: 1px solid rgba(0,0,0,.15)  !important;
-  box-shadow: none !important;
+  box-shadow: 0px 0px 8px rgba(0,0,0,.25) !important;
   font-weight: 500;  
 }
 .search_dummy::placeholder{
@@ -5979,12 +5979,18 @@ a > .welcome-message{
 }
 .home-header.upcoming-t{
   color: #4506ff !important;
+  text-align: center;
+  font-size: 1.1em;
 }
 .upc-conr{
   min-height: 80px;
 }
 .res-h{
-  
+  margin-top: 30px;
+  text-align: center;
+  font-size: 1.1em;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+  background: rgba(0,0,0,.05);
 }
 .c-sche{
   width: 100%;
@@ -6402,8 +6408,8 @@ a > .welcome-message{
 .date-sel:empty::before{
   content: "Date of appointment";
 }
-.date-sel::after{
-  content: "Click to change";
+.date-sel.editable::after{
+  content: "Click to change date";
   display: block;
   font-weight: 400;
   font-size: .9rem;  
@@ -6411,7 +6417,7 @@ a > .welcome-message{
 }
 .service-list{
   max-height: 450px;
-  background: rgba(0,0,0,.05);
+  /* background: rgba(0,0,0,.05); */
   overflow-y: auto;
 }
 .pay-btn{
@@ -6495,12 +6501,13 @@ a > .welcome-message{
 }
 .ispa-pay{
   height: 100% !important;
+  animation: slide_up .45s ease;
 }
 .ispa-pay > .modal-top{
   height: calc(100% - 500px);
 }
 .ispa-pay > .modal-body{
-  height: 450px;
+  height: 447px;
   overflow-y: auto; 
   background: #fff;
   border-radius: 20px 20px 0px 0px;
@@ -6568,7 +6575,7 @@ a > .welcome-message{
   background: rgba(0,0,0,.15) !important;
 }
 .nb{
-  font-size: .8rem;
+  font-size: 1rem;
   margin-top: 10px;
   padding: 6px;
   background: rgba(0,0,0,.05);

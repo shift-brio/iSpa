@@ -4,16 +4,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="page" content="<?php echo isset($data->page) ? $data->page : "home"; ?>">
-	<meta name="active-item" content="false">
-	<meta name="user-page" content="<?php echo isset($data->user_page) ? $data->user_page : ""; ?>">
-	<base href="<?php echo base_url(); ?>" />
-	<meta name="user" content="<?php echo isset($data->username) ? $data->username : ""; ?>">
+	<meta charset="UTF-8">	
+	<base href="<?php echo base_url(); ?>" />	
 	<meta name="theme-color" content="#4506ff">
-	<meta name="description" content="TalkPoint">
-	<meta name="keywords" content="TalkPoint|Talk|talkpoint.online">	
-	<meta name="application-name" content="TalkPoint">
+	<meta name="description" content="iSpa">
+	<meta name="keywords" content="iSpa">	
+	<meta name="application-name" content="iSpa">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="manifest" href="<?php echo base_url("manifest.json"); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="icon" type="image/gif" href="<?php echo base_url('uploads/logo/ispa.jpg'); ?>">
 	<title><?php echo isset($data->title) ? $data->title:"";  ?></title>

@@ -1726,12 +1726,9 @@ let bus_items = (item = "ispa-shop") =>{
 		})
 	})
 }
-let home_tab = ()=>{
+let home_tab = ()=>{	
 	$(".new-apt").click((x)=>{
 		$(".search-area").show();
-	})
-	$(".ispa-appt > div.modal-tools > button.close").click(() =>{
-		$("#ispa-appt").hide();
 	})
 	$(".search_dummy").click(() =>{
 		$(".search-area").show();
@@ -1740,13 +1737,7 @@ let home_tab = ()=>{
 	})
 	$(".search-tools").click(() =>{
 		$(".search-area").hide();
-	})
-	$(".pay-btn").click(() =>{
-		$("#ispa-pay").show();
-	})
-	$(".close-pay").click((e) =>{			
-		$("#ispa-pay").hide();
-	})
+	})	
 	$(".bs-tool.close").click(function(){
 		$(".ispa-bs").hide();
 	})
@@ -1768,10 +1759,7 @@ let home_tab = ()=>{
 			}
 		})
 	})
-	bus_items();
-	$(".date-sel").click(function(){
-		init_calendar($("#ispa-appt").attr("data-business"));						
-	})
+	bus_items();	
 	$(".sl").click(() =>{
 		$(".gallery").show();
 	})
@@ -1815,6 +1803,7 @@ let home_tab = ()=>{
 		appoint_bus($(".ispa-bs").attr("data-id"),sel, (res = false) =>{
 			if (res) {				
 				$("#ispa-appt").show();
+				clear_appt();
 				$("#ispa-appt").attr("data-business",$(".ispa-bs").attr("data-id"));
 				$(".service-list").html(res.m);	
 				$(".staff-sel").html(res.staff);
@@ -1824,6 +1813,22 @@ let home_tab = ()=>{
 				$(".payable").html(get_booked().amnt);
 			}
 		});
+	})	
+}
+let apt_funcs = function(){	
+	$(".ispa-appt > div.modal-tools > button.close").click(() =>{
+		$("#ispa-appt").hide();
+	})
+	$(".pay-btn").click(() =>{
+		$("#ispa-pay").show();
+	})
+	$(".close-pay").click((e) =>{			
+		$("#ispa-pay").hide();
+	})
+	$(".date-sel").click(function(){
+		if (!$("#ispa-appt").attr("data-editing")) {
+			init_calendar($("#ispa-appt").attr("data-business"));
+		}
 	})
 	$(".staff-sel").on("change",() =>{
 		$(".date-sel").html("");
@@ -1845,6 +1850,18 @@ book_sel = function(){
 			$(".date-sel").html("");			
 		})
 	})
+}
+let clear_appt = function(){
+	$("#ispa-appt").removeAttr("data-editing");
+	$("#ispa-appt").removeAttr("data-edited");
+	$(".date-sel").html("");
+	$(".staff-sel").html("");
+	$(".appt-shop").html("");
+	$(".service-list").html("");
+	$(".payable").html("");
+	$(".appt-bar").attr("class","app-bar appt-bar");
+	$(".date-sel::after").attr("content", "Click to change date");
+	$(".date-sel").addClass("editable");
 }
 calendar = function(){
 	init_calendar = function(bus = false, month = false, year = false){
@@ -1904,7 +1921,15 @@ calendar = function(){
 	})
 }
 
-
+function apts() {
+	$(".ispa-appointments-item").each(function(){
+		$(this).click(function(){
+			var id = $(this).attr("data-item");
+			get_appointment(id);
+		})
+	})
+}
+apts();
 get_booked = function(){
 	var booked = {};
 	var booked_items = [];
@@ -2002,4 +2027,5 @@ $(document).ready(() =>{
 	home_tab();
 	new system().menuManager();
 	calendar();
+	apt_funcs();
 })

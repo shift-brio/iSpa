@@ -1,0 +1,12 @@
+{
+	"short_name": "iSpa",
+	"name": "iSpa",
+	"icons": [
+		{
+			"src": "logo.png",
+			"type": "image/png"
+		}
+	],
+	"display": "standalone",
+	"orientation": "portrait"
+}

@@ -396,7 +396,7 @@ class Business extends CI_Controller {
 						$r['staff'] = "<option value=''>No staff</option>";
 					}
 					$r['status'] = true;
-					$r["name"] = $bus["name"]." | ".common::busLoc($identifier)->name;
+					$r["name"] = $bus["name"]/*." | ".common::busLoc($identifier)->name*/;
 					$r['m'] = $serv;
 				}else{
 					$r['status'] = false;
@@ -766,18 +766,10 @@ class Business extends CI_Controller {
 							}							
 						}
 					}
-					if ($appointment["payment_method"] == "wallet") {
-						$method = '
-							<option selected value="wallet">Wallet - balance Ksh. '.(number_format(wallet::balance($user)->balance,2)).'</option>
-							<option  value="cash">Cash</option>
-						';
-						$pay = "Paid";
-					}else{
-						$method = '
-							<option selected value="cash">Cash</option>
-							<option value="wallet">Wallet - balance Ksh. '.(number_format(wallet::balance($user)->balance,2)).'</option>							
-						';
-						$pay = "Not paid";
+					if ($appointment["payment_method"] == "wallet") {					
+						$pay = true;
+					}else{						
+						$pay = false;
 					}
 					$bus_loc = common::busLoc($shop["identifier"]) ? common::busLoc($shop["identifier"])->name : "";
 					$t = date("jS F Y",$appointment["app_time"])." | ".date("h:i A",$appointment["app_time"])." - ".date("h:i A",$appointment["app_time"] + ($app_time * 60));
@@ -802,14 +794,12 @@ class Business extends CI_Controller {
 								"name" => $shop["name"]." | ".$bus_loc,	
 								"identifier" => $shop["identifier"]						 
 							],
-							"method" => $method,/*30th January 2019 | 08:20 AM - 08:40 AM*/
 							"services" => $servs,
-							"time" => $appointment["app_time"] > time() ? $t : "",
-							"class" => $appointment["app_time"] > time() ? "" : "hidden",
+							"time"  => /*$appointment["app_time"] > time() ? $t : ""*/ $t,
+							"editable" => $appointment["app_time"] > time(),
 							"place" => $appointment["place"],
 							"staff" => $ap_staff,
-							"total" => number_format($serv_amnt,2),
-							"pay_method" => ucfirst($appointment["payment_method"]),
+							"total" => number_format($serv_amnt,2),						
 							"payment" => $pay,
 							"s_table" => $serv_list,
 							"staff_name" => $staff_name,
