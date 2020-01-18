@@ -1269,7 +1269,7 @@ img{
   height: 100%;
   width: 250px;
   background: #fff;
-  animation: side_nav .45s cubic-bezier(0, .8, .9, 1);   
+  animation: side_nav .35s cubic-bezier(0, .8, .9, 1);   
 }
 @keyframes side_nav{
   0%{
@@ -1909,7 +1909,7 @@ img{
     height: 40px;
     width: 40px;
     margin-top: 5px;
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid rgba(13, 19, 23, 0.45);
     border-radius: 3px;
     cursor: pointer;
     padding: 7px;  
@@ -2556,7 +2556,7 @@ img{
       display: block;
       margin-bottom: 2px;
     }
-    .ispa-in{
+    .ispa-in, .ed-in{
       width: 100%;
       height: 34px;
       border: none;
@@ -2571,7 +2571,7 @@ img{
       transition: border-bottom .25s ease !important;
     }
 
-    .ispa-in:focus{
+    .ispa-in:focus, .ed-in::focus{
       border-bottom: 2px solid #0d1317 !important;
     }
     .ispa-in::placeholder{
@@ -3915,23 +3915,24 @@ a > .welcome-message{
       font-weight: 600;
       text-align: center;
       animation:slide_down .45s ease-out;
+      border-bottom: 1px solid rgba(0,0,0,.15);
     }
     .switch-cont{
       padding: 3px !important;
       padding-top: 50px;
+      background: #fff;
+      height: 100%;
     }
     .portal-back{
       height: 40px;
       width: auto;
-      padding: 2px !important;
-      margin: 0pc !important;
+      padding: 2px !important;      
       float: left;  
       color: #000;
-      font-weight: 600;
+      font-weight: 500;
       box-shadow: none;  
     }
-    .portal-back > i{
-      font-size: 2.3em !important;
+    .portal-back > i{      
     }
     .switch-item{
       height: 40px;
@@ -3941,9 +3942,11 @@ a > .welcome-message{
       cursor: pointer;
       font-weight: 600;
       background: #fff;  
+      border: 1px solid rgba(0,0,0,.15);
       border-radius: 5px;
-      margin-bottom: 4px;
-      animation:slide_up .45s ease-out;
+      margin-top: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,.05);    
+      color: #0d1317 !important;
       transition: transform .25s, background .25s , color .15s;
     }
     .switch-item:hover{
@@ -4241,7 +4244,7 @@ a > .welcome-message{
     .app-bar.d-done{
       background: #48A9DA !important;
     }      
-    .d-done{
+    .d-done:not(.appointment-status){
       border-left: 3px solid #48A9DA;  
     }
     .app-bar.d-pend{
@@ -5465,6 +5468,10 @@ a > .welcome-message{
   margin-top: 8px !important;
   margin-bottom: 5px !important;
 }
+
+.no-fav{
+  margin-top: 20px;
+}
 /* iSpa Login */
 .log-row{
   background: #fff;
@@ -5485,6 +5492,7 @@ a > .welcome-message{
   width: 100%;
   overflow-y: auto;
   background: #fff;
+  padding-bottom: 20px;
 }
 .login-top,.login-bottom{  
   width: 100% !important;
@@ -5541,8 +5549,7 @@ a > .welcome-message{
   transition: box-shadow .25s ease-out;
 }
 .login-in:focus{
-  border-color: #039be5;
-  box-shadow: 0px 0px 8px lightblue;
+  border-bottom: 2px solid #0d1317 !important;
 }
 .log-in, .sign-go{
   box-shadow: none !important;
@@ -5967,7 +5974,7 @@ a > .welcome-message{
   padding-right: 12px !important;
   border: 1px solid rgba(0,0,0,.15)  !important;
   box-shadow: 0px 0px 8px rgba(0,0,0,.25) !important;
-  font-weight: 500;  
+  font-weight: 600;  
 }
 .search_dummy::placeholder{
   color: #0d1317 !important;
@@ -6120,6 +6127,9 @@ a > .welcome-message{
 .sl{
   max-width: calc(100% - 6px);
   max-height: 100%;  
+}
+.sl.main{
+  border-radius: 6px;
 }
 .ispa-bs-tabs{
   width: 100%;
@@ -6334,7 +6344,7 @@ a > .welcome-message{
   padding: 0px !important;
   height: calc(100% - 20px) !important;  
   bottom: 0;
-  animation: slide_up_slow .45s cubic-bezier(0,.4,.6,1);
+  animation: slide_up_slow .35s cubic-bezier(0,.4,.6,1);
 }
 .modal-top{
   height: 30px;
@@ -6349,7 +6359,7 @@ a > .welcome-message{
 }
 .modal-tools{
   height: 50px;
-  border-top: 1px solid rgba(0,0,0,.15)
+  border-top: 1px solid rgba(0,0,0,.15);
 }
 .app-bar{
   height: 10px;
@@ -6624,6 +6634,7 @@ a > .welcome-message{
     height: 100%;
     padding-bottom: 20px;
     width: 100%;
+    overflow-x: hidden;
   }
   .upcoming{
     color: rgba(69, 6, 255, 1);
@@ -6634,6 +6645,8 @@ a > .welcome-message{
   }
   .modal-title.past{
     color: #0d1317;
+    background: rgba(0,0,0,.05);
+    margin-top: 10px !important;
     text-align: left !important;
   }
 
@@ -6642,13 +6655,17 @@ a > .welcome-message{
     height: 100%;
     width: 100%;
     padding-bottom: 20px;
+    
   }
   .notif-item{
-    width: 100%;
-    margin: 0px !important;
+    width: calc(100% - 10px);
+    margin: 0px !important;    
+    margin-left: 5px !important;
+    margin-bottom: 5px !important;
+    box-shadow: 0px 0px 6px rgba(0,0,0,.15);    
     padding: 0px !important;
     height: auto;
-    border-bottom: 1px solid rgba(0,0,0,.15);
+    border: 1px solid rgba(0,0,0,.15);    
   }
   .notif-title{
     font-size: 1.2rem;
@@ -6667,16 +6684,15 @@ a > .welcome-message{
     padding-left: 15px;
   }
   .notif-item.active{
-    background: rgba(0,0,0,.1);
+    background: rgba(190, 161, 23, 0.5);
   }
-  #ispa-notif-view{
-
+  #ispa-notif-view{    
   }
   .ispa-notif-view{
     background: #fff;
-    height: calc(100% - 30px) !important; 
+    height: calc(100% - 100px) !important; 
     border-top-left-radius: 20px;
-    margin-top: 70px;  
+    margin-top: 140px;  
     border-top-right-radius: 20px;
   }
   .notif-title.main{
@@ -6724,6 +6740,9 @@ a > .welcome-message{
     height: 150px;
     width: 150px;
     border-radius: 50%;
+  }
+  .aci-edit{
+    margin-top: 10px;
   }
   .ac-name{
     font-size: 1.2rem;
@@ -6805,18 +6824,20 @@ a > .welcome-message{
     min-height: 40px !important;
     height: 40px !important;
     transition: border .25s ease;
-    border-radius: 5px !important;
+    border-radius: 0px !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(0,0,0,.15) !important;
   }
   .ed-in:focus{
-    border: 2px solid #bea117 /* rgba(69, 6, 255, 1) */ !important;
+    border-bottom: 2px solid #0d1317 /* rgba(69, 6, 255, 1) */ !important;
   }
   .update-go, .save-rpeo, .save-pass{
     height: 40px;
     width: auto;
     border-radius: 20px;
-    border: 2px solid #0d1317;
-    color: #0d1317;
-    background: rgba(0,0,0,.05) !important;
+    border: 0px solid transparent;
+    color: #fff;
+    background: #0d1317 !important;
     font-weight: 600 !important;
   }
 
@@ -6837,7 +6858,7 @@ a > .welcome-message{
     border-radius: 20px 20px 0px 0px;
     position: absolute;
     bottom: 0;
-    animation: slide_up .45s ease;
+    animation: slide_up .25s ease;
   }
   .prof-item{
     width: 100%;
@@ -6854,23 +6875,46 @@ a > .welcome-message{
   .prof-item.rem{
     color: #a51616;
   }
+  
+  .edit-prof{
+    width: 100% !important;
+    height: 100% !important;
+    display: block  !important;
+    text-align: center !important;
+    margin: 0px !important;
+    background: #fff !important;
+    font-size: 1.2rem !important;
+    color: #0d1317 !important;
+    border: none !important;
+    box-shadow: none !important;
 
+  }
   /*--prof preview--*/
   .prof-preview{
     display: none;
   }
   .preview-cont{
     height: 350px;
-    border-radius: 0px;
+    border-radius: 20px 20px 0px 0px;
   }
   .prev-body{
     height: calc(100% - 50px);
     text-align: center;
   }
   .pref-pre{
-    max-width: 100%;
-    max-height: 100%;
+    height: 200px;
+    width: 200px;
+    margin-top: 50px;    
+    border-radius: 50%;
   }
+  .save-prof{
+    border-radius: 20px;
+    background: #fff !important;
+    border: 2px solid #0d1317 !important;
+    color: #0d1317 !important;
+    font-weight: 600 !important;
+  }
+
 
   /*--dialog box--*/
   .ispa-dialog{
@@ -6927,8 +6971,8 @@ a > .welcome-message{
     background: transparent !important;
   }
   .update-cont{
-    height: calc(100% - 100px);  
-    margin-top: 100px;
+    height: calc(100% - 50px);  
+    margin-top: 50px;
     background: #fff;
     border-radius: 20px 20px 0px 0px;
     padding: 0px !important;
@@ -6938,11 +6982,15 @@ a > .welcome-message{
     height: calc(100% - 50px);
   }
   .pass-body > .modal-title{
-    color: rgba(69, 6, 255, 1);
+    color: #4506ff;
+    font-size: 1.5em !important;
   }
   .pass-content{
     width: 100%;
     padding: 6px;
+  }
+  .close-pass{
+    padding: 0px !important;
   }
 
   /*--ispa help--*/
@@ -7328,6 +7376,7 @@ a > .welcome-message{
     height: 100%;
     top: 0;
     left: 0;  
+    display: none;
     background: rgba(0,0,0,.75);
   }
   .bus-manage-cont{
@@ -7386,7 +7435,7 @@ a > .welcome-message{
 
   /*- manage-services -*/
   #manage-servs{
-    display: block;
+    display: bloc;
   }
   .add-serv{
     position: fixed;

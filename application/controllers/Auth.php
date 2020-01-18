@@ -207,52 +207,51 @@ class Auth extends CI_Controller {
     common::emitData($r);
   }
   public function save_edit(){
-    if (isset($_SESSION["user"]) && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"]) && isset($_POST["location"]) && isset($_POST["pass"])) {
-      $pass = md5(sha1($_POST["pass"]));
+    if (isset($_SESSION["user"]) && isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["phone"]) && isset($_POST["location"])) {  
+
       $user = $_SESSION["user"]->ispa_id;
       $phone = $_POST["phone"];
       $email = $_POST["email"];
       $name  = $_POST["name"];
-      $login = $this->commonDatabase->get_data("ispa_users",1,false,"ispa_id",$user,"pass",$pass);
+
+      $login = $this->commonDatabase->get_data("ispa_users",1,false,"ispa_id",$user);
       $location = $_POST["location"];      
-      if ($login) {
-        if ($location == false || $location == "false") {
-          $location = [
-            "lat" => json_decode($login[0]["location"])->lat,
-            "lng" => json_decode($login[0]["location"])->lng,
-            "title" => json_decode($login[0]["location"])->title
-          ];          
-        }
-        if (isset($location["lat"]) && isset($location["lng"]) && isset($location["title"]) && common::isKenya($location)) {        
-          $ch_phone =$this->commonDatabase->get_data("ispa_users",1,false,"phone",$phone);
-          $ch_email =$this->commonDatabase->get_data("ispa_users",1,false,"email",$email);
-          if (!$ch_phone || $ch_phone[0]["ispa_id"] == $user) {
-            if (!$ch_email || $ch_email[0]["ispa_id"] == $user) {
-              $data = [
-                  "name" => $name,
-                  "email" => $email,
-                  "phone" => $phone,
-                  "location" => json_encode($location),                  
-              ];
-              $this->commonDatabase->update("ispa_users",$data,"ispa_id",$user);
-              $r["status"] = true;
-              $r["m"] = "Updated";
-            }else{
-              $r["status"] = false;
-              $r["m"] ="The email address has already been registered with another user.";
-            }
+      if ($location == false || $location == "false" || $location == "") {
+        $location = [
+          "lat" => json_decode($login[0]["location"])->lat,
+          "lng" => json_decode($login[0]["location"])->lng,
+          "title" => json_decode($login[0]["location"])->title
+        ];          
+      }
+
+      if (isset($location["lat"]) && isset($location["lng"]) && isset($location["title"]) /*&& common::isKenya($location)*/) {    
+
+        $ch_phone =$this->commonDatabase->get_data("ispa_users",1,false,"phone",$phone);
+        $ch_email =$this->commonDatabase->get_data("ispa_users",1,false,"email",$email);
+        if (!$ch_phone || $ch_phone[0]["ispa_id"] == $user) {
+          if (!$ch_email || $ch_email[0]["ispa_id"] == $user) {
+            $data = [
+                "name" => $name,
+                "email" => $email,
+                "phone" => $phone,
+                "location" => json_encode($location),                  
+            ];
+            $this->commonDatabase->update("ispa_users",$data,"ispa_id",$user);
+            common::update_user_session($user);
+            $r["status"] = true;
+            $r["m"] = "Updated";
           }else{
             $r["status"] = false;
-            $r["m"] = "The phone number has already been registered with another user.";
-          }        
+            $r["m"] ="The email address has already been registered with another user.";
+          }
         }else{
           $r["status"] = false;
-          $r["m"] = "Invalid location entered";
-        } 
+          $r["m"] = "The phone number has already been registered with another user.";
+        }        
       }else{
         $r["status"] = false;
-        $r["m"] = "Invalid password.";
-      }     
+        $r["m"] = "Invalid location entered";
+      }      
     }else{
       $r['status'] = false;
       $r['m'] = "Invalid access.";

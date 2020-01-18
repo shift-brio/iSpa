@@ -24,7 +24,7 @@
 					<label class="ispa-label">Password</small></label>
 					<input placeholder="Password"  type="password" class="ispa-in browser-default sign-pass">
 				</div>
-				<div class="ispa-group">
+				<div class="ispa-group hidden">
 					<label class="ispa-label">My location</small></label>
 					<div  type="password" class="ispa-in ispa-loc browser-default">
 						<div data-for="sign" class="location-picked">Click to pick a location</div>

@@ -21,7 +21,8 @@ class Home extends CI_Controller {
 		//common::update_user_session("e28e4aa330278e84680778081028e3bb");		
 		unset($_SESSION["business"]);
 		unset($_SESSION["business_name"]);	
-		if (isset($_SESSION["user"])) {	
+		if (isset($_SESSION["user"])) {
+			common::update_user_session($_SESSION["user"]->ispa_id);	
 			$data['title'] = "iSpa";						
 			$data['page'] = "home";		
 			$data['data'] = json_decode(json_encode($data));	
@@ -159,12 +160,32 @@ class Home extends CI_Controller {
 			}else{
 				$user = $_SESSION["user"]->ispa_id;
 			}
-			$ch_item = $this->commonDatabase->get_data("ispa_notifications",1,false,"id",$_POST["item"],"status",0,"user",$user);
+			$ch_item = $this->commonDatabase->get_data("ispa_notifications",1,false,"id",$_POST["item"],"user",$user);
 			if ($ch_item) {
 				$data = ["status"=>1];
 				$this->commonDatabase->update("ispa_notifications",$data,"id",$_POST["item"]);
+
+				$ch_items = $this->commonDatabase->get_data("ispa_notifications",1,false,"status",0,"user",$user);
+
+				$r["status"] = true;
+				$r["m"] = [
+					"pending" => $ch_items ? true: false,
+					"item" => [
+						"title" => $ch_item[0]["title"],
+						"date" => date("d-m-Y", $ch_item[0]["date_added"]),
+						"content" => $ch_item[0]["content"]
+					]
+				];
+
+			}else{
+				$r['status'] = false;
+				$r['m'] = "Notification could not be found.";
 			}
+		}else{
+			$r['status'] = false;
+			$r['m'] = "Invalid access.";
 		}
+		common::emitData($r);
 	}
 	public function get_chat(){
 		if (isset($_SESSION["user"]) && isset($_POST["item"])) {

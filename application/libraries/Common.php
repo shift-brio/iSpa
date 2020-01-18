@@ -196,6 +196,38 @@
   		';
   	}
   	return $item;
+  }  
+  static function renderNotif($notification = false){
+  	if($notification){
+  		if ($notification["status"] == 1) {
+			$class = "";
+		}else{
+			$class = "active";
+		}
+		echo '
+			<div class="notif-item click-btn '.$class.'" data-item="'.$notification["id"].'">
+				<div class="notif-title">
+					'.(mb_substr($notification["title"], 0,100)).'
+				</div>
+				<div class="notif-date">
+					'.(date("d-m-Y",$notification["date_added"])).'
+				</div>
+				<div class="notif-body">
+					'.(mb_substr($notification["content"], 0, 150)).'
+				</div>
+			</div>			
+		';
+  	}
+  	return false;
+  }
+  static function pendingNotif(){
+  	$CI = &get_instance();
+  	if (isset($_SESSION["user"])) {
+  		$ch_items = $CI ->commonDatabase->get_data("ispa_notifications",1,false,"status",0,"user",$_SESSION["user"]->ispa_id);
+
+  		return $ch_items ? true : false;
+  	}
+  	return false;
   }
   static function renderMessage($message = "", $cur_user = false){
   	$CI = &get_instance();
@@ -1016,7 +1048,7 @@
 			$CI = &get_instance();
 			$time = time();
 			$class = "";
-			$cancel = "";
+			$cancel = "";			
 			$c_btn = '<button data-tooltip="Cancel appointment" data-position="left" class="appointment-tool rem-appointment tooltipped  click-btn">
 								<i class="material-icons">delete</i>
 							</button>';

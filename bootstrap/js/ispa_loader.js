@@ -7,10 +7,10 @@ generic_inits = function(){
 }
 drop_down = function(){
 	$('.dropdown-trigger').dropdown(
-		{
-			inDuration: 0,
-      outDuration: 200,
-		}
+	{
+		inDuration: 0,
+		outDuration: 200,
+	}
 	);
 }
 tool_tip = function(){	
@@ -63,7 +63,7 @@ alert = function(text){
 }	
 isMobile = function(){
 	if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 
-    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) 
+		|| /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) 
 	{
 		return true;
 	}
@@ -118,18 +118,12 @@ get_menu = function(item = false, type = "client", callback = false){
 					$(".app-content").html(response.m);
 					if(item === "home"){
 						home_tab();
-					}else if (item == "notifications") {
-						ispa_notifs();
-						$('.n-indic').html("");
-					}else if(item == "chats"){
-						ispa_chats();
-						if (callback) {
-							get_chat(callback);
-							chat_interval =  setInterval(get_chat,3000);
-						}						
-						$('.chat-notif').html("");
-					}else if(item == "wallet"){
-						ispa_wallet();
+					}else if (item === "notifications") {
+						notif();						
+					}else if(item === "account"){
+						acct();
+					}else if(item === "history"){
+						apts();
 					}
 					/*ispa_help();
 					ispa_home();
@@ -284,12 +278,24 @@ search_help = function(key = false){
 		})
 	}
 }
-read_notif =  function(item  = false){
+read_notif =  function(item  = false, c = false){
 	if (item) {
+		loading(true);
 		$.ajax({
 			url:base_url+"read_notif",
 			type:"POST",
-			data:{item:item}
+			data:{item:item},
+			complete: function(){
+				loading(false);
+			},
+			success: function(res){
+				if (c) {
+					c(res);
+				}
+			},
+			error: function(){
+				internet_error();
+			}
 		})
 	}
 }
@@ -675,19 +681,20 @@ send_invite = function(email = false){
 }
 change_pass = function(data = false){
 	if (data) {
-		$(".edit-load").show();
+		loading(true);
 		$.ajax({
 			url:base_url+"change_pass",
 			type:"POST",
 			data:data,
 			complete:function(){
-				$(".edit-load").hide();
+				loading(false);
 			},
 			success:function(response){
 				if (response.status) {
-					$(".edit-curr-pass").val("");
-					$(".edit-new-pass").val("");
-					$(".pass-change").hide();
+					$(".curr-pass").val("");
+					$(".new-pass").val("");
+					$(".update-pass").hide();
+
 					notify("Password changed succesfully.");
 				}else{
 					alert(response.m,5000,"error");
@@ -701,25 +708,23 @@ change_pass = function(data = false){
 }
 save_prof = function(data = false){
 	if (data) {
-		$(".edit-load").show();
-		$(".appoint-loader").show();
+		loading(true);
 		$.ajax({
 			url:base_url+"save_prof",
 			type:"POST",
 			data:data,
 			contentType: false,       
-      cache: false,             
-      processData:false,
+			cache: false,             
+			processData:false,
 			complete:function(){
-				$(".edit-load").hide();
-				$(".appoint-loader").hide();
+				loading(false);
 			},
 			success:function(response){
 				if (response.status) {
-					$("input.prof-change").val("");
-					$("img.edit-prof").attr("src",response.m.src);
-					$("span.edit-tool").html("camera");
-					$("span.edit-tool").attr("data-tooltip","Change profile image");					
+					$(".prof-preview").hide();
+					$(".prof-options").hide();
+					$("#edit-prof").val("");
+					$(".account-image").attr("src",response.m.src);								
 				}else{
 					alert(response.m,5000,"error");
 				}
@@ -731,19 +736,17 @@ save_prof = function(data = false){
 	}
 }
 del_prof = function(){
-	$(".edit-load").show();
+	loading(true);
 	$.ajax({
 		url:base_url+"del_prof",
 		type:"POST",			
 		complete:function(){
-			$(".edit-load").hide();
+			loading(false);
 		},
 		success:function(response){
-			if (response.status) {
-				$("input.prof-change").val("");
-				$("img.edit-prof").attr("src",response.m.src);
-				$("span.edit-tool").html("camera");
-				$("span.edit-tool").attr("data-tooltip","Change profile image");					
+			if (response.status) {				
+				$("img.account-image").attr("src",response.m.src);
+				$(".prof-options").hide();							
 			}else{
 				alert(response.m,5000,"error");
 			}
@@ -755,19 +758,20 @@ del_prof = function(){
 }
 save_edit = function(data){
 	if (data) {
-		$(".edit-load").show();
+		loading(true);
 		$.ajax({
 			url:base_url+"save_edit",
 			type:"POST",
 			data:data,			
 			complete:function(){
-				$(".edit-load").hide();
+				loading(false);
 			},
 			success:function(response){
 				if (response.status) {
-					location.reload();					
+					//location.reload();					
+
 				}else{
-					alert(response.m,5000,"error");
+					alert(response.m, 5000,"error");
 				}
 			},
 			error:function(){
@@ -779,7 +783,7 @@ save_edit = function(data){
 lookup_service = function(key = false){
 	if (key) {
 		loading(true);
-	  $(".new-shop-services-items").html('<div class="flow-text center grey-text">Add services that your shop offer</div>');		
+		$(".new-shop-services-items").html('<div class="flow-text center grey-text">Add services that your shop offer</div>');		
 		$.ajax({
 			url:base_url+"service_lookup",
 			type:"POST",
@@ -789,9 +793,9 @@ lookup_service = function(key = false){
 			},
 			success:function(response){
 				if (response.status) {
-						$(".filled-items").html(response.m);
-						$(".type-filler").show();
-						fill_type();
+					$(".filled-items").html(response.m);
+					$(".type-filler").show();
+					fill_type();
 				}else{
 					$(".filled-items").html("");
 					$(".type-filler").hide();
@@ -812,8 +816,8 @@ pre_services = function(id = false){
 			},
 			success:function(response){
 				if (response.status) {
-						$(".new-shop-services-items").html(response.m);						
-						book_sel();						
+					$(".new-shop-services-items").html(response.m);						
+					book_sel();						
 				}
 			}			
 		})
@@ -856,6 +860,8 @@ get_appointment = function(item = false){
 							$(".appt-bar").attr("class","app-bar appt-bar d-can");
 						}
 					}else{
+						$(".book-note").hide();
+						$(".pay-btn").hide();
 						$(".date-sel").removeClass("editable");
 						if (response.m.status == 1) {
 							$(".appt-bar").attr("class","app-bar appt-bar d-done");
@@ -1113,10 +1119,10 @@ checkout_get = function(item = false){
 			},
 			success:function(response){
 				if (response.status) {
-						$(".checkout-total").val(response.m.total);					
-						$(".ispa-checkout").show();
-						$(".ispa-checkout").attr("data-appointment",item);
-						$(".pay-name").html(response.m.pay_method);		
+					$(".checkout-total").val(response.m.total);					
+					$(".ispa-checkout").show();
+					$(".ispa-checkout").attr("data-appointment",item);
+					$(".pay-name").html(response.m.pay_method);		
 				}else{
 					notify(response.m,3000,"error");
 				}
@@ -1139,12 +1145,12 @@ checkout = function(item = false, discount = 0){
 			},
 			success:function(response){
 				if (response.status) {
-						$(".ispa-checkout").attr("data-appointment","");	
-						$(".checkout-total").val("");					
-						$(".ispa-checkout").hide();						
-						$(".pay-name").html("");
-						$(".bus-appointment").hide();
-						notify("Appointment complete",2000);
+					$(".ispa-checkout").attr("data-appointment","");	
+					$(".checkout-total").val("");					
+					$(".ispa-checkout").hide();						
+					$(".pay-name").html("");
+					$(".bus-appointment").hide();
+					notify("Appointment complete",2000);
 				}else{
 					notify(response.m,3000,"error");
 				}
@@ -1167,7 +1173,7 @@ subscribe = function(sub = false){
 			},
 			success:function(response){
 				if (response.status) {
-						location.reload();
+					location.reload();
 				}else{
 					notify(response.m,3000,"error");
 				}
@@ -1357,7 +1363,7 @@ get_showcase = function(bus  = false){
 	}
 }
 add_sh = function(data = false){
-  if (data) {
+	if (data) {
 		$(".appoint-loader").show();
 		loading(true);
 		$.ajax({
@@ -1365,8 +1371,8 @@ add_sh = function(data = false){
 			type:"POST",
 			data:data,
 			contentType: false,       
-      cache: false,             
-      processData:false,
+			cache: false,             
+			processData:false,
 			complete:function(){
 				$(".appoint-loader").hide();
 				loading(false);
@@ -1392,7 +1398,7 @@ add_sh = function(data = false){
 	}   
 }
 del_showcase = function(item = false){
-  if (item) {
+	if (item) {
 
 		$(".appoint-loader").show();
 		loading(true);

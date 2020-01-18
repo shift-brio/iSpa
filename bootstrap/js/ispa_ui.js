@@ -1052,20 +1052,7 @@ account_settings = function(){
 	})
 	$(".ac-tools").click(function(){
 		$(".user-settings").show();
-	})
-	$(".change-go").click(function(){
-		var curr = $(".edit-curr-pass").val();
-		var new_pass = $(".edit-new-pass").val();
-		if (curr != "") {
-			if (get_length(new_pass) >= 3) {
-				change_pass({curr:curr,new_pass:new_pass});
-			}else{
-				notify("Enter a valid new password, atleast 3 characters",2000);
-			}
-		}else{
-			notify("Enter your current passord.");
-		}
-	})
+	})	
 	$("input.prof-change").on("change",function(){		
 		if ($(this).val() != "") {
 			$("span.edit-tool").html("done");
@@ -1080,20 +1067,7 @@ account_settings = function(){
 			$("span.edit-tool").attr("data-tooltip","Change profile image");
 		}
 		tool_tip();
-	})
-	$("span.edit-tool").click(function(e){
-		if ($(this).html() == "done") {
-			e.preventDefault();
-			var data = new FormData();
-			inp = $("input.prof-change");
-			if (inp.val()!='') {	    	
-				jQuery.each(jQuery(inp)[0].files, function(i, file) {
-					data.append('file-'+i, file);
-				});
-				save_prof(data);
-			};	    
-		}
-	})
+	})	
 	$(".del-prof").click(function(){
 		if ($(this).html() == "delete") {
 			if (confirm("Remove profile image?")) {
@@ -1113,56 +1087,12 @@ account_settings = function(){
 		if ($(this).val() == "") {
 			$(this).attr("src",$(this).attr("data-prof"));
 		}
-	})
-	$(".edit-go").click(function(){
-		var name = $(".edit-name").val();
-		var email = $(".edit-email").val();
-		var phone = $(".edit-phone").val();
-		var location = get_selected();
-		var pass = $(".edit-prof-pass").val();
-
-		if (get_length(name) >= 2) {
-			if (validateInput(email,"email")) {
-				if (phone == "" || validateInput(phone,"phone")) {
-					if (pass != "") {
-						var data = {
-							name: name,
-							email: email,
-							phone: phone,
-							location: location,
-							pass: pass
-						};
-						save_edit(data);
-					}else{
-						notify("Kindly enter your password before you can save your details.");
-					}
-				}else{
-					notify("Enter a valid phone number");
-				}
-			}else{
-				notify("Enter a valid email");
-			}
-		}else{
-			notify("Enter a valid name");
-		}
-	})
+	})	
 	$(".user-settings").click(function(e){
 		if ($(e.target).is(".user-settings")) {
 			$(this).hide();
 		}
 	})
-}
-function read_prof(input  = false){ 	
-	var t = ".edit-prof";
-	if (FileReader && input && input.files[0]) {
-		var file = new FileReader();	     	
-		file.onload = function () {	    	
-			$(t).attr("src",file.result);
-		}
-		file.readAsDataURL(input.files[0]);
-	}else{
-		$(this).attr("src",$(this).attr("data-prof"));
-	}
 }
 ispa_appointment = function(){
 	$(".ispa-appointments-item").each(function(){
@@ -1733,7 +1663,8 @@ let home_tab = ()=>{
 	$(".search_dummy").click(() =>{
 		$(".search-area").show();
 		$(".search_dummy").blur();
-		$(".search-input").click();
+		$(".search-input").focus();
+		$(".search-input").select();
 	})
 	$(".search-tools").click(() =>{
 		$(".search-area").hide();
@@ -1831,7 +1762,9 @@ let apt_funcs = function(){
 		}
 	})
 	$(".staff-sel").on("change",() =>{
-		$(".date-sel").html("");
+		if ($("#ispa-appt").attr("data-editing") == "") {
+			$(".date-sel").html("");
+		}
 	})
 	$("#appt-go").click(function(){				
 		make_appointment();
@@ -1862,6 +1795,8 @@ let clear_appt = function(){
 	$(".appt-bar").attr("class","app-bar appt-bar");
 	$(".date-sel::after").attr("content", "Click to change date");
 	$(".date-sel").addClass("editable");
+	$(".book-note").show();
+	$(".pay-btn").show();
 }
 calendar = function(){
 	init_calendar = function(bus = false, month = false, year = false){
@@ -1986,14 +1921,15 @@ bus_book = function(){
 	$(".stat-amount").html("Ksh. "+total);
 	return pre_services;
 }	
-
+let active_menu = "home";
 class system {
 	constructor(){
 		this.menuManager();
 		$(".menu-more").click(function(e){
 			if ($(e.target).is(".menu-more")) {
 				$(".menu-more").hide();
-				$(".nav-tab#home").click();
+				$(`.nav-tab#more`).removeClass("active");
+				$(`.nav-tab#${active_menu}`).addClass("active");
 			}
 		})
 	}	
@@ -2014,18 +1950,215 @@ class system {
 					obj.addClass("active");
 				}
 				if (id != "more") {
+					active_menu = id;
 					get_menu(id,"client");
 				}else{
 					$(".menu-more").show();
 				}				
 			})
-		})	
+		})
+		menu_more();		
 	}
 }
 
+let acct = function(){
+	$(".settings").click(function(){
+		$(".setting-cont").show();
+	})
+	$(".setting-cont").click(function(e){
+		if ($(e.target).is(".setting-cont")) {
+			$(".setting-cont").hide();
+		}
+	})
+	$(".setting-item").each(function(){
+		$(this).click(function(){
+			$(".setting-cont").hide();
+			var id = $(this).attr("id");
+			if (id === "edit") {
+				$("#edit-details").show();
+			}else if(id === "pass"){
+				$(".update-pass").show();
+			}
+		})
+	})
+
+	/* edit profile */
+	$(".edit-cam").click(function(){
+		$(".prof-options").show();
+	})
+	$(".prof-options, .prof-item.back").click(function(e){
+		if ($(e.target).is(".prof-options, .back")) {
+			$(".prof-options").hide();
+		}
+	})
+	$(".close-prev, .prof-preview").click(function(e){
+		if ($(e.target).is(".prof-preview, .close-prev")) {
+			$(".prof-preview").hide();
+			$(".pref-pre").attr("src", "");
+		}
+	})
+	$(".prof-item.rem").click(function(){
+		prompt(true,"Remove your profile picture?", (res = false) =>{
+			if (res) {
+				del_prof();
+			}else{
+				prompt(false);
+			}
+		}, 
+		{n: "Cancel", p: "Remove"});
+	})
+	$(".save-prof").click(function(){
+		if ($("#edit-prof").val() != "") {
+			var data = new FormData();
+			inp = $("input#edit-prof");
+			if (inp.val()!='') {	    	
+				jQuery.each(jQuery(inp)[0].files, function(i, file) {
+					data.append('file-'+i, file);
+				});
+				save_prof(data);
+			};	 
+		}
+	})
+	$(".close-edit").click(function(){
+		$("#edit-details").hide();
+	})
+	$(".update-go").click(function(){
+		var name = $(".edit-name").html();
+		var email = $(".edit-email").html();
+		var phone = $(".edit-phone").html();
+		/*var location = get_selected();*/		
+
+		if (get_length(name) >= 2) {
+			if (validateInput(email,"email")) {
+				if (phone == "" || validateInput(phone,"phone")) {
+					if (pass != "") {
+						var data = {
+							name: name,
+							email: email,
+							phone: phone,
+							location: false,							
+						};
+						save_edit(data);
+					}else{
+						notify("Kindly enter your password before you can save your details.");
+					}
+				}else{
+					notify("Enter a valid phone number");
+				}
+			}else{
+				notify("Enter a valid email");
+			}
+		}else{
+			notify("Enter a valid name");
+		}
+	})
+
+	/* change pass */
+	$(".close-pass").click(function(){
+		$(".update-pass").hide();
+	})
+	$(".save-pass").click(function(){
+		var curr = $(".curr-pass").val();
+		var new_pass = $(".new-pass").val();
+		if (curr != "") {
+			if (get_length(new_pass) >= 3) {
+				change_pass({curr:curr,new_pass:new_pass});
+			}else{
+				notify("Enter a valid new password, at least 3 characters long",2000);
+			}
+		}else{
+			notify("Enter your current passord.");
+		}
+	})
+}
+let notif = () =>{
+	$(".notif-item").each(function(){
+		$(this).click(function(){
+			var item = $(this).attr("data-item");
+			if (item) {
+				read_notif(item, (res = false) =>{
+					if (res) {
+						$("#ispa-notif-view").show();
+						$(".notif-title").html(res.m.item.title);
+						$(".notif-date").html(res.m.item.date);
+						$(".notif-body").html(res.m.item.content);
+						$(`.notif-item[data-item="${item}"]`).removeClass("active");
+						notif_indic(res.m.pending);
+					}
+				});
+			}
+		})
+	})
+	$(".close-n").click(function(){
+		$("#ispa-notif-view").hide();
+		$(".notif-title.main").html("");
+		$(".notif-date.main").html("");
+		$(".notif-body.main").html("");
+	})
+}
+let notif_indic = function(state){
+	if (state) {
+		$(".nav-tab#notifications").prepend('<label class="tab-badge"></label>');
+	}else{
+		$(".nav-tab#notifications > label").remove();
+	}
+}
+let prompt = (open = false, message = "", c = false, cfg = {n: "Cancel", p:"Ok"}) =>{
+	$(".dialog-tool.negative, .dialog-tool.positive").unbind();
+	$(".dialog-body").html("");
+	$(".dialog-tool.negative").html(cfg.n);
+	$(".dialog-tool.positive").html(cfg.p);
+	
+	if (open) {
+		if (message != "" && c) {
+			$(".ispa-dialog").show();			
+			$(".dialog-body").html(message);
+
+			$(".dialog-tool.negative").click(function(){
+				c(false);
+				prompt(false);
+			})
+			$(".dialog-tool.positive").click(function(){
+				c(true);
+				prompt(false);
+			})
+		}
+	}else{
+		$(".ispa-dialog").hide();
+	}	
+}
+let menu_more = function(){
+	$(".more-item").each(function(){
+		$(this).click(function(){
+			var item = $(this).attr("id");
+			if (item === "logout") {
+				location.href = base_url+"logout";
+			}else if(item === "business"){
+				location.href = base_url+"business";
+			}else if(item === "help"){
+
+			}else if(item === "about"){
+
+			}
+		})
+	})
+}
+function read_prof(input = false){ 	
+	var t = ".pref-pre";
+	if (FileReader && input && input.files[0]) {
+		var file = new FileReader();	     	
+		file.onload = function () {	    	
+			$(t).attr("src",file.result);
+			$(".prof-preview").show();
+		}
+		file.readAsDataURL(input.files[0]);
+	}else{
+		$(this).attr("src",$(this).attr("data-prof"));
+	}
+}
 $(document).ready(() =>{
 	home_tab();
-	new system().menuManager();
-	calendar();
-	apt_funcs();
+	new system();
+	calendar();	
+	apt_funcs();	
 })

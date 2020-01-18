@@ -17,24 +17,7 @@
 					$nots = $this->commonDatabase->get_cond("ispa_notifications","user='$user' order by id DESC");				
 					if ($nots) {
 						foreach ($nots as $notification) {
-							if ($notification["status"] == 1) {
-								$class = "";
-							}else{
-								$class = "active";
-							}
-							echo '
-								<div class="notif-item click-btn">
-									<div class="notif-title">
-										'.(mb_substr($notification["title"], 0,20)).'
-									</div>
-									<div class="notif-date">
-										'.(date("d-m-Y",$notification["date_added"])).'
-									</div>
-									<div class="notif-body">
-										'.(mb_substr($notification["content"], 0, 150)).'
-									</div>
-								</div>
-							';							
+							common::renderNotif($notification);						
 						}
 					}else{
 						echo '<div class="flow-text center">No notifications yet</div>';

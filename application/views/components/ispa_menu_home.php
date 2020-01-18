@@ -15,6 +15,8 @@
 					foreach ($favs as $fav) {						
 						echo common::renderExplore(["shop" => $fav["shop"]]);
 					}
+				}else{
+					echo "<div class='flow-text center no-fav'>Your favorite shops will be displayed here</div>";
 				}
 			 ?>		
 		</div>
@@ -43,7 +45,7 @@
 		</div>
 		<div class="ispa-bs-body">
 			<div class="shop-images">
-				<div class="image-date"><?php echo date("jS F Y");?></div>
+				<div class="image-date"></div>
 				<div class="image-slider main">		
 					<div class="slider-img">
 						<img class="sl" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
@@ -97,7 +99,7 @@
 	<div class="image-date"></div>
 	<div class="image-slider">		
 		<div class="slider-img">
-			<img class="sl" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
+			<img class="sl main" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
 		</div>
 		<div class="slider-control">
 			<button class="click-btn sh-tool prev left">

@@ -1,12 +1,14 @@
 {
 	"short_name": "iSpa",
 	"name": "iSpa",
+	"start_url": "/",
 	"icons": [
 		{
-			"src": "logo.png",
+			"src": "uploads/logo/ispa.png",
 			"type": "image/png"
 		}
 	],
 	"display": "standalone",
-	"orientation": "portrait"
+	"orientation": "portrait",
+	"theme_color": "#4506ff"
 }

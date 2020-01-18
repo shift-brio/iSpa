@@ -32,7 +32,7 @@
 			</div>
 			<div class="appointment-bottom">
 				<button class="walk-in click-btn">
-					New client
+					New sale
 					<i class="material-icons right">add_circle_outline</i>
 				</button>
 			</div>

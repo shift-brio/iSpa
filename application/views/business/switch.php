@@ -1,6 +1,6 @@
 <div class="switch-head">
 	<a href="<?php echo base_url(); ?>" class="portal-back click-btn">
-		<i class="material-icons">chevron_left</i>
+		<i class="material-icons">arrow_back</i>
 	</a>
 	BUSINESS PORTAL 
 	<div>Select account to manage</div>
@@ -30,7 +30,7 @@
 						</a>';
 				}								
 			}
-			if (sizeof($staff) > 0) {
+			if (is_array($staff) && sizeof($staff) > 0) {
 				foreach($staff as $st) {
 					if (!in_array($st["business"], $st_list)) {
 						$url = base_url("business/open/".$st["business"]);

@@ -1,3 +1,6 @@
+<?php 
+	$user = $_SESSION["user"];
+ ?>
 <div class="ispa-account">
 	<div class="ac-top">
 		<button class="click-btn right settings">
@@ -5,10 +8,10 @@
 		</button>
 	</div>
 	<div class="user-img">
-		<img class="account-image" src="<?php echo base_url("uploads/profiles/profile.svg"); ?>">
+		<img class="account-image" src="<?php echo base_url("uploads/profiles/".$user->profile); ?>">
 	</div>
 	<div class="ac-name">
-		Brian Ochieng Oriwo
+		<?php echo $user->name; ?>
 	</div>
 	<div class="ac-title">
 		Account details
@@ -18,7 +21,7 @@
 			Email			
 		</label>
 		<div class="input-content">
-			briochieng97@gmail.com			
+			<?php echo $user->email; ?>			
 		</div>
 	</div>
 	<div class="appt-in">
@@ -26,10 +29,10 @@
 			Phone number			
 		</label>
 		<div class="input-content">
-			+254718457135	
+			<?php echo $user->phone; ?>	
 		</div>
 	</div>
-	<div class="appt-in">
+	<div class="appt-in hidden">
 		<label class="input-label">
 			Location		
 		</label>
@@ -42,11 +45,11 @@
 <!-- settings list -->
 <div class="setting-cont">
 	<div class="setting-list">
-		<button class="click-btn setting-item">
+		<button id="edit" class="click-btn setting-item">
 			<i class="material-icons left">edit</i>
 			Edit account details
 		</button>
-		<button class="click-btn setting-item">
+		<button  id="pass" class="click-btn setting-item">
 			<i class="material-icons left">security</i>
 			Change password
 		</button>
@@ -60,7 +63,7 @@
 			Edit account details
 		</div>	
 		<div class="user-img">
-			<img class="account-image" src="<?php echo base_url("uploads/profiles/a245030c161807079ffdff4a780663f3.jpg"); ?>">
+			<img class="account-image aci-edit" src="<?php echo base_url("uploads/profiles/".$user->profile); ?>">
 			<div>
 				<button class="click-btn edit-cam">
 					<i class="material-icons">camera_alt</i>
@@ -70,24 +73,24 @@
 		<div class="edit-d">
 			<div class="appt-in">
 				<label class="input-label">Name</label>
-				<div contenteditable="true" class="input-content ed-in edit-name">Brian Ochieng Oriwo</div>
+				<div contenteditable="true" class="input-content ispa-in ed-in edit-name"><?php echo $user->name; ?></div>
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Email</label>
-				<div contenteditable="true" class="input-content ed-in edit-email">briochieng97@gmail.com</div>
+				<div contenteditable="true" class="input-content ed-in edit-email"><?php echo $user->email; ?></div>
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Phone number</label>
-				<div contenteditable="true" class="input-content ed-in edit-phone">+254718457135</div>
+				<div contenteditable="true" class="input-content ed-in edit-phone"><?php echo $user->phone; ?></div>
 			</div>
-			<div class="appt-in">
+			<div class="appt-in hidden">
 				<label class="input-label">Location</label>
 				<div contenteditable="true" class="input-content ed-in edit-loc">Not set</div>
 			</div>
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close close-edit">
 			<i class="material-icons">arrow_back</i>
 		</button>	
 		<button class="modal-tool update-go right click-btn">
@@ -100,26 +103,32 @@
 <!-- prof pop up -->
 <div class="prof-options">
 	<div class="prof-list">
-		<button class="click-btn prof-item">
-			Change profile image
+		<button class="click-btn prof-item change">
+			<label for="edit-prof" class="edit-prof">
+				Change profile picture
+			</label>
 		</button>
 		<button class="click-btn prof-item rem">
-			Remove profile image
+			Remove profile picture
 		</button>
-		<button class="click-btn prof-item">
+		<button class="click-btn prof-item back">
 			Back
 		</button>
 	</div>
 </div>
+<input type="file" onchange="read_prof(this)" name="edit-prof" id="edit-prof" accept="image/*" class="hidden">
+
 
 <!-- profile preview -->
 <div class="prof-preview">
 	<div class="preview-cont">
 		<div class="prev-body">
-			<img class="pref-pre" src="<?php echo base_url("uploads/profiles/2be29249f1d69423fe20d37ae89d0d79.png"); ?>">
+			<label for="edit-prof">
+				<img class="pref-pre" src="">
+			</label>
 		</div>
 		<div class="modal-tools">
-			<button class="modal-tool left click-btn close">
+			<button class="modal-tool left click-btn close close-prev">
 				<i class="material-icons">arrow_back</i>
 			</button>	
 			<button class="modal-tool save-prof right click-btn">				
@@ -153,8 +162,8 @@
 			</div>
 		</div>
 		<div class="modal-tools">
-			<button class="modal-tool left click-btn close">
-				Cancel
+			<button class="modal-tool left click-btn close close-pass">
+				<i class="material-icons">arrow_back</i>
 			</button>	
 			<button class="modal-tool save-pass right click-btn">				
 				Save password

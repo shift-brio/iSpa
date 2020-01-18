@@ -3,16 +3,18 @@
 		<?php $this->load->view("components/ispa_menu_home"); ?>
 	</div>
 	<nav class="bottom-nav">
-		<button id="home" class="nav-tab click-btn">
+		<button id="home" class="nav-tab click-btn active">
 			<i class="material-icons tab-icon">home</i>
 			<span class="tab-name">Home</span>				
 		</button>
-		<button id="history" class="nav-tab click-btn active">
+		<button id="history" class="nav-tab click-btn">
 			<i class="material-icons tab-icon">history</i>
 			<span class="tab-name">Bookings</span>				
 		</button>
 		<button id="notifications" class="nav-tab click-btn">
-			<label class="tab-badge"></label>
+			<?php 
+				echo common::pendingNotif() ? '<label class="tab-badge"></label>': ""; 
+			 ?>			
 			<i class="material-icons tab-icon">notifications</i>
 			<span class="tab-name">Alerts</span>
 		</button>
@@ -50,9 +52,7 @@
 <!-- dialog box -->
 <div class="ispa-dialog">
 	<div class="dialog-cont">
-		<div class="dialog-body">
-			Remove your profile image?
-		</div>
+		<div class="dialog-body"></div>
 		<div class="dialog-tools">
 			<button class="click-btn dialog-tool negative">
 				Cancel

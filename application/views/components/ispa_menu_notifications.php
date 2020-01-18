@@ -1,42 +1,39 @@
 <div class="ispa-notifs">
-	<div class="notif-item click-btn">
-		<div class="notif-title">
-			Appointment confirmation
-		</div>
-		<div class="notif-date">
-			<?php echo date("jS F Y"); ?>
-		</div>
-		<div class="notif-body">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-		</div>
-	</div>
-	<div class="notif-item click-btn active">
-		<div class="notif-title">
-			Appointment confirmation
-		</div>
-		<div class="notif-date">
-			<?php echo date("jS F Y"); ?>
-		</div>
-		<div class="notif-body">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-		</div>
-	</div>
+	<?php
+		if (isset($_SESSION["user"])) {
+		 	if (isset($_SESSION["business"])) {
+		 		$user = $_SESSION["business"];
+		 	}else{
+		 		$user = $_SESSION["user"]->ispa_id;
+		 	}
+		}else{
+			$user = "0";
+		} 				
+		$nots = $this->commonDatabase->get_cond("ispa_notifications","user='$user' order by id DESC");				
+		if ($nots) {
+			foreach ($nots as $notification) {
+				common::renderNotif($notification);
+			}
+		}else{
+			echo '<div class="flow-text center no-fav">You have no notifications yet</div>';
+		}
+	 ?>
 </div>
 
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "ispa-notif-view"], true); ?>	
 	<div class="modal-body">		
 		<div class="notif-title main">
-			Appointment confirmation
+						
 		</div>
 		<div class="notif-date main">
-			<?php echo date("jS F Y"); ?>
+			
 		</div>
 		<div class="notif-body main">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+			
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool close-n left click-btn close">
 			<i class="material-icons">arrow_back</i>
 		</button>		
 	</div>	
