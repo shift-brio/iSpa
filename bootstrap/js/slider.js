@@ -41,15 +41,15 @@ class Slider {
 
 let lst = [
 	{
-		title: "First title",
-		img: `${base_url}uploads/onboarding/payment.svg`
-	},
-	{
-		title: "Second title",
+		title: "Schedule appointments with your favorite shop ahead of time to avoid queues",
 		img: `${base_url}uploads/onboarding/schedule.svg`
 	},
 	{
-		title: "Third title",
+		title: "Make payments for appointments prior to the appointment",
+		img: `${base_url}uploads/onboarding/payment.svg`
+	},
+	{
+		title: "Manage your shop staff and monitor their performance",
 		img: `${base_url}uploads/onboarding/teams.svg`
 	}
 ]; 

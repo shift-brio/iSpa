@@ -5817,7 +5817,7 @@ a > .welcome-message{
   display: block;
   border-bottom-right-radius: 20px;
   border-top-left-radius: 20px;
-  animation: slide_left .45s ease-out;
+  animation: slide_left .35s ease;
 }
 .more-item{
   height: 40px;

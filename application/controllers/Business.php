@@ -17,14 +17,14 @@ class Business extends CI_Controller {
 			$data['title'] = "iSpa - Business Portal";
 			$data['page'] = "home";		
 			$data['data'] = json_decode(json_encode($data));	
-			$this->load->view("templates/base_header",$data);
+			$this->load->view("templates/bus_base",$data);
 			$this->load->view("business",$data);			
 		}else{
 			if (isset($_SESSION["user"])) {
 				$data['title'] = "iSpa - Business Portal";
 				$data['page'] = "home";		
 				$data['data'] = json_decode(json_encode($data));	
-				$this->load->view("templates/base_header",$data);
+				$this->load->view("templates/bus_base",$data);
 				$this->load->view("business/switch",$data);
 			}else{
 				redirect(base_url());
@@ -244,7 +244,7 @@ class Business extends CI_Controller {
       $r['status'] = false;
       $r["m"] = "Invalid access";
     }
-    common::emitData($r);
+   	 common::emitData($r);
 	}	
 	public function get_calendar(){
 		if (isset($_SESSION["user"]) && isset($_POST["dur"]) && $_POST["dur"] >= 0 && isset($_POST["business"]) && isset($_POST["month"]) && isset($_POST["year"])) {

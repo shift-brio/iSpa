@@ -1,7 +1,7 @@
 <div class="home-page">
 	<div class="home-content">
 		<div class="home-top">
-			<input placeholder="Find shops" class="click-btn search_dummy" type="text" />
+			<input placeholder="Find shop" class="click-btn search_dummy" type="text" />
 			<div class="home-header upcoming-t">Upcoming appointment</div>
 			<div class="upc-conr">
 				<?php $this->load->view("components/next_appointment"); ?>
@@ -118,7 +118,7 @@
 <div class="app-cover search-area">
 	<div class="search-cont">
 		<div class="search-top">
-			<input type="text" placeholder="Find shops" class="search-input"/>
+			<input type="text" placeholder="Find shop" class="search-input"/>
 			<button class="search-go click-btn right">
 				<i class="material-icons">arrow_forward</i>
 			</button>
