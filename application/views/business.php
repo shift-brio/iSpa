@@ -4,7 +4,7 @@
 		<?php $this->load->view("components/ispa_bus_menu"); ?>
 		<button data-tooltip="open menu" data-position="right" class="menu-btn tooltipped click-btn material-icons">menu</button>	
 		<div class="ispa-area">
-			<?php $this->load->view("business/ispa_appointments"); ?>						
+			<?php $this->load->view("business/ispa_appointments"); ?>
 		</div>
 		<?php $this->load->view("business/ispa_checkout"); ?>
 		<?php $this->load->view("business/bus_edit"); ?>
