@@ -68,184 +68,270 @@ class Business extends CI_Controller {
 
 
 			if (!(mb_substr($phone, 0,4) == +254 || mb_substr($phone, 0,4) == "+254")) {
-        if ($phone != "") {
-        	if (mb_substr($phone, 0,1) == 0 || mb_substr($phone, 0,1) == "0") {
-	          $phone = "+254".mb_substr($phone,1,strlen($phone));
-	        }else{
-	          $phone = "+254".$phone;
-	        }
-        }else{
-        	$phone = "";
-        }
-      }
+				if ($phone != "") {
+					if (mb_substr($phone, 0,1) == 0 || mb_substr($phone, 0,1) == "0") {
+						$phone = "+254".mb_substr($phone,1,strlen($phone));
+					}else{
+						$phone = "+254".$phone;
+					}
+				}else{
+					$phone = "";
+				}
+			}
 			
 			$ch_services = true;
 			$ch_working  = true;
 			$time = time();
 			if (($editing && isset($_SESSION["business"])) || ($location && isset($location["lat"]) && isset($location["lng"]) && isset($location["title"]) && common::isKenya($location))) {				
-					if ($editing == "false" || $editing == false || $editing == "") {
-						$identifier = md5(sha1($time.$name.$location["title"]));
-					}else{
-						$identifier = $_SESSION["business"];
-					}
-					foreach ($services as $service) {
-						if (!((isset($service["name"]) && $service["name"]) != "" && isset($service["duration"]) &&  $service["duration"] != "" && isset($service["default"]) && isset($service["cost"]) && $service["cost"])) {
-							$ch_services = false;
-						}						
-					}
+				if ($editing == "false" || $editing == false || $editing == "") {
+					$identifier = md5(sha1($time.$name.$location["title"]));
+				}else{
+					$identifier = $_SESSION["business"];
+				}
+				foreach ($services as $service) {
+					if (!((isset($service["name"]) && $service["name"]) != "" && isset($service["duration"]) &&  $service["duration"] != "" && isset($service["default"]) && isset($service["cost"]) && $service["cost"])) {
+						$ch_services = false;
+					}						
+				}
 
-					foreach ($working_days as $day) {									
-						if (!(isset($day["day"]) && isset($day["start"]) && isset($day["end"])) && (in_array($day["day"], $this->config->item("days")) && $day["start"] != "" && $day["end"]) != "") {
-							$ch_working = false;
-						}						
-					}
-					if ($ch_services) {
-						if ($ch_working) {
-								$ch_type = true;
-								if ($type_curr != false && $type_curr != "false") {
-									$type_curr = $this->commonDatabase->get_data("ispa_business_types",1,false,"identifier",$type_curr);									
-								}else{
-									$type_id =  md5(sha1($type.$type.$type_curr));
-									$t_data = [
-										"name" => $type,
-										"identifier" => $type_id,
-										"date_added" => $time
-									];
-									$this->commonDatabase->add("ispa_business_types",$t_data);
-								}
-								$ch_phone = $this->commonDatabase->get_data("ispa_business",false,false,"phone",$phone);
-								if ($ch_type) {	
-									$r['status'] = true;																		
-									if ($location != false && $location != "false") {										
-										$loc_data = [
-											"business" => $identifier,
+				foreach ($working_days as $day) {									
+					if (!(isset($day["day"]) && isset($day["start"]) && isset($day["end"])) && (in_array($day["day"], $this->config->item("days")) && $day["start"] != "" && $day["end"]) != "") {
+						$ch_working = false;
+					}						
+				}
+				if ($ch_services) {
+					if ($ch_working) {
+						$ch_type = true;
+						if ($type_curr != false && $type_curr != "false") {
+							$type_curr = $this->commonDatabase->get_data("ispa_business_types",1,false,"identifier",$type_curr);									
+						}else{
+							$type_id =  md5(sha1($type.$type.$type_curr));
+							$t_data = [
+								"name" => $type,
+								"identifier" => $type_id,
+								"date_added" => $time
+							];
+							$this->commonDatabase->add("ispa_business_types",$t_data);
+						}
+						$ch_phone = $this->commonDatabase->get_data("ispa_business",false,false,"phone",$phone);
+						if ($ch_type) {	
+							$r['status'] = true;																		
+							if ($location != false && $location != "false") {										
+								$loc_data = [
+									"business" => $identifier,
+									"lat" => $location["lat"],
+									"lng" => $location["lng"],
+									"type" => "business",
+									"name" => $location["title"]
+								];
+							}																																
+							if ($editing && ($location != false && $location != "false" && common::isKenya($location))) {
+
+								if ($location != false && $location != "false") {
+											//$bloc = common::busLoc($_SESSION["business"]);
+									if ($location) {												
+										$loc_data = [												
 											"lat" => $location["lat"],
-											"lng" => $location["lng"],
-											"type" => "business",
+											"lng" => $location["lng"],												
 											"name" => $location["title"]
 										];
-									}																																
-									if ($editing && ($location != false && $location != "false" && common::isKenya($location))) {
-									 				
-										if ($location != false && $location != "false") {
-											//$bloc = common::busLoc($_SESSION["business"]);
-											if ($location) {												
-												$loc_data = [												
-													"lat" => $location["lat"],
-													"lng" => $location["lng"],												
-													"name" => $location["title"]
-												];
-												$this->commonDatabase->update("ispa_business_locations",$loc_data,"business",$_SESSION["business"]);
-											}
-										}										
-									}										
-									if ($editing && (!$ch_phone || ($ch_phone && $ch_phone[0]["identifier"] == $identifier))) {
-										if (common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-											foreach ($services as $service) {	
+										$this->commonDatabase->update("ispa_business_locations",$loc_data,"business",$_SESSION["business"]);
+									}
+								}										
+							}										
+							if ($editing && (!$ch_phone || ($ch_phone && $ch_phone[0]["identifier"] == $identifier))) {
+								if (common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
+									foreach ($services as $service) {	
+										$s_data = [
+											"name" => $service["name"],												
+											"duration" => $service["duration"],
+											"cost" => $service["cost"],											
+										];																			
+										if ($service["default"] != "new") {
+											$ch_service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$service["default"],"added_by",$identifier);
+											if ($ch_service) {
 												$s_data = [
-													"name" => $service["name"],												
+													"name" => $service["name"],														
 													"duration" => $service["duration"],
-													"cost" => $service["cost"],											
-												];																			
-												if ($service["default"] != "new") {
-													$ch_service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$service["default"],"added_by",$identifier);
-													if ($ch_service) {
-														$s_data = [
-															"name" => $service["name"],														
-															"duration" => $service["duration"],
-															"cost" => $service["cost"],														
-														];
-														$this->commonDatabase->update("ispa_services",$s_data,"id",$service["default"],"added_by",$identifier);
-													}else{													
-														$this->commonDatabase->add("ispa_services",$s_data);
-													}
-												}else{												
-													$this->commonDatabase->add("ispa_services",$s_data);
-												}
-											}																			
-											$data = [											
-												"name" => $name,											
-												"working" => json_encode($working_days),
-												"phone" => $phone,																				
-											];
-																					
-											$this->commonDatabase->update("ispa_business",$data,"identifier",$identifier);
-											if ($_POST["type"] != "") {
-												$data = ["name" => $_POST["type"]];
-												$this->commonDatabase->update("ispa_business_types",$data,"identifier",$identifier);
+													"cost" => $service["cost"],														
+												];
+												$this->commonDatabase->update("ispa_services",$s_data,"id",$service["default"],"added_by",$identifier);
+											}else{													
+												$this->commonDatabase->add("ispa_services",$s_data);
 											}
-											$p_data = [];
-											if (isset($_POST["prefs"]) && is_array($_POST["prefs"])) {
-												foreach ($_POST["prefs"] as $pref) {
-													if ($pref["pref"] == "app_con") {													
-														$p_data["app_con"] = $pref["val"] == "false" || $pref["val"] == false ? 0: 1;
-													}elseif($pref["pref"] == "app_cash"){
-														$p_data["app_cash"] = $pref["val"] == "false" || $pref["val"] == false ? 0: 1;
-													}
-												}
-											}
-
-											$this->commonDatabase->update("ispa_bus_prefs",$p_data,"business",$identifier);
-
-											$r['m'] = "updated";
-										}else{
-											$r["status"] = false;
-											$r["m"] = "Invalid access";
+										}else{												
+											$this->commonDatabase->add("ispa_services",$s_data);
 										}
-										
-									}else{
-										if (!$ch_phone) {
-											foreach ($services as $service) {											
-												if ($service["name"] != "") {
-													$s_data = [
-														"name" => $service["name"],	
-														"added_by" => $identifier,													
-														"duration" => $service["duration"],
-														"cost" => $service["cost"],														
-													];
-													$this->commonDatabase->add("ispa_services",$s_data);
-												}
+									}																			
+									$data = [											
+										"name" => $name,											
+										"working" => json_encode($working_days),
+										"phone" => $phone,																				
+									];
+
+									$this->commonDatabase->update("ispa_business",$data,"identifier",$identifier);
+									if ($_POST["type"] != "") {
+										$data = ["name" => $_POST["type"]];
+										$this->commonDatabase->update("ispa_business_types",$data,"identifier",$identifier);
+									}
+									$p_data = [];
+									if (isset($_POST["prefs"]) && is_array($_POST["prefs"])) {
+										foreach ($_POST["prefs"] as $pref) {
+											if ($pref["pref"] == "app_con") {													
+												$p_data["app_con"] = $pref["val"] == "false" || $pref["val"] == false ? 0: 1;
+											}elseif($pref["pref"] == "app_cash"){
+												$p_data["app_cash"] = $pref["val"] == "false" || $pref["val"] == false ? 0: 1;
 											}
-											$data = [
-												"created_by" => $_SESSION["user"]->ispa_id,
-												"name" => $name,
-												"phone" => $phone,
-												"identifier" => $identifier,
-												"profile" => "default_bus_prof.png",
-												"date_added" => $time,
-												"last_login" => $time,
-												"working" => json_encode($working_days)										
-											];
-											$this->commonDatabase->add("ispa_business",$data);				
-											$this->commonDatabase->add("ispa_business_locations",$loc_data);
-											$r['m'] = "added";
-										}else{
-											$r["status"] = false;
-											$r['m'] = "Phone number has already been registered with another business.";
 										}
-									}																
+									}
+
+									$this->commonDatabase->update("ispa_bus_prefs",$p_data,"business",$identifier);
+
+									$r['m'] = "updated";
 								}else{
-									$r['status'] = false;
-   								$r["m"] = "Invalid business type.";
+									$r["status"] = false;
+									$r["m"] = "Invalid access";
 								}
+
+							}else{
+								if (!$ch_phone) {
+									foreach ($services as $service) {											
+										if ($service["name"] != "") {
+											$s_data = [
+												"name" => $service["name"],	
+												"added_by" => $identifier,													
+												"duration" => $service["duration"],
+												"cost" => $service["cost"],														
+											];
+											$this->commonDatabase->add("ispa_services",$s_data);
+										}
+									}
+									$data = [
+										"created_by" => $_SESSION["user"]->ispa_id,
+										"name" => $name,
+										"phone" => $phone,
+										"identifier" => $identifier,
+										"profile" => "default_bus_prof.png",
+										"date_added" => $time,
+										"last_login" => $time,
+										"working" => json_encode($working_days)										
+									];
+									$this->commonDatabase->add("ispa_business",$data);				
+									$this->commonDatabase->add("ispa_business_locations",$loc_data);
+									$r['m'] = "added";
+								}else{
+									$r["status"] = false;
+									$r['m'] = "Phone number has already been registered with another business.";
+								}
+							}																
 						}else{
 							$r['status'] = false;
-   						$r["m"] = "Check your business' working days data.";
-						}	
+							$r["m"] = "Invalid business type.";
+						}
 					}else{
 						$r['status'] = false;
-   					$r["m"] = "Check your business' services details.";
-					}
+						$r["m"] = "Check your business' working days data.";
+					}	
+				}else{
+					$r['status'] = false;
+					$r["m"] = "Check your business' services details.";
+				}
 			}else{
 				$r['status'] = false;
-     		$r["m"] = "Invalid location details";
+				$r["m"] = "Invalid location details";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-   	 common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}	
+	public function add_service(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
+			if (isset($_POST["name"]) && isset($_POST["desc"]) && isset($_POST["dur"]) && isset($_POST["cost"]) && isset($_POST["avail"]) && mb_strlen($_POST["name"]) > 3 && $_POST["dur"] > 0)  {
+
+				$data = [
+					"name" => $_POST["name"],
+					"description" => $_POST["desc"],
+					"duration" => $_POST["dur"],
+					"cost" => $_POST["cost"],
+					"status" => $_POST["avail"] == true || $_POST["avail"] == "true" ? 1: 0,
+					"added_by" => $_SESSION["business"],
+					"date_added" => time()					
+				];
+
+				$this->commonDatabase->add("ispa_services",$data);
+				$r["status"] = true;
+				$r["m"] = "Success";
+
+			}else{
+				$r["m"] = "Kindly check service details.";
+			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function get_service(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"]) && isset($_POST["item"])) {
+			$ch_s = $this->commonDatabase->get_data("ispa_services", 1, false, "id", $_POST["item"], "added_by", $_SESSION["business"]);
+
+			if ($ch_s) {
+				$r["status"] = true;
+				$r["m"] = [
+					"name" => $ch_s[0]["name"], 
+					"desc" => $ch_s[0]["description"], 
+					"cost" => $ch_s[0]["cost"], 
+					"dur" => $ch_s[0]["duration"], 
+					"avail" => $ch_s[0]["status"] 
+				];
+			}else{
+				$r["m"] = "Service not found.";
+			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function update_service(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
+			if (isset($_POST["name"]) && isset($_POST["desc"]) && isset($_POST["dur"]) && isset($_POST["cost"]) && isset($_POST["avail"]) && mb_strlen($_POST["name"]) > 3 && $_POST["dur"] > 0 && isset($_POST["editing"]))  {
+
+				$data = [
+					"name" => $_POST["name"],
+					"description" => $_POST["desc"],
+					"duration" => $_POST["dur"],
+					"cost" => $_POST["cost"],
+					"status" => $_POST["avail"] == "true" ? 1: 0,		
+					"date_added" => time()					
+				];
+				
+
+				$ch_s = $this->commonDatabase->get_data("ispa_services", 1, false, "id", $_POST["editing"], "added_by", $_SESSION["business"]);
+
+				if ($ch_s) {
+					$this->commonDatabase->update("ispa_services",$data, "id", $_POST["editing"]);
+					$r["status"] = true;
+					$r["m"] = "Success";
+				}else{
+					$r["m"] = "Service not found.";
+				}
+			}else{
+				$r["m"] = "Kindly check service details.";
+			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function update_shop(){
+		if (isset($_SESSION["bus"]) ) {
+			# code...
+		}
+	}
 	public function get_calendar(){
 		if (isset($_SESSION["user"]) && isset($_POST["dur"]) && $_POST["dur"] >= 0 && isset($_POST["business"]) && isset($_POST["month"]) && isset($_POST["year"])) {
 			$r["status"] = false;
@@ -276,13 +362,13 @@ class Business extends CI_Controller {
 				$r["m"]["name"] = date("F Y",strtotime("01-".$month."-".$year));
 				$bus_today = common::getAppointments(date("d-m-Y"),"bus");
 			}else{				
-      	$r["m"] = "Shop has not been found.";
+				$r["m"] = "Shop has not been found.";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	} 
 	public function get_suggests(){
 		if (isset($_POST["dur"])&& isset($_SESSION["user"]) && isset($_POST['day']) && isset($_POST["month"]) && isset($_POST["business"]) && isset($_POST["year"]) && isset($_POST["staff"])) {
@@ -350,13 +436,13 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = '<div class="flow-text center">There is no available time slot on the selected day with the selected staff member</div>';
+				$r["m"] = '<div class="flow-text center">There is no available time slot on the selected day with the selected staff member</div>';
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function appoint_bus(){
 		if (isset($_SESSION["user"]) && isset($_POST["business"])) {
@@ -368,7 +454,7 @@ class Business extends CI_Controller {
 				if ($services) {
 					$serv = "";
 					foreach ($services as $service) {	
-					  $is_sel = false;					
+						$is_sel = false;					
 						if (is_array($sel)) {													
 							foreach ($sel as $s) {								
 								if ((Int)$s["item"] == (Int)$service["id"]) {
@@ -400,17 +486,17 @@ class Business extends CI_Controller {
 					$r['m'] = $serv;
 				}else{
 					$r['status'] = false;
-      		$r["m"] = '<div class="flow-text center">This shop does not seem to offer any services yet.</div>';
+					$r["m"] = '<div class="flow-text center">This shop does not seem to offer any services yet.</div>';
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Shop not found";
+				$r["m"] = "Shop not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function get_explore(){
 		if (isset($_POST["type"]) && isset($_POST["item"])) {
@@ -443,17 +529,17 @@ class Business extends CI_Controller {
 				}else{
 					/*handle near me*/
 					$r['status'] = false;
-      		$r["m"] = "Invalid access";
+					$r["m"] = "Invalid access";
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Invalid access";
+				$r["m"] = "Invalid access";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function search_bus(){
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
@@ -491,10 +577,10 @@ class Business extends CI_Controller {
 				$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function bus_page(){
 		if (isset($_POST["bus"])) {
@@ -537,10 +623,10 @@ class Business extends CI_Controller {
 				if (is_array($working)) {
 					foreach ($working as $day) {
 						$w .= '
-							<div class="w-item">
-								<div class="w-name">'.date("l",strtotime($day->day)).'</div>				
-								<div class="w-hours">'.date("h:i A",strtotime($day->start)).' - '.date("h:i A",strtotime($day->end)).'</div>							
-							</div>
+						<div class="w-item">
+						<div class="w-name">'.date("l",strtotime($day->day)).'</div>				
+						<div class="w-hours">'.date("h:i A",strtotime($day->start)).' - '.date("h:i A",strtotime($day->end)).'</div>							
+						</div>
 						';
 					}
 				}	
@@ -578,13 +664,13 @@ class Business extends CI_Controller {
 				];
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Shop not found";
+				$r["m"] = "Shop not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function send_rating(){
 		if (isset($_SESSION["user"]) && isset($_POST["rating"]) && is_numeric($_POST["rating"]) && isset($_POST["note"]) && isset($_POST["item"])) {
@@ -616,13 +702,13 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Shop not found";
+				$r["m"] = "Shop not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function favorites(){
 		if (isset($_SESSION["user"]) && isset($_POST["bus"])) {
@@ -647,13 +733,13 @@ class Business extends CI_Controller {
 				$r["status"] = true;
 			}else{
 				$r['status'] = false;
-	      		$r["m"] = "Shop not found";
+				$r["m"] = "Shop not found";
 			}
 		}else{
-	      $r['status'] = false;
-	      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function service_lookup(){
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
@@ -667,13 +753,13 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "No results";
+				$r["m"] = "No results";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function pre_services(){
 		if (isset($_POST["id"]) && is_numeric($_POST["id"])) {
@@ -708,10 +794,10 @@ class Business extends CI_Controller {
 				}
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function get_appointment(){
 		if (isset($_SESSION["user"]) && isset($_POST["item"])) {
@@ -747,9 +833,9 @@ class Business extends CI_Controller {
 					}
 					
 					$serv_list .= '<tr>
-													<td class="t-total">Total</td>
-													<td class="t-total">Ksh. '.number_format($serv_amnt,2) .'</td>
-												</tr>';
+					<td class="t-total">Total</td>
+					<td class="t-total">Ksh. '.number_format($serv_amnt,2) .'</td>
+					</tr>';
 					$staff = $this->commonDatabase->get_data("ispa_staff",false,false,"business",$shop["identifier"]);
 					$ap_staff = "";
 					$staff_name = "";
@@ -778,7 +864,7 @@ class Business extends CI_Controller {
 					if ($app_user) {
 						$count = $this->commonDatabase->count("ispa_appointments","user",$user,"confirmed",1);					
 						if (!isset($_SESSION["business"])) {
-								$serv_list = "";
+							$serv_list = "";
 						}						
 						if ($appointment["app_time"] < time()) {
 							if ($appointment["status"] == 2) {
@@ -818,17 +904,17 @@ class Business extends CI_Controller {
 					}
 				}else{
 					$r['status'] = false;
-		      $r["m"] = "Shop not found.";
+					$r["m"] = "Shop not found.";
 				}
 			}else{
-	      $r['status'] = false;
-	      $r["m"] = "Appointment not found.";
-	    }
+				$r['status'] = false;
+				$r["m"] = "Appointment not found.";
+			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function get_day(){
 		if (isset($_SESSION["business"]) && isset($_POST["day"]) && isset($_POST["type"])) {
@@ -859,22 +945,22 @@ class Business extends CI_Controller {
 						$r["status"] = true;
 
 						$d = date("d-m-Y",$day);
-					  $t = strtotime($d);
-					  $ispa_id = $_SESSION["user"]->ispa_id;
-					  $next_day = $t + (60 * 60 *24) - 1;					  
-					  if ($shop["created_by"] == $ispa_id) {
-					  	$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' order by app_time ASC");
-					  }else{
-					  	$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' AND staff_id='$ispa_id' order by app_time ASC");
-					  }
-					  $apps = "";
-					  if ($appointments) {
-					  	foreach ($appointments as $app) {
-					  		$apps .= common::renderDay($app,$d,$bus);
-					  	}
-					  }else{
-					  	$apps .= '<div class="flow-text center">No appointments yet</div>';
-					  }
+						$t = strtotime($d);
+						$ispa_id = $_SESSION["user"]->ispa_id;
+						$next_day = $t + (60 * 60 *24) - 1;					  
+						if ($shop["created_by"] == $ispa_id) {
+							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' order by app_time ASC");
+						}else{
+							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' AND staff_id='$ispa_id' order by app_time ASC");
+						}
+						$apps = "";
+						if ($appointments) {
+							foreach ($appointments as $app) {
+								$apps .= common::renderDay($app,$d,$bus);
+							}
+						}else{
+							$apps .= '<div class="flow-text center">No appointments yet</div>';
+						}
 						$r["m"] = [
 							"calendar" => $cal,
 							"active" => date("jS F Y",$day),	
@@ -884,21 +970,21 @@ class Business extends CI_Controller {
 						];
 					}else{
 						$r['status'] = false;
-      			$r["m"] = "Oops! An error occurred.";
+						$r["m"] = "Oops! An error occurred.";
 					}
 				}else{
 					$r['status'] = false;
-      			$r["m"] = "Oops! An error occurred.";
+					$r["m"] = "Oops! An error occurred.";
 				}			
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Shop not found";
+				$r["m"] = "Shop not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function confirm_app(){
 		if (isset($_SESSION["business"]) && isset($_POST["item"])) {
@@ -918,13 +1004,13 @@ class Business extends CI_Controller {
 				$r["status"] = true;				
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Appointment not found";
+				$r["m"] = "Appointment not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function cancel_app(){
 		if (isset($_SESSION["business"]) && isset($_POST["item"]) && isset($_POST["note"]) && $_POST["note"] != "") {
@@ -950,13 +1036,13 @@ class Business extends CI_Controller {
 				$r["status"] = true;				
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Appointment not found";
+				$r["m"] = "Appointment not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function miss_app(){
 		if (isset($_SESSION["business"]) && isset($_POST["item"])) {
@@ -994,13 +1080,13 @@ class Business extends CI_Controller {
 				$r["status"] = true;				
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Appointment not found";
+				$r["m"] = "Appointment not found";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function checkout(){
 		if (isset($_POST["item"]) && isset($_POST["disc"]) && isset($_SESSION["business"])) {
@@ -1029,21 +1115,21 @@ class Business extends CI_Controller {
 						$r["status"] = true;
 					}else{
 						$r['status'] = false;
-	      		$r["m"] = "Oops! An error occurred.";
+						$r["m"] = "Oops! An error occurred.";
 					}
 				}else{
 					$r['status'] = false;
-	      	$r["m"] = "Appointment not found";
+					$r["m"] = "Appointment not found";
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Oops! something went wrong.";
+				$r["m"] = "Oops! something went wrong.";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function update_staff(){
 		if (isset($_SESSION["business"]) && isset($_SESSION["user"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin") && isset($_POST["staff"]) && isset($_POST["available"])) {
@@ -1057,13 +1143,13 @@ class Business extends CI_Controller {
 				$r["status"] = true;
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Staff not found.";
+				$r["m"] = "Staff not found.";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function get_staff(){
 		if (isset($_SESSION["business"]) && isset($_SESSION["user"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin") && isset($_POST["staff"]) && isset($_POST["month"])) {			
@@ -1110,13 +1196,13 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "Staff not found.";
+				$r["m"] = "Staff not found.";
 			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function suggest_staff(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["key"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
@@ -1138,17 +1224,17 @@ class Business extends CI_Controller {
 					}
 				}else{
 					$r['status'] = false;
-      		$r["m"] = "";
+					$r["m"] = "";
 				}
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "";
+				$r["m"] = "";
 			}			
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function add_staff(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["user"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin") && isset($_POST["avail"]) && isset($_POST["pass"])) {
@@ -1174,17 +1260,17 @@ class Business extends CI_Controller {
 					$r["m"] = common::renderStaff($data);
 				}else{
 					$r['status'] = false;
-      		$r["m"] = "User is already a staff member.";
+					$r["m"] = "User is already a staff member.";
 				}				
 			}else{
 				$r['status'] = false;
-      	$r["m"] = "User not found or Invalid password.";
+				$r["m"] = "User not found or Invalid password.";
 			}			
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function rem_staff(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["staff"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
@@ -1195,66 +1281,66 @@ class Business extends CI_Controller {
 			if (common::isStaff($staff,$bus) && $b && !common::isStaff($staff,$bus,"admin")) {
 
 				$r["status"] = true;		
-		
+
 				$this->commonDatabase->delete("ispa_staff","ispa_id",$staff);
 				common::notify($staff, "You are no longer a staff member of ".$b["name"]."." ,"iSpa");
 			}else{
 				$r['status'] = false;
-    		$r["m"] = "Staff member not found.";
+				$r["m"] = "Staff member not found.";
 			}				
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 	public function add_showcase(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_FILES)  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
 			if (isset($_FILES['file-0'])) { 
-        $filename = md5(sha1($_SESSION["business"].time()));
+				$filename = md5(sha1($_SESSION["business"].time()));
 
-        $config['upload_path']          = './uploads/showcase/';
-        $config['allowed_types']        = 'gif|jpg|png|jpeg';
-        $config['file_name']            = $filename;
-        $config['max_size']             = 160000;
-        $this->load->library('upload', $config);  
+				$config['upload_path']          = './uploads/showcase/';
+				$config['allowed_types']        = 'gif|jpg|png|jpeg';
+				$config['file_name']            = $filename;
+				$config['max_size']             = 160000;
+				$this->load->library('upload', $config);  
 
-        if (!$this->upload->do_upload('file-0'))
-        {
-          $r["status"] = false;
-          $error = array('error' => $this->upload->display_errors());             
-          $r['m'] = $error['error'];          
-        } 
-        else{
-          $data = [
-            "link" => $filename.$this->upload->data('file_ext'),
-            "shop" => $_SESSION["business"],
-            "date_added" => time(),
-            "notes" => "",
-            "added_by" => $_SESSION["user"]->ispa_id,
-          ];
-    			$this->commonDatabase->add("ispa_showcase",$data);
-          $r['status'] = true;                
-        }
-      }else{
-        $r['status'] = false;
-        $r['m'] = "Invalid file";
-      }
+				if (!$this->upload->do_upload('file-0'))
+				{
+					$r["status"] = false;
+					$error = array('error' => $this->upload->display_errors());             
+					$r['m'] = $error['error'];          
+				} 
+				else{
+					$data = [
+						"link" => $filename.$this->upload->data('file_ext'),
+						"shop" => $_SESSION["business"],
+						"date_added" => time(),
+						"notes" => "",
+						"added_by" => $_SESSION["user"]->ispa_id,
+					];
+					$this->commonDatabase->add("ispa_showcase",$data);
+					$r['status'] = true;                
+				}
+			}else{
+				$r['status'] = false;
+				$r['m'] = "Invalid file";
+			}
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid image";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid image";
+		}
+		common::emitData($r);
 	}
 	public function rm_showcase(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["item"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
 			$r["status"] = true;
 			$this->commonDatabase->delete("ispa_showcase","id",$_POST["item"],"shop",$_SESSION["business"]);
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid image";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid image";
+		}
+		common::emitData($r);
 	}
 	public function get_showcase(){
 		if (isset($_POST["shop"]) && (common::getBus($_POST["shop"]) || $_POST["shop"] == "online")) {			
@@ -1275,12 +1361,12 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r['status'] = true;
-    		$r["m"] = '<div class="flow-text center white-text">No pictures added yet</div>';
+				$r["m"] = '<div class="flow-text center white-text">No pictures added yet</div>';
 			}	
 		}else{
-      $r['status'] = false;
-      $r["m"] = "Invalid access";
-    }
-    common::emitData($r);
+			$r['status'] = false;
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
 	}
 }

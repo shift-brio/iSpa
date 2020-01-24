@@ -49,20 +49,7 @@
 	</div>
 </div>
 
-<!-- dialog box -->
-<div class="ispa-dialog">
-	<div class="dialog-cont">
-		<div class="dialog-body"></div>
-		<div class="dialog-tools">
-			<button class="click-btn dialog-tool negative">
-				Cancel
-			</button>
-			<button class="click-btn dialog-tool positive right">
-				Ok
-			</button>
-		</div>
-	</div>
-</div>
+<?php $this->load->view("components/dialog_box"); ?>
 
 <!-- help desk -->
 <?php $this->load->view("components/ispa_help"); ?>

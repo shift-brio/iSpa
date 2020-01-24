@@ -52,7 +52,7 @@
 				<div class="menu-notifs n-indic"><?php echo $count_notifs; ?></div>
 				<div class="menu-name">Notifications</div>
 			</div>
-			<div data-item="chats" class="menu-item  tooltipped" data-menu="communication" data-tooltip="Notifications" data-position="top">
+			<div data-item="chats" class="menu-item  tooltipped" data-menu="chats" data-tooltip="Notifications" data-position="top">
 				<i class="material-icons menu-icon">chat</i>
 				<div class="menu-notifs chat-notif"><?php echo $count_chats; ?></div>	
 				<div class="menu-name">Messages</div>

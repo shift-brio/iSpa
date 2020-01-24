@@ -2571,7 +2571,7 @@ img{
       transition: border-bottom .25s ease !important;
     }
 
-    .ispa-in:focus, .ed-in::focus{
+    .ispa-in:focus, .ed-in:focus{
       border-bottom: 2px solid #0d1317 !important;
     }
     .ispa-in::placeholder{
@@ -7192,6 +7192,7 @@ a > .welcome-message{
   }
   .ispa-notif-cont{
     padding: 0px !important;
+    padding-top: 10px !important;
   }
 
   /*-subscription-*/
@@ -7376,7 +7377,7 @@ a > .welcome-message{
     height: 100%;
     top: 0;
     left: 0;  
-    display: none;
+    display: non;
     background: rgba(0,0,0,.75);
   }
   .bus-manage-cont{
@@ -7401,8 +7402,7 @@ a > .welcome-message{
     border-bottom: 1px solid rgba(0,0,0,.15) !important;
     text-align: left;
     font-size: 1.3em;
-    color: #0d1317;
-    font-weight: 500;
+    color: #0d1317;    
   }
   .manage-item > i{
 
@@ -7418,7 +7418,9 @@ a > .welcome-message{
     display: ;
   }
   .edit-bus-det, .manage-servs, .wds, .staff-m, .prefs, .show-im{
-    height: 100% !important;
+    margin-top: 30px;
+    border-radius: 20px 20px 0px 0px;
+    height: calc(100% - 30px) !important;
     background: #fff;
   }
   .manage-mod-b{
@@ -7435,7 +7437,15 @@ a > .welcome-message{
 
   /*- manage-services -*/
   #manage-servs{
-    display: bloc;
+    display: block;
+  }
+  .manage-servs{
+    margin-top: 30px;
+    border-radius: 20px 20px 0px 0px;
+    height: calc(100% - 30px) !important;
+  }
+  .manage-servs > div > .modal-title{
+    border-radius: 18px 18px 0px 0px;
   }
   .add-serv{
     position: fixed;
@@ -7459,18 +7469,16 @@ a > .welcome-message{
     display: none;
   }
   .new-serv-cont{
-    height: 300px;
-    width: 300px;
-    margin-right: calc(50% - 150px);
+    height: 420px;
+    width: calc(100%);    
     background: #fff;
-    border-radius: 12px;
+    border-radius: 20px 20px 0px 0px;
     position: fixed;
     bottom: 0;
-    right: 0;
-    margin-bottom: 20px;
+    right: 0;    
     animation: slide_up .45s ease;  
   }
-  .save-serv{
+  .save-serv, .update-serv{
     background: rgba(69, 6, 255, .15) !important;
     font-weight: 600;
     color: #4506ff;
@@ -7485,7 +7493,56 @@ a > .welcome-message{
     margin-left: 20px;
     width: calc(100% - 20px) !important;
   }
+  p > label{
+    color: #0d1317 !important;
+    display: inline !important;
+  }
 
+  .bs-serv{
+    width: calc(100% - 10px);
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: auto;    
+    box-shadow: 0px 0px 6px rgba(0,0,0, .15);
+    border-radius: 8px;
+    display: inline-flex;
+  }
+  .serv-dets{
+    width: calc(100% - 50px);       
+  }
+  .serv-dets > div{
+    padding: 5px;
+  }
+  .serv-n{
+    font-size: 1.3em;
+    color: #0d1317;
+    font-family: lato, sans-serif;
+    font-weight: 600;       
+  }
+  .serv-cost, .serv-dur, .serv-av{
+    color: #0d1317;
+    font-size: 1.1em;
+  }
+  .serv-tools{
+    height: 100%;
+    width: 50px;
+  }
+  .serv-tool{
+    width: 40px !important;
+    height: 40px !important;
+    margin-left: 5px !important;
+    margin-top: 5px !important;
+    padding: 5px !important;
+    background: transparent !important;
+  }
+  .serv-tool.del-serv{
+    color: #ff0000 !important;
+  }
+  .blue-h{
+    background: #4506ff !important;
+    color: #fff !important;
+  }
   /*- working days -*/
   #wds{
 

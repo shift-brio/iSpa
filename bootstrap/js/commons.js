@@ -16,7 +16,7 @@ tool_tip = function(){
 ispa_inits = function(){
 	drop_down();tool_tip();
 }
-function get_length(val){
+function get_length(val = ""){
 	return val.replace(/\s/g, '').length;
 }
 function validateInput(input,type = 'email'){
@@ -45,3 +45,40 @@ in_array = function(item = '',array = []){
 		return false
 	}
 }
+
+let prompt = (open = false, message = "", c = false, cfg = {n: "Cancel", p:"Ok"}) =>{
+	$(".dialog-tool.negative, .dialog-tool.positive").unbind();
+	$(".dialog-body").html("");
+	$(".dialog-tool.negative").html(cfg.n);
+	$(".dialog-tool.positive").html(cfg.p);
+	
+	if (open) {
+		if (message != "" && c) {
+			$(".ispa-dialog").show();			
+			$(".dialog-body").html(message);
+
+			$(".dialog-tool.negative").click(function(){
+				c(false);
+				prompt(false);
+			})
+			$(".dialog-tool.positive").click(function(){
+				c(true);
+				prompt(false);
+			})
+		}
+	}else{
+		$(".ispa-dialog").hide();
+	}	
+}
+check_box = (el = '[type="checkbox"]') =>{
+	$(`${el}`).click(function(){
+		if ($(this).val() == "false" || $(this).val() == false) {
+			$(this).val("true");
+		}else{
+			$(this).val("false");
+		}
+	})
+}
+$(document).ready(() =>{
+	check_box();
+})

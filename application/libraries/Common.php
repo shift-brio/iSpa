@@ -909,7 +909,7 @@
 			return false;
 		}
 		return false;
-	}
+	}	
 	static function renderService($service = false,$type = "client", $selected = false){
 		if ($service) {
 			$serv = $service;
@@ -943,6 +943,39 @@
 							</div>
 						</div>				
 					';
+			}else{
+				if ($service["status"] == 1) {
+					$av = "Available";
+				}else{
+					$av = "Not available";
+				}
+
+				return '
+					<div class="bs-serv" data-item="'.$serv["id"].'">
+						<div class="serv-dets">
+							<div class="serv-n">
+								'.$serv["name"].'
+							</div>
+							<div class="serv-cost">
+								Ksh. '.(number_format((Int)$serv["cost"],2)).'
+							</div>
+							<div class="serv-dur">
+								'.$serv["duration"].' Min
+							</div>
+							<div class="serv-av">
+								'.$av.' for booking
+							</div>
+						</div>
+						<div class="serv-tools">
+							<button class="click-btn serv-tool edit-serv">
+								<i class="material-icons">settings</i>
+							</button>
+							<button class="click-btn serv-tool del-serv">
+								<i class="material-icons">delete</i>
+							</button>
+						</div>
+					</div>
+				';
 			}
 		}
 		return false;
@@ -1419,7 +1452,7 @@
   	}
   	return $st;
   }
-  static function isStaff($user = false,$bus = false,$role = "normal"){
+  static function isStaff($user = false, $bus = false, $role = "normal"){
   	if ($user && $bus) {
   		$CI  = &get_instance();
   		$bus = common::getBus($bus);
