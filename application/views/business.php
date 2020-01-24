@@ -24,13 +24,13 @@
 				</div>
 			</div>			
 		</div>		
-	</div>	
-	<!-- loader -->
-	<div class="app-cover main-loader">
-		<div class="loader">
-			<div class="loader-in"></div>
-		</div>
-	</div>	
+	</div>		
+</div>
+<!-- loader -->
+<div class="app-cover main-loader">
+	<div class="loader">
+		<div class="loader-in"></div>
+	</div>
 </div>
 <?php 
 	$this->load->view("components/ispa_map_picker");
@@ -132,7 +132,7 @@
 		</div>
 		<div class="modal-content">
 			<?php 
-				$servs = $this->commonDatabase->get_data("ispa_services", false, false, "added_by", $shop);
+				$servs = $this->commonDatabase->get_data("ispa_services", false, false, "added_by", $shop, "status",  1);
 
 				if ($servs) {
 					foreach ($servs as $serv) {

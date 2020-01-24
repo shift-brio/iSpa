@@ -177,9 +177,8 @@ let notify = function(text = false,time = false,type = false,sound = false){
 	}		
 }
 
-let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callback = (res = false) =>{ console.log(res);}) =>{
-	if (config.url != "") {
-		loading(true);
+let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callback = (res = false) =>{ console.log(res);}) =>{	
+	if (config.url != "") {		
 		let extra = {};
 		if (!config.type) {
 			config.type = "POST";
@@ -222,7 +221,7 @@ let mg_s = () =>{
 	$(".new-serv, .close-ns").click(function(e){
 		if ($(e.target).is(".new-serv, .close-ns, .close-ns > *")) {
 			$(".new-serv").hide();
-			serv_cont({ name: "", desc: "", cost: "", dur: "", avail: "" });
+			serv_cont({});
 		}
 	})
 
@@ -244,7 +243,28 @@ let mg_s = () =>{
 				}
 			});
 		})
-	})	
+	})
+	$(".del-serv").each(function(){
+		$(this).click(function(){
+			var item = $(this).parent().parent().attr("data-item");
+			var elem = $(this).parent().parent();			
+			if (item) {
+				prompt(true, "Delete this service", (res = false) =>{
+					if (res) {						
+						fetch({item: item},{url: "del_service"}, (res = false) =>{
+							notify("Service removed succesfully");
+							$(elem).slideUp();
+							setTimeout(() =>{
+								$(elem).remove();
+							}, 1000);
+						});
+					}									
+				},
+				{n: "Cancel", p:"Ok"});
+			}			
+		})
+		elem = false;
+	})
 }
 let add_serv = () =>{
 	var serv_details = get_serv();
@@ -255,7 +275,7 @@ let add_serv = () =>{
 		if (dur > 0) {				
 			fetch(serv_details, {url: "add_service"}, (res = false) =>{
 				if (res) {
-					serv_cont({ name: "", desc: "", cost: "", dur: "", avail: "" });						
+					serv_cont({});						
 					notify("Service has been added succesfully");
 				}
 			});
@@ -277,7 +297,7 @@ let update_s = () =>{
 		if (dur > 0) {				
 			fetch(serv_details, {url: "update_service"}, (res = false) =>{
 				if (res) {
-					serv_cont({ name: "", desc: "", cost: "", dur: "", avail: "" });						
+					serv_cont({});						
 					notify("Service has been updated succesfully");
 					editing_item = false;
 				}
@@ -289,12 +309,18 @@ let update_s = () =>{
 		notify("Kindly enter a valid service name : at least 3 characters long");
 	}	
 }
-let serv_cont =  ({ name, desc, cost, dur, avail })=>{
+let serv_cont =  ({ name = "", desc = "", cost = "", dur = "", avail = false })=>{
 	$(".service-name").val(name);
 	$(".service-desc").val(desc);
 	$(".service-cost").val(cost);
-	$(".service-dur").val(dur);	
-	$(".service-avail").val(avail);
+	$(".service-dur").val(dur);
+	$(".service-avail").val(avail);	
+	if (avail == false || avail == "false") {
+		$(".service-avail").removeAttr("checked");		
+	}else{
+		$(".service-avail").parent().children("label").click();
+		$(".service-avail").attr("checked", "checked");
+	}	
 
 	$(".ns-t").html("New Service");
 	$(".serv-go").removeClass("update-serv").addClass("save-serv").html("Save service");

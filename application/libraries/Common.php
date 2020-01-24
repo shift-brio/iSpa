@@ -944,7 +944,7 @@
 						</div>				
 					';
 			}else{
-				if ($service["status"] == 1) {
+				if ($service["avail"] == 1) {
 					$av = "Available";
 				}else{
 					$av = "Not available";

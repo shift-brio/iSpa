@@ -328,7 +328,7 @@ class Home extends CI_Controller {
 					$ap_identifier = $editing;
 				}
 				foreach ($service_items as $item) {					
-					$service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$item["id"],"added_by",$shop);
+					$service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$item["id"],"added_by",$shop, "status", 1,"avail", 1);
 					if (!$service) {
 						$all_services_available = false;
 					}else{

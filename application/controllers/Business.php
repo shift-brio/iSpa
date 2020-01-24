@@ -256,7 +256,8 @@ class Business extends CI_Controller {
 					"description" => $_POST["desc"],
 					"duration" => $_POST["dur"],
 					"cost" => $_POST["cost"],
-					"status" => $_POST["avail"] == true || $_POST["avail"] == "true" ? 1: 0,
+					"status" => 1,
+					"avail" => $_POST["avail"] == true || $_POST["avail"] == "true" ? 1: 0,
 					"added_by" => $_SESSION["business"],
 					"date_added" => time()					
 				];
@@ -285,7 +286,7 @@ class Business extends CI_Controller {
 					"desc" => $ch_s[0]["description"], 
 					"cost" => $ch_s[0]["cost"], 
 					"dur" => $ch_s[0]["duration"], 
-					"avail" => $ch_s[0]["status"] 
+					"avail" => $ch_s[0]["avail"] == 0 || $ch_s[0]["avail"] == "0" ? false: true 
 				];
 			}else{
 				$r["m"] = "Service not found.";
@@ -294,7 +295,7 @@ class Business extends CI_Controller {
 			$r["m"] = "Sorry, you are not authorized to perform this action.";
 		}
 		common::emitData($r);
-	}
+	}	
 	public function update_service(){
 		$r['status'] = false;
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
@@ -305,7 +306,7 @@ class Business extends CI_Controller {
 					"description" => $_POST["desc"],
 					"duration" => $_POST["dur"],
 					"cost" => $_POST["cost"],
-					"status" => $_POST["avail"] == "true" ? 1: 0,		
+					"avail" => $_POST["avail"] == "true" ? 1: 0,		
 					"date_added" => time()					
 				];
 				
@@ -321,6 +322,45 @@ class Business extends CI_Controller {
 				}
 			}else{
 				$r["m"] = "Kindly check service details.";
+			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function del_service(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"]) && isset($_POST["item"])) {
+
+			$ch_s = $this->commonDatabase->get_data("ispa_services", 1, false, "id", $_POST["item"], "added_by", $_SESSION["business"]);
+			$shop = $_SESSION["business"];
+			$time = time();
+
+			if ($ch_s) {
+				$act_serv = false;
+				$ch_appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$shop' AND app_time > '$time' AND (confirmed = '1' or payment_status = '1')");
+
+				if ($ch_appointments) {
+					foreach ($ch_appointments as $appt) {
+						$g_s = $this->commonDatabase->get_data("ispa_appointment_services", 1, false, "service_id", $_POST["item"], "appointment_id", $appt["identifier"]);
+						if ($g_s) {
+							$act_serv = true;
+						}
+					}
+				}
+
+				if (!$act_serv) {
+					$data = [							
+						"status" => 0
+					];										
+					
+					$this->commonDatabase->update("ispa_services",$data, "id", $_POST["item"]);
+					$r["status"] = true;					
+				}else{
+					$r["m"] = "Could not delete service. There are appointments scheduled for this service.";
+				}
+			}else{
+				$r["m"] = "Service not found.";
 			}
 		}else{			
 			$r["m"] = "Sorry, you are not authorized to perform this action.";
@@ -450,7 +490,7 @@ class Business extends CI_Controller {
 			$sel = isset($_POST["sel"]) ? $_POST["sel"] : [];
 			if ($bus) {
 				$identifier = $_POST["business"];
-				$services = $this->commonDatabase->get_cond("ispa_services","added_by='$identifier' AND status='1' order by id DESC");
+				$services = $this->commonDatabase->get_cond("ispa_services","added_by='$identifier' AND status='1' AND avail='1' order by id DESC");
 				if ($services) {
 					$serv = "";
 					foreach ($services as $service) {	
@@ -823,7 +863,7 @@ class Business extends CI_Controller {
 					$app_time = 0;					
 					$serv_amnt = 0;					
 					foreach ($ap_services as $ap_service) {
-						$serv  = $this->commonDatabase->get_data("ispa_services",1,false,"id",$ap_service["service_id"]);						
+						$serv  = $this->commonDatabase->get_data("ispa_services",1,false,"id",$ap_service["service_id"], "status", 1);						
 						if ($serv) {														
 							$app_time += $serv[0]["duration"]; 
 							$serv_amnt += $serv[0]["cost"];
