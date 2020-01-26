@@ -79,6 +79,50 @@ check_box = (el = '[type="checkbox"]') =>{
 		}
 	})
 }
+let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callback = (res = false) =>{ console.log(res);}) =>{	
+	if (config.url != "") {		
+		let extra = {};
+		if (!config.type) {
+			config.type = "POST";
+		}				
+		if (config.process != undefined && !config.process) {
+			extra = {
+				contentType: false,       
+				cache: false,             
+				processData: false
+			};
+		}		
+		$.ajax({
+			url: config.url,
+			type: config.type,
+			data: data,	
+			extra,		
+			complete:function(){
+				loading(false);
+			},
+			success:function(response){
+				if (response.status) {
+					callback(response.m);							
+				}else{
+					alert(response.m,5000,"error");
+				}
+			},
+			error:function(){
+				internet_error();
+			}
+		})
+	}
+}
+const copyText = (ele, m) => {  
+  $(`.${ele}`).select();
+  document.execCommand('copy');
+  $(`.${ele}`).blur();
+  
+  if (get_length(m) > 0) {
+  	notify(m);
+  }
+};
+
 $(document).ready(() =>{
 	check_box();
 })

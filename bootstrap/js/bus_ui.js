@@ -17,7 +17,7 @@ const menu = () =>{
 	$(".menu-item").each(function(){
 		$(this).click(function(){
 			var item = $(this).attr("data-menu");
-			if (item) {				
+			if (item && item != "clients") {				
 				var data = {item: item, type: "business"};
 				trigger_menu("close");	
 				fetch(data, {url: "menu_item"}, (res = false) =>{
@@ -27,7 +27,7 @@ const menu = () =>{
 
 						$(".ispa-area").html(res);
 						if (item === "appointments") {
-
+							bus_calendar();
 						}else if(item === "notifications"){
 							notif();
 						}
@@ -141,8 +141,20 @@ let bus_manage = () =>{
 		$("#manage-servs").hide();
 	})
 
+	$(".close-wds").click(function(){
+		$("#wds").hide();
+	})
+	$(".cl-list").click(function(){
+		$(".bus-manage").hide();
+	})
+	$(".cls-prefs").click(function(){
+		$("#prefs").hide();
+	})
+
 	profile();
 	mg_s();	
+	wds();
+	prefs();	
 }
 let loading = function(state = false,wid = false){			
 	var loader = $(".main-loader");
@@ -177,41 +189,6 @@ let notify = function(text = false,time = false,type = false,sound = false){
 	}		
 }
 
-let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callback = (res = false) =>{ console.log(res);}) =>{	
-	if (config.url != "") {		
-		let extra = {};
-		if (!config.type) {
-			config.type = "POST";
-		}				
-		if (config.process != undefined && !config.process) {
-			extra = {
-				contentType: false,       
-				cache: false,             
-				processData: false
-			};
-		}		
-		$.ajax({
-			url: config.url,
-			type: config.type,
-			data: data,	
-			extra,		
-			complete:function(){
-				loading(false);
-			},
-			success:function(response){
-				if (response.status) {
-					callback(response.m);							
-				}else{
-					alert(response.m,5000,"error");
-				}
-			},
-			error:function(){
-				internet_error();
-			}
-		})
-	}
-}
-
 /* manage services*/
 let editing_item = false;
 let mg_s = () =>{
@@ -225,7 +202,7 @@ let mg_s = () =>{
 		}
 	})
 
-	$(".save-serv").bind("click", add_serv)
+	$(".save-serv").bind("click", add_serv);
 
 	$(".edit-serv").each(function(){
 		$(this).click(function(){
@@ -309,6 +286,57 @@ let update_s = () =>{
 		notify("Kindly enter a valid service name : at least 3 characters long");
 	}	
 }
+let wds = ()=>{
+	$(".wd-ind").each(function(){
+		$(this).click(function(){
+			var day = $(this).parent().parent().attr("data-day");
+			if ($(this).hasClass("active")) {
+				fetch({day: day, action: "remove"}, {url: "wdys"}, (res = false) =>{
+					$(`.wd[data-day="${day}"] > div > .wd-ind`).removeClass("active");
+					$(`.wd[data-day="${day}"] > div > .wd-hrs`).html(" - ");
+				});
+			}else{
+				$(".wd-settings").attr("data-day", day);
+				$(".wd-settings").show();
+
+				$(".save-wds").unbind();
+				$(".save-wds").bind("click", s_wds);
+			}
+		})
+	})
+	$(".close-wd-settings").click(function(){
+		$(".cls-h").val("");
+		$(".cls-h").val("");
+		$(".wd-settings").removeAttr("data-day");
+		$(".wd-settings").hide();
+	})
+}
+let s_wds = ()=>{
+	var start = $(".opn-h").val();
+	var end = $(".cls-h").val();
+	var day = $(".wd-settings").attr("data-day");
+
+	if (start != "") {
+		if (end != "") {
+			if (day) {
+				fetch({day: day, action: "add", start: start, end: end}, {url: "wdys"}, ({hours}) =>{
+					if (hours) {
+						$(".cls-h").val("");
+						$(".cls-h").val("");
+						$(".wd-settings").removeAttr("data-day");
+						$(".wd-settings").hide();
+						$(`.wd[data-day="${day}"] > div > .wd-ind`).addClass("active");
+						$(`.wd[data-day="${day}"] > div > .wd-hrs`).html(hours);
+					}
+				});
+			}
+		}else{
+			notify("Kindly select closing hours.")
+		}
+	}else{
+		notify("Kindly select opening hours.")
+	}
+}
 let serv_cont =  ({ name = "", desc = "", cost = "", dur = "", avail = false })=>{
 	$(".service-name").val(name);
 	$(".service-desc").val(desc);
@@ -336,6 +364,30 @@ let get_serv = () =>{
 
 	return {name, desc, cost, dur, avail};
 }
+
+let prefs = () =>{
+	$(".pre-sw").each(function(){
+		$(this).on("change", function(){
+			var it = $(this);
+			var item = $(this).parent().parent().parent().parent().attr("id");
+			var val = $(this).val();
+			fetch({item: item, value: val}, {url: "save_pref"}, (res) =>{
+				if (res != "Invalid access" && res) {
+					notify("Settings saved succesfully.");
+				}else{
+					if (val == "false" || val == false) {
+						$(it).val(true);						
+						$(it).attr("checked", "checked");										
+					}else{
+						$(it).val(false);		
+						$(it).removeAttr("checked");
+						notify("Invalid preference selected.");
+					}					
+				}
+			})
+		})
+	})
+}
 let notif = () =>{
 	$(".notif-item").each(function(){
 		$(this).click(function(){
@@ -362,6 +414,120 @@ let notif = () =>{
 	})
 }
 
+bus_calendar = function(){
+	$(".cal-more").click(function(){
+		if ($(".cal").is(":visible")) {
+			$(".cal").slideUp("fast");
+			$(this).children("i").html("expand_more");
+		}else{
+			$(".cal").slideDown("fast");
+			$(this).children("i").html("expand_less");
+		}
+	})
+	$(".cal-cur").click(function(){
+		if ($(".cal").is(":visible")) {
+			$(".cal").slideUp("fast");
+			$(".cal-more").children("i").html("expand_more");
+		}else{
+			$(".cal").slideDown("fast");
+			$(".cal-more").children("i").html("expand_less");
+		}
+	})
+	$(".cal-next").click(function(){
+		var cur_date = $(".appointments-calendar").attr("data-day");
+		if (cur_date) {
+			get_day(cur_date,"next");
+		}
+	})
+	$(".cal-prev").click(function(){
+		var cur_date = $(".appointments-calendar").attr("data-day");
+		if (cur_date) {
+			get_day(cur_date,"prev");
+		}
+	})
+	cal_dates = function(){
+		$(".cal-date:not(.past)").each(function(){
+			$(this).click(function(){
+				date = $(this).attr("data-date");
+				if (date) {
+					get_day(date,"cur");
+				}
+			})
+		})
+	}
+	cal_dates();
+	bus_appointment();
+}
+bus_appointment = function(){
+	$(".bus-appoint-back").click(function(){
+		$(".bus-appointment").hide();
+	})
+	day_func = function(){
+		/*$(".day-group").each(function(){
+			$(this).click(function(){
+				var item = $(this).attr("data-item");
+				if (item) {
+					bus_get(item);
+				}
+			})
+		})*/
+	}
+	day_func();
+	$(".appoint-sms").click(function(){
+		item = $(".bus-appointment").attr("data-user");
+		if (item) {			
+			get_menu("chats","client",item);
+			$(".material-tooltip").hide();
+		}
+	})
+	$(".app-conf").click(function(){
+		item = $(".bus-appointment").attr("data-appointment");
+		if (item && confirm("Confirm this appointment?")) {
+			confirm_app(item);
+			$(".material-tooltip").hide();
+		}
+	})
+	$(".app-canc").click(function(){
+		note = "";
+		note = prompt("Cancel this appointment?\nLeave a note for your client");
+		item = $(".bus-appointment").attr("data-appointment");		
+		if (get_length(note) >= 3 && item) {
+			cancel_app(item,note);
+			$(".material-tooltip").hide();
+		}else{
+			notify("Kindly let the client know why the appointment is being cancelled.")
+		}
+	})
+	$(".app-miss").click(function(){		
+		item = $(".bus-appointment").attr("data-appointment");		
+		if (item) {
+			miss_app(item);
+			$(".material-tooltip").hide();
+		}
+	})
+	ispa_checkout();
+}
+ispa_checkout = function(){
+	$(".checkout").click(function(){		
+		item = $(".bus-appointment").attr("data-appointment");		
+		if (item) {
+			checkout_get(item);
+			$(".material-tooltip").hide();
+		}
+	})
+	$(".checkout-close").click(function(){
+		$(".ispa-checkout").hide();
+	})
+	$(".checkout-go").click(function(){
+		var item = $(".ispa-checkout").attr("data-appointment");
+		var disc = Number($(".checkout-disc").val());		
+		if (item && disc == 0) {
+			checkout(item,disc)
+		}
+	})
+}
+
 $(document).ready(() =>{
 	menu();
+	bus_calendar();
 })

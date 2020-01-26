@@ -118,6 +118,7 @@ get_menu = function(item = false, type = "client", callback = false){
 					$(".app-content").html(response.m);
 					if(item === "home"){
 						home_tab();
+						apts()
 					}else if (item === "notifications") {
 						notif();						
 					}else if(item === "account"){
@@ -485,7 +486,9 @@ submit_appointment =  function(data = false,editing = false){
 			},
 			success:function(response){
 				if (response.status) {
-					//location.reload();					
+					clear_appt();
+					$("#ispa-appt").hide();
+					$(".nav-tab.active").click();
 				}else{
 					notify(response.m, 8000);
 				}
@@ -844,7 +847,7 @@ get_appointment = function(item = false){
 					$(".service-list").html(response.m.services);
 					$(".date-sel").html(response.m.time);
 					$(".payable").html(get_booked().amnt);					
-					$("#appt-go").hide();
+					$("#appt-go").addClass("hidden");
 					$(".appt-bar").attr("class","app-bar appt-bar");
 
 					$(".date-sel").addClass("editable");

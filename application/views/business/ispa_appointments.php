@@ -227,4 +227,3 @@
 		</div>		
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
-

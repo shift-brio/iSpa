@@ -150,7 +150,7 @@
 			<div class="appt-in">
 				<div class="input-label tot-t">Total Amount</div>
 				<div class="tot-a">
-					Ksh. 400.00
+					
 				</div>	
 			</div>	
 			<div class="pay-vendor">

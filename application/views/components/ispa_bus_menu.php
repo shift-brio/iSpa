@@ -1,5 +1,5 @@
 <?php
-	$prof = base_url("uploads/profiles/default_prof_white.png"); 
+	$prof = base_url("uploads/profiles/default_prof.png"); 
 	$bus = common::getBus($_SESSION["business"]);				
 	if ($bus) {
 		$prof = base_url("uploads/profiles/".$bus["profile"]);				
@@ -52,17 +52,17 @@
 				<div class="menu-notifs n-indic"><?php echo $count_notifs; ?></div>
 				<div class="menu-name">Notifications</div>
 			</div>
-			<div data-item="chats" class="menu-item  tooltipped" data-menu="chats" data-tooltip="Notifications" data-position="top">
-				<i class="material-icons menu-icon">chat</i>
-				<div class="menu-notifs chat-notif"><?php echo $count_chats; ?></div>	
-				<div class="menu-name">Messages</div>
-			</div>					
+			<!-- <div data-item="chats" class="menu-item  tooltipped" data-menu="chats" data-tooltip="Notifications" data-position="top">
+								<i class="material-icons menu-icon">chat</i>
+								<div class="menu-notifs chat-notif"><?php echo $count_chats; ?></div>	
+								<div class="menu-name">Messages</div>
+							</div>	 -->				
 			<div data-item="wallet" class="menu-item  tooltipped" data-menu="wallet" data-tooltip="Notifications" data-position="top">
 				<i class="material-icons menu-icon">credit_card</i>	
 				<div class="menu-name">Subscription</div>
 			</div>
 			<a href="<?php echo base_url(""); ?>">
-				<div data-item="business" class="menu-item  tooltipped" data-menu="shops" data-tooltip="Business portal" data-position="top">
+				<div data-item="business" class="menu-item  tooltipped" data-menu="clients" data-tooltip="Business portal" data-position="top">
 					<i class="material-icons menu-icon">arrow_back</i>	
 					<div class="menu-name">Client account</div>
 				</div>

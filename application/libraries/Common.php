@@ -365,7 +365,7 @@
 						$a_time = strtotime(date("d-m-Y",$t_date));
 						$appointments = $CI->commonDatabase->get_cond("ispa_appointments","app_time >='$a_time' AND app_time < '$x_day'");
 						if ($appointments) {
-							$ap_cl = "app";
+							$ap_cl = "seld";
 						}	else{
 							$ap_cl = "";
 						}		
@@ -724,7 +724,7 @@
 	static function busServices($bus = false){
 		if ($bus) {
 			$CI = &get_instance();
-			$services = $CI->commonDatabase->get_data("ispa_services",false,false,"added_by",$bus);
+			$services = $CI->commonDatabase->get_data("ispa_services",false,false,"added_by",$bus,"status", 1, "avail", 1);
 			$sl = "";
 			if ($services) {				
 				foreach ($services as $service) {
@@ -1042,6 +1042,13 @@
 		}
 		return $s;
 	}
+	static function checkPay($user = false, $amount = false){
+		if ($user && $amount) {
+			$CI = &get_instance();
+			/* implement mpesa */
+		}
+		return false;
+	}
 	static function renderReview($rev = false){
 		if ($rev) {
 			$CI = &get_instance();
@@ -1140,7 +1147,7 @@
 				$ss .= sizeof($services) == 1 ? $s["name"] : $serv["service_id"] == $services[sizeof($services) -1]["service_id"] ? $s["name"] : $s["name"].", ";
 			}
 			return '
-					<div class="ispa-appointments-item d-done click-btn '.$status.'" data-item="'.$appointment["identifier"].'">
+					<div class="ispa-appointments-item click-btn '.$status.'" data-item="'.$appointment["identifier"].'">
 						<div class="appointment-timing">
 							<div class="timing-item">'.date("M",$appointment["app_time"]).'</div>
 							<div class="timing-item">'.date("jS",$appointment["app_time"]).'</div>
@@ -1160,8 +1167,7 @@
 						<div class="appointment-tools">
 							<button data-tooltip="View appointment" data-position="left" class="appointment-tool tooltipped click-btn">
 								<i class="material-icons">more_horiz</i>
-							</button>
-							'.$cancel.'
+							</button>							
 						</div>
 					</div>			
 					';

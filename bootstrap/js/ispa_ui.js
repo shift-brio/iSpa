@@ -1,8 +1,7 @@
 $(document).ready(function(){
 	drop_down();tool_tip();menu();explorer();ispa_new();ispa_bus();ispa_client_menu();
 	ispa_notifs();ispa_chats();ispa_wallet();ispa_help();ispa_home();new_appointment();ispa_mapping();ispa_sign_up();
-	ispa_business();copyng();account_settings();ispa_appointment();next_appointment();bus_calendar();
-	bus_appointment();bus_editor();ispa_staff();ispa_showcase();ispa_login();
+	ispa_business();copyng();account_settings();ispa_appointment();next_appointment();ispa_login();
 	$(".ispa-help-chat").click(function(){
 		get_menu("chats","client","ispa");
 		$(".menu-item").removeClass("active");
@@ -1082,118 +1081,6 @@ next_appointment = function(){
 		}
 	})
 }
-bus_calendar = function(){
-	$(".cal-more").click(function(){
-		if ($(".cal").is(":visible")) {
-			$(".cal").slideUp("fast");
-			$(this).children("i").html("expand_more");
-		}else{
-			$(".cal").slideDown("fast");
-			$(this).children("i").html("expand_less");
-		}
-	})
-	$(".cal-cur").click(function(){
-		if ($(".cal").is(":visible")) {
-			$(".cal").slideUp("fast");
-			$(".cal-more").children("i").html("expand_more");
-		}else{
-			$(".cal").slideDown("fast");
-			$(".cal-more").children("i").html("expand_less");
-		}
-	})
-	$(".cal-next").click(function(){
-		var cur_date = $(".appointments-calendar").attr("data-day");
-		if (cur_date) {
-			get_day(cur_date,"next");
-		}
-	})
-	$(".cal-prev").click(function(){
-		var cur_date = $(".appointments-calendar").attr("data-day");
-		if (cur_date) {
-			get_day(cur_date,"prev");
-		}
-	})
-	cal_dates = function(){
-		$(".cal-date:not(.past)").each(function(){
-			$(this).click(function(){
-				date = $(this).attr("data-date");
-				if (date) {
-					get_day(date,"cur");
-				}
-			})
-		})
-	}
-	cal_dates();
-	bus_appointment();
-}
-bus_appointment = function(){
-	$(".bus-appoint-back").click(function(){
-		$(".bus-appointment").hide();
-	})
-	day_func = function(){
-		$(".day-group").each(function(){
-			$(this).click(function(){
-				var item = $(this).attr("data-item");
-				if (item) {
-					bus_get(item);
-				}
-			})
-		})
-	}
-	day_func();
-	$(".appoint-sms").click(function(){
-		item = $(".bus-appointment").attr("data-user");
-		if (item) {			
-			get_menu("chats","client",item);
-			$(".material-tooltip").hide();
-		}
-	})
-	$(".app-conf").click(function(){
-		item = $(".bus-appointment").attr("data-appointment");
-		if (item && confirm("Confirm this appointment?")) {
-			confirm_app(item);
-			$(".material-tooltip").hide();
-		}
-	})
-	$(".app-canc").click(function(){
-		note = "";
-		note = prompt("Cancel this appointment?\nLeave a note for your client");
-		item = $(".bus-appointment").attr("data-appointment");		
-		if (get_length(note) >= 3 && item) {
-			cancel_app(item,note);
-			$(".material-tooltip").hide();
-		}else{
-			notify("Kindly let the client know why the appointment is being cancelled.")
-		}
-	})
-	$(".app-miss").click(function(){		
-		item = $(".bus-appointment").attr("data-appointment");		
-		if (item) {
-			miss_app(item);
-			$(".material-tooltip").hide();
-		}
-	})
-	ispa_checkout();
-}
-ispa_checkout = function(){
-	$(".checkout").click(function(){		
-		item = $(".bus-appointment").attr("data-appointment");		
-		if (item) {
-			checkout_get(item);
-			$(".material-tooltip").hide();
-		}
-	})
-	$(".checkout-close").click(function(){
-		$(".ispa-checkout").hide();
-	})
-	$(".checkout-go").click(function(){
-		var item = $(".ispa-checkout").attr("data-appointment");
-		var disc = Number($(".checkout-disc").val());		
-		if (item && disc == 0) {
-			checkout(item,disc)
-		}
-	})
-}
 bus_editor = function(){
 	$(".bus-edit.row").click(function(e){
 		if ($(e.target).is(".bus-edit") || $(e.target).is(".bus-edit-tool")) {
@@ -1697,7 +1584,17 @@ let apt_funcs = function(){
 		$("#ispa-appt").hide();
 	})
 	$(".pay-btn").click(() =>{
-		$("#ispa-pay").show();
+		$(".tot-a").html("");
+		var {amnt} = get_booked();
+		if (amnt > 0) {
+			$("#ispa-pay").show();
+			$(".tot-a").html(`Ksh. ${amnt}`);
+		}else{
+			notify("Kindly select a service first.");
+		}
+	})
+	$(".copy-ac").click(function(){
+		copyText("acc-no", "Till Number copied successfully.");
 	})
 	$(".close-pay").click((e) =>{			
 		$("#ispa-pay").hide();
@@ -1714,6 +1611,25 @@ let apt_funcs = function(){
 	})
 	$("#appt-go").click(function(){				
 		make_appointment();
+	})
+	$("#can-appt").click(function(){
+		var item = $("#ispa-appt").attr("data-edited");
+		if (item) {
+			prompt(true,"Are you sure you want to delete this appointment?", (res = false) =>{
+				if (res) {
+					fetch({item: item}, {url: "rem_apt"}, (res = false) =>{
+						if (res) {
+							clear_appt();
+							$("#ispa-appt").hide();
+							$(".nav-tab.active").click();
+						}
+					})
+				}else{
+					prompt(false);
+				}
+			}, 
+			{n: "Cancel", p: "Delete"});			
+		}
 	})
 }
 book_sel = function(){
@@ -1743,6 +1659,8 @@ let clear_appt = function(){
 	$(".date-sel").addClass("editable");
 	$(".book-note").show();
 	$(".pay-btn").show();
+	$("#appt-go").removeClass("hidden");
+	$("#can-appt").addClass("hidden");
 }
 calendar = function(){
 	init_calendar = function(bus = false, month = false, year = false){

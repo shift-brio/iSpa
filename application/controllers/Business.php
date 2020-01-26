@@ -248,7 +248,7 @@ class Business extends CI_Controller {
 	}	
 	public function add_service(){
 		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin")) {
 			if (isset($_POST["name"]) && isset($_POST["desc"]) && isset($_POST["dur"]) && isset($_POST["cost"]) && isset($_POST["avail"]) && mb_strlen($_POST["name"]) > 3 && $_POST["dur"] > 0)  {
 
 				$data = [
@@ -276,7 +276,7 @@ class Business extends CI_Controller {
 	}
 	public function get_service(){
 		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"]) && isset($_POST["item"])) {
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["item"])) {
 			$ch_s = $this->commonDatabase->get_data("ispa_services", 1, false, "id", $_POST["item"], "added_by", $_SESSION["business"]);
 
 			if ($ch_s) {
@@ -298,7 +298,7 @@ class Business extends CI_Controller {
 	}	
 	public function update_service(){
 		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"])) {
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin")) {
 			if (isset($_POST["name"]) && isset($_POST["desc"]) && isset($_POST["dur"]) && isset($_POST["cost"]) && isset($_POST["avail"]) && mb_strlen($_POST["name"]) > 3 && $_POST["dur"] > 0 && isset($_POST["editing"]))  {
 
 				$data = [
@@ -330,7 +330,7 @@ class Business extends CI_Controller {
 	}
 	public function del_service(){
 		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"]) && isset($_POST["item"])) {
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["item"])) {
 
 			$ch_s = $this->commonDatabase->get_data("ispa_services", 1, false, "id", $_POST["item"], "added_by", $_SESSION["business"]);
 			$shop = $_SESSION["business"];
@@ -362,6 +362,112 @@ class Business extends CI_Controller {
 			}else{
 				$r["m"] = "Service not found.";
 			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function wdys(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["day"]) && isset($_POST["action"]) && in_array(strtolower($_POST["day"]), $this->config->item("days"))) {		
+
+			$shop = common::getBus($_SESSION["business"]);
+			$action = $_POST["action"];
+			$day = ucfirst($_POST["day"]);
+			$days = $this->config->item("days");
+			$updated = false;
+
+			if ($shop) {
+				$w_days = is_array(json_decode($shop["working"])) ? json_decode($shop["working"]): json_decode(json_encode([]));				
+
+				if ($action == "add") {
+					if (isset($_POST["start"]) && isset($_POST["end"])) {	
+						$in = json_decode(json_encode([
+							"day" => $_POST["day"],
+							"start" =>  date("H:i", strtotime(date("d-m-Y ").$_POST["start"])),
+							"end" => date("H:i", strtotime(date("d-m-Y ").$_POST["end"])),
+						]));					
+						$in_d = false;
+						$n_in = false;
+ 						for ($i = 0; $i < sizeof($w_days); $i++) { 
+ 							if (strtolower($w_days[$i]->day) == strtolower($in->day)) {
+ 								$w_days[$i]->start = $in->start;
+ 								$w_days[$i]->end = $in->end;
+ 							}else{
+ 								array_push($w_days, $in);
+ 							}
+ 						}
+
+
+						$updated = true;
+						$r["status"] = true;
+ 						$r["m"] = [
+ 							"hours" => date("h:i A", strtotime(date("d-m-Y ").$_POST["start"]))." - ".date("h:i A", strtotime(date("d-m-Y ").$_POST["end"]))
+ 						];
+					}else{
+						$r["m"] = "Kindly check working hours values.";
+					}
+				}else{
+					$in = json_decode(json_encode([
+							"day" => $_POST["day"]							
+						]));
+
+					$updated = true;
+					$r["status"] = true;
+
+					for ($i = 0; $i < sizeof($w_days); $i++) { 
+						if (strtolower($w_days[$i]->day) == strtolower($in->day)) {
+							unset($w_days[$i]);
+						}
+					}					
+				}
+				
+
+				if ($updated) {					
+					if (sizeof($w_days) > 0) {	
+						$data = [
+							"working" => json_encode($w_days)
+						];				
+						$this->commonDatabase->update("ispa_business",$data, "identifier", $shop["identifier"]);	
+					}else{
+						$r["status"] = false;
+						$r["m"] = "Kindly set at least one working day for your shop.";
+					}	
+				}		
+			}else{
+				$r["m"] = "Invalid access";
+			}			
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function save_pref(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["value"]) && isset($_POST["item"])) {		
+
+			$shop = common::getBus($_SESSION["business"]);
+			$value = $_POST["value"] == "false" ? 0: 1;
+			$item = $_POST["item"];	
+			$data = [];
+
+			if ($item == "con") {
+				$data = [
+					"app_con" => $value,					
+				];
+			}elseif($item == "cash"){
+				$data = [
+					"app_cash" => $value,					
+				];
+			}else{
+				$r["status"] = true;
+				$r["m"] = "Invalid access";
+			}	
+			if (sizeof($data) > 0) {
+				$this->commonDatabase->update("ispa_bus_prefs", $data, "business", $_SESSION["business"]);
+				$r["status"] = true;
+				$r["m"] = "Success";
+			}		
 		}else{			
 			$r["m"] = "Sorry, you are not authorized to perform this action.";
 		}
@@ -647,7 +753,7 @@ class Business extends CI_Controller {
 						$revs .= common::renderReview($review);
 					}
 				}
-				$services = $this->commonDatabase->get_data("ispa_services",false,false,"added_by",$identifier);
+				$services = $this->commonDatabase->get_data("ispa_services",false,false,"added_by",$identifier, "status", 1, "avail", 1);
 				$serv = "";				
 				if ($services) {
 					foreach ($services as $service) {

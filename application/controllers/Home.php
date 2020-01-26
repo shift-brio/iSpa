@@ -298,67 +298,63 @@ class Home extends CI_Controller {
 		common::emitData($r);
 	}	
 	public function submit_appointment(){
+		$r['status'] = false;
 		if (isset($_POST["shop"]) && isset($_SESSION["user"]) && isset($_POST["note"]) && isset($_POST["services"]) && is_array($_POST["services"]) && isset($_POST["services"]["items"]) && isset($_POST["staff"]) && isset($_POST["time"]) && common::getBus($_POST["shop"])) {
 			
+			$user = $_SESSION["user"]->ispa_id;
 			$shop = $_POST["shop"];
+			$bus  = common::getBus($shop);	
 			$note = $_POST["note"];
 			$services = $_POST["services"];
 			$location = "shop";
+
+			$prefs = $this->commonDatabase->get_data("ispa_bus_prefs", 1, false, "business", $shop);
+			if ($prefs) {
+				$prefs = json_decode(json_encode($prefs[0]));
+			}else{
+				$prefs = json_decode(json_encode([
+					"app_con" => 1,
+					"app_cash" => 1
+				]));
+
+				/* update preferences for this shop */
+			}
+
 			$service_items = isset($_POST["services"]["items"]) && is_array($_POST["services"]["items"]) ? $_POST["services"]["items"] : false;
 			$staff = $_POST["staff"];
-			$payment = $_POST['payment'];
-
-			
 			$time = common::dateString($_POST["time"]);
-			$editing = false;
-			if (isset($_POST["editing"]) && ($_POST["editing"] == true || $_POST["editing"] == "true") && isset($_POST["edited"])) {
-				$editing = $_POST["edited"];				
-			}
-			if (sizeof($time) == 9) {
-				$start_time = $time[4]." ".$time[5];
-				$end_time = $time[7]." ".$time[8];
-				$app_day  = $time[0]." ".$time[1]." ".$time[2]." ".$start_time;
-				$dur = 0;
-				$amnt = 0;
-				$all_services_available = true;
-				$serv_data = [];
 
-				$ap_identifier = md5(sha1($staff.$app_day.$shop.$note).time());
-				if ($editing) {
-					$ap_identifier = $editing;
-				}
-				foreach ($service_items as $item) {					
-					$service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$item["id"],"added_by",$shop, "status", 1,"avail", 1);
-					if (!$service) {
-						$all_services_available = false;
-					}else{
-						$dur  +=  $service[0]["duration"] * 60;
-						$amnt += $service[0]["cost"];
-						array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier]);
-					}
-				}
-				$slot = common::checkSlot($app_day,$dur,$staff,$shop,$editing);
-				if ($slot) {
-					$user = $_SESSION["user"]->ispa_id;					
-					if ($all_services_available) {
-						$wallet = wallet::balance($user);
-						if ($wallet->balance >= $amnt) {
-							$avail = true;
-						}else{
-							if ($payment == "cash") {
-								$avail = true;
+			if ($bus) {
+				if ($service_items) {
+					if (sizeof($time) == 9) {
+						$start_time = $time[4]." ".$time[5];
+						$end_time   = $time[7]." ".$time[8];
+						$app_day    = $time[0]." ".$time[1]." ".$time[2]." ".$start_time;
+
+						$dur  = 0;
+						$amnt = 0;
+						$all_services_available = true;
+						$serv_data = [];
+
+						$ap_identifier = md5(sha1($staff.$app_day.$shop.$note).time());
+
+						/* check if all services are available */
+						foreach ($service_items as $item) {					
+							$service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$item["id"],"added_by",$shop, "status", 1,"avail", 1);
+							if (!$service) {
+								$all_services_available = false;
 							}else{
-								$avail = false;
+								$dur  +=  $service[0]["duration"] * 60;
+								$amnt += $service[0]["cost"];
+								array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier]);
 							}
 						}
-						if ($avail) {							
-							if (wallet::chargeApp($user,$amnt,$ap_identifier,$shop,$editing) || $payment =="cash") {
-								if (!$editing) {
-									$sett = $this->commonDatabase->get_data("ispa_bus_prefs",1,false,"business",$shop);
-									$confirmed = 0;
-									if ($sett && $sett[0]["app_con"] == 1) {
-										$confirmed = 1;
-									}
+						$slot = common::checkSlot($app_day,$dur,$staff,$shop, false);
+
+						if ($slot) {
+							if ($all_services_available) {
+								$payment = common::checkPay($user, $amnt);
+								if ($prefs->app_cash == 1 || ($prefs->app_cash == 0 && $payment)) {
 									$ap_data = [
 										"user" => $user,
 										"staff_id" => $staff,
@@ -366,71 +362,59 @@ class Home extends CI_Controller {
 										"identifier" => $ap_identifier,
 										"app_time" => strtotime($app_day),
 										"date_added" => time(),
-										"payment_status" => 0,
-										"payment_method" => $payment,
+										"payment_status" => $payment ? 1 : 0,
+										"payment_method" => $payment ? 1 : 0,
 										"place" => $location,
 										"status" => 0,
-										"confirmed" => $confirmed
+										"confirmed" => $prefs->app_con
 									];
-									if ($payment == "cash" && $sett[0]["app_cash"] == 0) {
-										$r['status'] = false;
-										$r["m"] = "This shop does not allow cash payment.";
-									}else{
-										$this->commonDatabase->add("ispa_appointments",$ap_data);
-										$r['status'] = true;
-										$r["m"] = "Appointment made.";
-										/*handle notifiations*/
-										foreach ($serv_data as $sd) {
-											$this->commonDatabase->add("ispa_appointment_services",$sd);
-										}
-									}									
-								}else{
-									$ch_ap = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$editing,"status",0,"confirmed",0);
-									if ($ch_ap) {
-										$ap_data = [										
-											"staff_id" => $staff,										
-											"app_time" => strtotime($app_day),
-											"date_added" => time(),
-											"payment_status" => $payment == "cash" ? 0 : 1,
-											"payment_method" => $payment,
-											"place" => $location,
-											"status" => 0,
-											"confirmed" => 0
+
+									$this->commonDatabase->add("ispa_appointments",$ap_data);		
+
+									/* appointment services */
+									foreach ($serv_data as $sd) {
+										$this->commonDatabase->add("ispa_appointment_services",$sd);
+									}	
+
+									/* handle notifications */
+									if ($prefs->app_con == 1) {
+										$n_data = [
+											"user" => $user, 
+											"title" => "Appointment confirmation",
+											"content" => "Your appointment with ".$bus["name"]." scheduled for ".(date("d-m-Y h:i a", strtotime($app_day)))." has been confirmed.",
+											"date_added" => time()										
 										];
-										$this->commonDatabase->update("ispa_appointments",$ap_data,"identifier",$editing);
-										$r['status'] = true;
-										$r["m"] = "Updated.";
-										$this->commonDatabase->delete("ispa_appointment_services","appointment_id",$editing);
-										foreach ($serv_data as $sd) {
-											$this->commonDatabase->add("ispa_appointment_services",$sd);
-										}
-									}else{
-										$r['status'] = false;
-										$r['m'] = "Appointment not found.";
+										$this->commonDatabase->add("ispa_notifications",$n_data);
 									}
+
+									/* handle transaction */
+									if ($payment) {
+										
+									}
+
+									/* complete */
+									$r['status'] = true;
+									$r["m"] = "Appointment submitted succesfully.";
+								}else{
+									$r['m'] = "Sorry, this shop does not allow submission of an appointments without payment. Kindly pay for the appointment via M-Pesa.";
 								}
+
 							}else{
-								$r['status'] = false;
-								$r['m'] = "An error occured while processing payment.";
+								$r['m'] = "Some services selected are not currently available for booking.";
 							}
 						}else{
-							$r['status'] = false;
-							$r['m'] = "You do not have enough balance in your wallet to complete this transaction";
+							$r['m'] = "The time slot selected has already been booked.";
 						}
 					}else{
-						$r['status'] = false;
-						$r['m'] = "Some services you booked are unavailable.";
+						$r['m'] = "Invalid time format.";
 					}
 				}else{
-					$r['status'] = false;
-					$r['m'] = "The time selected has already been booked.";
+					$r['m'] = "Kindly select at least one service.";
 				}
 			}else{
-				$r['status'] = false;
-				$r['m'] = "Invalid time format.";
-			}
+				$r['m'] = "Shop not found.";
+			}		
 		}else{
-			$r['status'] = false;
 			$r['m'] = "Invalid access.";
 		}
 		common::emitData($r);
@@ -455,14 +439,17 @@ class Home extends CI_Controller {
 		if (isset($_SESSION["user"]) && isset($_POST["item"])) {
 			$user = $_SESSION["user"]->ispa_id;
 			$item = $_POST["item"];
-			$ch_item = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$item,"user",$user,"status",0);
+			$time = time();
+			$ch_item = $this->commonDatabase->get_cond("ispa_appointments",1,false,"identifier",$item,"user",$user,"status",0, "app_time");
+			$ch_item = $this->commonDatabase->get_cond("ispa_appointments", "identifier='$item' AND user='$user' AND payment_status='0' AND app_time > '$time' limit 1");
 			if ($ch_item) {
 				$this->commonDatabase->delete("ispa_appointments","identifier",$item);
 				$this->commonDatabase->delete("ispa_appointment_services","appointment_id",$item);
 				$r["status"] = true;
+				$r["m"] = "Deleted";
 			}else{
 				$r['status'] = false;
-				$r['m'] = "Appointment not found.";
+				$r['m'] = "Sorry, cannot delete this appointment at this time.";
 			}
 		}else{
 			$r['status'] = false;

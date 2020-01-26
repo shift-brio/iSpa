@@ -1,5 +1,15 @@
-<?php 
+<?php 	
 	$shop = $_SESSION["business"];
+	$prefs = $this->commonDatabase->get_data("ispa_bus_prefs", 1, false, "business", $shop);
+
+	if ($prefs) {
+		$prefs = $prefs[0];
+	}else{
+		$prefs = [
+			"app_con" => 1,
+			"app_cash" => 1
+		];
+	}
  ?>
 <div class="ispa-body">	
 	<div class="ispa">								
@@ -9,8 +19,7 @@
 		<div class="ispa-area">
 			<?php $this->load->view("business/ispa_appointments"); ?>
 		</div>
-		<?php $this->load->view("business/ispa_checkout"); ?>
-		<?php $this->load->view("business/bus_edit"); ?>
+		<?php $this->load->view("business/ispa_checkout"); ?>		
 		<?php $this->load->view("business/ispa_staff"); ?>				
 		<div class="ad-cont">
 			<div class="add-list">
@@ -71,7 +80,7 @@
 			</button>
 		</div>
 		<div class="manage-tools modal-tools">
-			<button class="modal-tool left click-btn close">
+			<button class="modal-tool left click-btn close cl-list">
 				<i class="material-icons">arrow_back</i>
 			</button>
 		</div>
@@ -194,22 +203,99 @@
 	</div>			
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
 
-<!-- manage-services -->
-<?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "wds"], true); ?>	
+<!-- working-days -->
+<?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "wds"], true); ?>
 	<div class="modal-body manage-mod-b">
 		<div class="modal-title">
 			Working Days
 		</div>
 		<div class="modal-content">
-			
+
+			<?php 
+				$bus = common::getBus($_SESSION["business"]);
+				$week_s = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+				$week_l = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+				if ($bus) {
+					$wds = json_decode($bus["working"]);
+					$days = [];					
+					foreach ($wds as $day) {
+						array_push($days, $day->day);
+					}					
+					for ($k=0; $k < sizeof($week_s); $k++) { 
+						$sel = false;
+						$start = "";
+						$end = "";
+						$cl = "";
+						$text = $week_l[$k];
+
+						if (sizeof($days) > 0) {
+							for ($i=0; $i < sizeof($days); $i++) { 
+								if ($days[$i] == $week_s[$k]) {
+									$sel = true;
+								}
+							}
+						}
+
+						if ($sel) {
+							$start = date("h:i A",strtotime(date("d-m-Y ").$day->start));
+							$end = date("h:i A",strtotime(date("d-m-Y ").$day->end));
+							$cl = "active";
+						}
+
+						echo '
+							<div class="wd" data-day="'.$week_s[$k].'">
+								<div class="wd-details">
+									<div class="wd-name">
+										'.$text.'
+									</div>
+									<div class="wd-hrs">
+										'.$start.' - '.$end.'						
+									</div>					
+								</div>
+								<div class="wd-tools">
+									<div class="wd-ind '.$cl.' click-btn">
+										<i class="material-icons">done</i>
+									</div>													
+								</div>
+							</div>
+						';
+					}
+				}
+			 ?>			
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close close-wds">
 			<i class="material-icons">arrow_back</i>
-		</button>		
+		</button>				
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
+
+<div class="wd-settings">
+	<div class="wd-cont">
+		<div class="wd-body">
+			<div class="modal-title"> Change working hours</div>
+
+			<div class="modal-content">
+				<div class="appt-in">
+					<label class="input-label">Opening</small></label>
+					<input type="time" placeholder="Opening" class="ispa-in browser-default opn-h">
+				</div>
+				<div class="appt-in">
+					<label class="input-label">Closing</small></label>
+					<input type="time" placeholder="Closing" class="ispa-in browser-default cls-h">
+				</div>
+			</div>
+		</div>
+		<div class="modal-tools">
+			<button class="modal-tool left click-btn close close-wd-settings">
+				<i class="material-icons">arrow_back</i>
+			</button>	
+			<button class="right click-btn serv-go save-wds">Save details</button>		
+		</div>
+	</div>
+</div>
 
 <!-- staff members -->
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "staff-m"], true); ?>	
@@ -252,11 +338,55 @@
 			Account Preferences
 		</div>
 		<div class="modal-content">
-			
+			<div class="pref" id="con">
+				<div class="pref-details">
+					<div class="pref-name">
+						Confirm appointments automatically
+					</div>
+					<div class="pref-det">
+						
+					</div>
+				</div>
+				<div class="pref-tool">
+					<div class="switch">
+						<label>	
+							<?php 
+								$con = $prefs["app_con"] == 1 ? "checked='checked'": ""; 
+								$con_s = $prefs["app_con"] == 1 ? true: false;
+							 ?>						
+							<input type="checkbox" class="pre-sw" value="<?php echo $con_s; ?>" <?php echo $con; ?>>
+							<span class="lever"></span>							
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="pref" id="cash">
+				<div class="pref-details">
+					<div class="pref-name">
+						Allow cash appointments
+					</div>
+					<div class="pref-det">
+						
+					</div>
+				</div>
+				<div class="pref-tool">
+					<div class="switch">
+						<label>	
+							<?php 								
+								$cash = $prefs["app_cash"] == 1 ? "checked='checked'": ""; 
+								$cash_s = $prefs["app_cash"] == 1 ? true: false;
+							 ?>						
+							<input type="checkbox" class="pre-sw" value="<?php echo $cash_s; ?>" <?php echo $cash; ?>>
+							<span class="lever"></span>							
+						</label>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close cls-prefs">
 			<i class="material-icons">arrow_back</i>
 		</button>		
 	</div>
