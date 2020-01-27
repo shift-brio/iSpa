@@ -504,6 +504,7 @@ bus_appointment = function(){
 			miss_app(item);
 			$(".material-tooltip").hide();
 		}
+		
 	})
 	ispa_checkout();
 }

@@ -1145,7 +1145,7 @@
 				$s = $CI->commonDatabase->get_data("ispa_services",1,false,"id", $serv["service_id"]);
 				$s = $s[0];
 				$ss .= sizeof($services) == 1 ? $s["name"] : $serv["service_id"] == $services[sizeof($services) -1]["service_id"] ? $s["name"] : $s["name"].", ";
-			}
+			}			
 			return '
 					<div class="ispa-appointments-item click-btn '.$status.'" data-item="'.$appointment["identifier"].'">
 						<div class="appointment-timing">
@@ -1171,6 +1171,7 @@
 						</div>
 					</div>			
 					';
+
 		}
 		return $appointment;
 	}	
