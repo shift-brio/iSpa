@@ -449,7 +449,7 @@ class Home extends CI_Controller {
 				$r["m"] = "Deleted";
 			}else{
 				$r['status'] = false;
-				$r['m'] = "Sorry, cannot delete this appointment at this time.";
+				$r['m'] = "Sorry, you cannot delete this appointment at this time.";
 			}
 		}else{
 			$r['status'] = false;

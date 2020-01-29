@@ -2,13 +2,7 @@
 	<div class="booking-calendar-cont row">
 		<div class="col s12 m12 l3"></div>
 		<div class="col s12 m12 l5 booking-calendar-body">						
-			<div class="calendar" data-month="<?php echo date("m") ?>" data-year="<?php echo date("Y") ?>">
-				<div class="calendar-details">
-					<button data-tooltip="Cancel" data-position="right" class=" material-icons tooltipped cal-tool close-calendar click-btn">close</button>								
-					<div class="calendar-name"><?php echo date("F Y") ?></div>
-					<button data-tooltip="Previous month" data-position="right" class=" material-icons tooltipped cal-tool click-btn prev-month">chevron_left</button>			
-					<button data-tooltip="Next month" data-position="left" class=" material-icons tooltipped cal-tool click-btn next-month">chevron_right</button>					
-				</div>
+			<div class="calendar" data-month="<?php echo date("m") ?>" data-year="<?php echo date("Y") ?>">				
 				<div class="calendar-days">
 					<div class="calendar-day">SUN</div>
 					<div class="calendar-day">MON</div>
@@ -30,7 +24,13 @@
 			</div>
 			<div class="book-suggests">
 				
-			</div>						
+			</div>	
+			<div class="calendar-details">
+				<button data-tooltip="Cancel" data-position="right" class=" material-icons tooltipped cal-tool close-calendar click-btn">arrow_back</button>								
+				<div class="calendar-name"><?php echo date("F Y") ?></div>
+				<button data-tooltip="Previous month" data-position="right" class=" material-icons tooltipped cal-tool click-btn prev-month">chevron_left</button>			
+				<button data-tooltip="Next month" data-position="left" class=" material-icons tooltipped cal-tool click-btn next-month">chevron_right</button>					
+			</div>					
 		</div>
 		<div class="col s12 m12 l4"></div>
 	</div>

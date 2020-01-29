@@ -1100,8 +1100,7 @@ html,.ispa-body{
   animation:zoomer .25s ease-out;
 }
 .toast,.material-tooltip{
-  border-radius: 1px !important;
-  padding: 5px !important;
+  border-radius: 5px !important;  
   height: auto !important;
   min-height: auto !important;
   min-width: 50px;  
@@ -1110,12 +1109,19 @@ html,.ispa-body{
   font-family: roboto, serif;
   text-align: left !important;
   font-size: 1.1rem !important;
-  background: #000 !important;  
+  background: #0d1317 !important;
+  padding: 0px !important;  
+  border: 2px solid #0d1317;
   margin-bottom: 0px !important;  
 }
-.material-tooltip > span, .material-tooltip{
-  background: #bea117 !important;
+.toast{
+  border-radius: 0px !important;
   border: none !important;
+  padding-left: 3px !important;
+}
+.material-tooltip > span{
+  background: #0d1317 !important;
+  padding: 8px !important;  
 }
 @media only screen and (max-width: 800px){
   .toast{
@@ -1229,8 +1235,8 @@ img{
   top: 0;
   left: 0;
   z-index: 800;
-  height: 40px !important;
-  width: 40px !important;
+  height: 50px !important;
+  width: 50px !important;
   padding: 6px !important;   
   margin: 0px !important; 
   transition:background .25s ease-out;
@@ -1891,7 +1897,7 @@ img{
   background: #f2f2f2;
 }
 .bs-service-item{
-  height: 60px;
+  min-height: 60px;
   width: 100%;
   margin-left: 0px !important;
   margin-right: 0px !important;
@@ -1914,7 +1920,6 @@ img{
     cursor: pointer;
     padding: 7px;  
     color: #fff;
-    margin-left: 2.5px;
     background: #fff;
     transition: background .25s ease-out, border-radius .15s ease-out;
   }
@@ -2427,7 +2432,7 @@ img{
       height: auto;
       overflow-y: hidden;
       height: auto;
-      height: 98% !important;
+      height: 100% !important;
       animation: slide_left_slow .3s ease-out;
       padding: 0px !important;
     }
@@ -2437,16 +2442,19 @@ img{
       display: inline-flex;   
     }
     .calendar{     
-      background: #4506ff;
-      max-height: 330px;
+      background: #fff;
+      max-height: 270px;
     }
     .calendar-details{
       height: 50px;
       text-align: center;
-      font-weight: 600;
-      color: grey;
+      font-weight: 600;      
+      background: #4506ff;
       display: inline-flex;
       width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
     }
     .calendar-name{
       width: calc(100% - 120px);
@@ -2479,8 +2487,8 @@ img{
       text-align: center;
     }
     .calendar-date.past{
-      background: rgba(0,0,0,.15) !important;
-      color: grey;
+      background: rgba(0,0,0,.1) !important;
+      color: rgba(0,0,0,.5);
     }
     .calendar-day::selection{
       background: transparent !important;
@@ -2534,8 +2542,9 @@ img{
       margin-right: 4px;
     }
     .calendar-date.active{
-      background: #0d1317 !important;
-      color: #fff  !important;
+      border: 2px solid #ffa500;
+      color: #0d1317  !important;
+      background: #fff !important;
       font-weight: 600 !important;
     }    
     .service-total{
@@ -3367,7 +3376,7 @@ a > .welcome-message{
   display: none;
 }
 .book-suggests{
-  height: calc(100% - 330px);
+  max-height: calc(100% - 330px);
   width: 100%;  
   overflow-y: auto;
   margin-top: 6px !important;
@@ -3418,7 +3427,7 @@ a > .welcome-message{
   border:none;
   color: #fff !important;
   box-shadow: none;
-  width: 40px !important;
+  width: 50px !important;
   margin-top: 5px !important;
   height: 40px !important;
 }
@@ -3963,13 +3972,13 @@ a > .welcome-message{
       animation: slide_left_slow .45s cubic-bezier(0, .3, .6, 1);
     }
     .appointments-calendar{
-      height: auto;
+      max-height: 300px;
       width: 100%;
-      padding: 0px;
-      background: #f2f2f2;
+      padding: 0px;      
+      background: #fff
     }
     .appointments_calendar_head{
-      height: 40px;
+      height: 50px;
       width: 100%;
       background: #fff;
       display: inline-flex;  
@@ -3978,7 +3987,7 @@ a > .welcome-message{
       /*animation:slide_down .45s ease-out;*/
     }
     .cal-next.click-btn{
-      padding: 6px !important;
+      padding: 8px !important;
     }
     .cal-prev{
       float: left;
@@ -3990,7 +3999,7 @@ a > .welcome-message{
       margin-top: 0px !important;
       background: transparent !important;
       border:none;
-      padding: 6px !important;
+      padding: 8px !important;
     }      
     .cal-prev > i{
       font-size: 2.1em !important;
@@ -4011,10 +4020,11 @@ a > .welcome-message{
     .cal-cur{
       width: calc(100% - 120px);
       height: 100%;
-      padding: 9px;
+      padding: 13px;
+      font-size: 1.2em;
       text-align: left;
       font-weight: 600;
-      margin-left: 40px;
+      margin-left: 50px;
       padding-left: 10px;
       font-family: lato, sans-serif;
       cursor: pointer;
@@ -4033,13 +4043,14 @@ a > .welcome-message{
       width: calc(100%/2);
       color: grey !important;
       background: transparent !important;
-      border:none;
-      padding: 3px !important;
+      border: none;
+      padding: 8px !important;
       margin-top: 0px !important;
       box-shadow: none;
     }
     .cal{
       width: 100% ; 
+      display: none;
     }
     .cal-body{
       /*animation:slide_up .45s ease-out;*/
@@ -4067,16 +4078,21 @@ a > .welcome-message{
       background:#fff;
     }
     .cal-week{
-      width: 100%;
-      height: 100%;
+      width: 100%;      
       height: 40px;
       display: inline-flex;
       border-bottom: 1px solid rgba(0,0,0,.15);
     }
+    .cal-week:nth-child(6){
+      border-bottom: 0px !important;
+    }
+    .cal-week:nth-child(6){
+      display: none;
+    }
     .cal-date{
       width: calc(100%/7);
       height: 100%;
-      padding: 8px;
+      padding: 12px;
       background: transparent;
       color: #373c40;
       text-align: center;
@@ -4090,14 +4106,15 @@ a > .welcome-message{
       background: rgba(0,0,0,.05);
       color: rgba(0,0,0,.25);
     }
-    .cal-date.past{
-      border-bottom: 1px solid rgba(0,0,0,.15);
+    .cal-date.past{      
       color: rgba(0,0,0,.45);
       border-right: 1px solid rgba(0,0,0,.15);
     }
     .cal-date.active{
-      color: #fff;
-      background: #0d1317;
+      color: #4506ff ;
+      border-radius: 0px;
+      border: 1px solid #0d1317;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.45);      
     }
     .cal-date:not(.past){
       cursor: pointer;
@@ -4109,16 +4126,15 @@ a > .welcome-message{
       width: 100%;
       height: auto;  
       background: #fff;
-      min-height: calc(100% - 290px);
-      max-height:  calc(100% - 40px);        
+      min-height: calc(100% - 300px);
     }
     .day-appointments-head{
       height: 40px;  
       padding: 8px;
       font-weight: 600;
       color: #0d1317;
-      border-bottom: 1px solid rgba(0,0,0,.15);      
-      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,.15);     
+      text-align: left;
     }
     .app-tot{
       font-weight: 600;
@@ -4133,33 +4149,54 @@ a > .welcome-message{
     .day-appointments-body{
       width: 100%;
       padding: 3px;
-      max-height: calc(100% - 90px);
+      min-height: calc(100% - 40px);
       padding-bottom: 30px;
+      overflow-y: auto;
     }
     .appointment-bottom{
       height: 50px;
       text-align: center;
       width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
     }
     .walk-in{
       border-radius: 20px;
       border: 2px solid #4506ff;
-      background: transparent !important;
+      background: #fff !important;
       color: #4506ff !important;
       font-weight: normal; 
-      font-weight: 600;       
+      font-weight: 600; 
+      float: right;
+      box-shadow: 0 0 6px rgba(0,0,0,.25);      
+    }
+    .cal-draw{
+      float: left;
+      background: #fff !important;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      padding: 8px !important;
+      font-weight: 600 !important;
+      color: #0d1317 !important;
+      border: 1px solid #0d1317;
+      box-shadow: 0 0 12px rgba(0,0,0,.25);
     }
     .day-group{
       width: 100%;
       display: inline-flex;
       height: 80px;  
-      margin-bottom: 1px;
+      margin-bottom: 5px;
       cursor: pointer;
-      border-top: 1px solid lightgrey;
-      border-right: 1px solid lightgrey;
-      border-bottom: 1px solid lightgrey;
-      border-left: 3px solid lightgreen;
-      animation:slide_down .35s ease;
+      border-radius: 3px;
+      border-top: 1px solid rgba(0,0,0,.15);
+      border-right: 1px solid rgba(0,0,0,.15);
+      border-bottom: 1px solid rgba(0,0,0,.15);
+      border-left: 5px solid rgba(0,0,0,.15);
+      
+      box-shadow: 0px 0px 8px rgba(0,0,0,.25);
     }
     .day-group:hover{
       background: #f2f2f2;
@@ -4167,7 +4204,7 @@ a > .welcome-message{
     .day-times{
       height: 100%;
       width: 80px;
-      border-right: 1px solid lightgrey;
+      border-right: 1px solid rgba(0,0,0,.15);
     }
     .day-start{
       font-size: .8em;
@@ -4272,13 +4309,13 @@ a > .welcome-message{
   float: right;
   margin-top: 5px;
   border-radius: 3px;
-  padding: 2px 6px 2px 6px; 
+  padding: 3px 6px;
   margin-right: 2px;
   font-size: .8em;
 }
 .s-can{
-  background: rgba(255, 0, 0, .3);
-  color: #ff0000;
+  background: rgba(255, 0, 0, .25);
+  color: #af1414;
   box-shadow: 0px 0px 2px rgba(255, 0, 0, .3);
 }
 .s-con{
@@ -4286,13 +4323,12 @@ a > .welcome-message{
   color: green;
 }
 .s-done{
-  background: rgba(72, 169, 218, .5);
-  color: #48A9DA;
+  background: rgba(72, 169, 218, .25);
+  color: #1b6388;
 }
 .s-pend{
-  color: orange;
-  background:rgba(255, 165, 0, .5);
-  box-shadow: 0px 0px 2px rgba(255, 165, 0, .5);
+  color: #b77906;
+  background:rgba(255, 165, 0, .25);  
 }
 .bus-appointment{
   background: rgba(0,0,0,.7);
@@ -6033,7 +6069,7 @@ a > .welcome-message{
 }
 .ispa-bs-details{
   height: auto;
-  height: 80px;
+  height: 50px;
   overflow-y: auto;
   border-bottom: 1px solid rgba(0,0,0,.15);
 }
@@ -6044,8 +6080,8 @@ a > .welcome-message{
 .ispa-bs-title{
   width: calc(100% - 50px);
   font-size: 1.3rem;
-  font-weight: 600;
-  padding: 6px;
+  font-weight: 500;
+  padding: 8px;
 }
 .ispa-bs-loc{
   padding: 6px;
@@ -6061,7 +6097,7 @@ a > .welcome-message{
   background: transparent !important;
 }
 .ispa-bs-body {
-  height: calc(100% - 130px);
+  height: calc(100% - 100px);
   overflow-y: auto;
   padding-bottom: 30px;
 }
@@ -6509,7 +6545,7 @@ a > .welcome-message{
 }
 .ispa-pay{
   height: 100% !important;
-  animation: slide_up .45s ease;
+  animation: slide_up_slow .45s ease;
 }
 .ispa-pay > .modal-top{
   height: calc(100% - 500px);
@@ -6547,6 +6583,7 @@ a > .welcome-message{
   height: auto;
   padding-top: 10px;
   padding-left: 5px;
+  box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.05);
   border-radius: 20px;  
 }
 .vendor{
@@ -6559,6 +6596,7 @@ a > .welcome-message{
 .v-logo{
   width: 40%;
   text-align: center;
+  margin-right: 5px;
 }
 .v-image{
   max-width: 100%;  
@@ -6574,6 +6612,7 @@ a > .welcome-message{
   font-weight: normal;
   font-weight: 500;
   padding: 3px;
+  font-size: 1.3em;
   text-align: left;
 }
 .acc-no{
@@ -6581,6 +6620,8 @@ a > .welcome-message{
   text-align: left;
   letter-spacing: 1px;
   padding: 3px;
+  width: calc(100% - 10px) !important;
+  
   border: none !important;
   color: rgba(0,0,0,1)
 }
@@ -6592,11 +6633,13 @@ a > .welcome-message{
 .acc-no:not(.copied){
  color: rgba(0,0,0,.75);
 }
-.copy-ac{
+.mpesa-trig{
   border-radius: 20px;
   font-weight: 600;
   margin-top: 15px; 
-  background: rgba(0,0,0,.15) !important;
+  color: #fff;
+  background: #0d1317 !important;
+  border: 1px solid #0d1317;
 }
 .nb{
   font-size: 1rem;
@@ -6608,6 +6651,30 @@ a > .welcome-message{
 }
 .nb > i{
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+}
+.pay-tools{
+  display: inline-flex;
+  width: 100% !important;
+}
+.pay-status{
+  width: calc(100% - 50px);
+  text-align: right;
+  height: 50px;
+  display: none;
+}
+.pay-status-txt{
+  padding: 12px;
+  font-weight: 600;
+  margin-top: 2.5px;
+  width: calc(100% - 50px);
+  text-align: right;
+  padding-right: 20px;
+}
+.pay-load{
+  height: 40px;
+  width: auto;
+  margin-top: 5px;
+  margin-right: 10px;
 }
 .complete-pay{
   background: rgba(0,100,0, .15) !important;
@@ -6707,6 +6774,7 @@ a > .welcome-message{
     border-top-left-radius: 20px;
     margin-top: 140px;  
     border-top-right-radius: 20px;
+    animation: slide_up_slow .35s ease;
   }
   .notif-title.main{
     font-size: 1.4rem;
@@ -7189,10 +7257,10 @@ a > .welcome-message{
   }
   /*ispa business*/
   .bus-head, .notifications-head{
-    height: 40px;
+    height: 50px;
     width: 100%;
     text-align: left;
-    padding: 5px !important;
+    padding: 13px !important;
     font-weight: normal;
     color: #fff;
     padding-left: 50px !important;
@@ -7333,19 +7401,23 @@ a > .welcome-message{
     width: auto !important;
     border-radius: 20px;
   }
-  #appt-done{
+  #appt-done, #walk-done{
     color: #4506ff;
     font-weight: 500;
     background: rgba(69, 6, 255, 0.15) !important;
     border: 0px solid #4506ff;
   }
+  #walk-done{
+    font-weight: 600;
+  }
   .more-tools{
     position: fixed;
     bottom: 0;  
     height: 50px;
-    background: #0d1317;
+    background: #fff;
+    border-top: 1px solid rgba(0,0,0,.15);
     width: 100%;
-    animation: slide_up .45s ease;
+    animation: slide_up .35s ease;
     text-align: right;
     display: none;
   }
@@ -7359,7 +7431,10 @@ a > .welcome-message{
   }
   .close-more{
     background: transparent !important;
-    color: #bea117 !important;
+    color: #0d1317 !important;
+  }
+  p > label{
+    font-size: 1.2rem !important;
   }
   #appt-can{
     color: #ff0000 !important;
@@ -7367,8 +7442,9 @@ a > .welcome-message{
     background: rgba(255, 0, 0, 0.15) !important;
   }
   #appt-con{
-    color: darkgreen !important;
+    color: #1fb51f !important;
     border: none !important;
+    font-weight: 600 !important;
     background: rgba(0, 100, 0, 0.15) !important;
   }
   #ispa-walk{
@@ -7376,8 +7452,8 @@ a > .welcome-message{
   .ispa-walk{
     background: #fff;  
     border-radius: 20px 20px 0px 0px;
-    height: calc(100% - 200px) !important;
-    margin-top: 200px !important;
+    height: calc(100% - 50px) !important;
+    margin-top: 50px !important;
   }
   .walk-body{
     height: calc(100% - 50px);
@@ -7396,11 +7472,12 @@ a > .welcome-message{
   .bus-manage-cont{
     height: 100%;
     width: 100%;
-    animation: slide_left .45s ease;
+    animation: slide_left_slow .45s ease;
   }
   .manage-head{
     background: #4506ff;
     color: #fff;
+    text-align: left !important;
   }
   .manage-body{
     height: calc(100% - 90px);
@@ -7551,7 +7628,7 @@ a > .welcome-message{
     background: transparent !important;
   }
   .serv-tool.del-serv{
-    color: #ff0000 !important;
+    color: #9c0e0e !important;
   }
   .blue-h{
     background: #4506ff !important;
@@ -7671,7 +7748,8 @@ a > .welcome-message{
     background: rgba(0,0,0,.05);
     margin-top: 10px;
     margin-bottom: 10px;
-    border-radius: 5px;    
+    min-height: 50px;
+    border-top: 1px solid rgba(0,0,0,.15);
   }
   .pref-details{
     width: calc(100% - 80px);

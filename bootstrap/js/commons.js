@@ -46,6 +46,10 @@ in_array = function(item = '',array = []){
 	}
 }
 
+internet_error = function(){
+	notify("Network error, check your connection and try again.",5000,"error");
+}
+
 let prompt = (open = false, message = "", c = false, cfg = {n: "Cancel", p:"Ok"}) =>{
 	$(".dialog-tool.negative, .dialog-tool.positive").unbind();
 	$(".dialog-body").html("");
@@ -74,8 +78,10 @@ check_box = (el = '[type="checkbox"]') =>{
 	$(`${el}`).click(function(){
 		if ($(this).val() == "false" || $(this).val() == false) {
 			$(this).val("true");
+			$(this).prop("checked", true);
 		}else{
 			$(this).val("false");
+			$(this).prop("checked", false);
 		}
 	})
 }
@@ -104,7 +110,7 @@ let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callb
 				if (response.status) {
 					callback(response.m);							
 				}else{
-					alert(response.m,5000,"error");
+					notify(response.m,5000,"error");
 				}
 			},
 			error:function(){
@@ -122,6 +128,53 @@ const copyText = (ele, m) => {
   	notify(m);
   }
 };
+
+read_notif =  function(item  = false, c = false){
+	if (item) {
+		loading(true);
+		$.ajax({
+			url:base_url+"read_notif",
+			type:"POST",
+			data:{item:item},
+			complete: function(){
+				loading(false);
+			},
+			success: function(res){
+				if (c) {
+					c(res);
+				}
+			},
+			error: function(){
+				internet_error();
+			}
+		})
+	}
+}
+appoint_bus = function(business  = false, sel = false, c = false){
+	if (business) {		
+		loading(true);
+		$.ajax({
+			url:base_url+"appoint_bus",
+			type:"POST",
+			data: {business:business, sel: sel},
+			complete:function(){
+				loading(false);
+			},
+			success:function(response){
+				if (response.status) {
+					if (c) {
+						c(response);
+					}
+				}else{
+					notify(response.m,10000);
+				}
+			},
+			error:function(){
+				internet_error();
+			}
+		})
+	}
+}
 
 $(document).ready(() =>{
 	check_box();

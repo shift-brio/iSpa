@@ -16,9 +16,6 @@ drop_down = function(){
 tool_tip = function(){	
 	$('.tooltipped').tooltip({delay: 50,html:true});
 }
-internet_error = function(){
-	notify("Network error, check your connection and try again.",5000,"error");
-}
 loading = function(state = false,wid = false){			
 	var loader = $(".main-loader");
 	var loader_cover = $(".sms-loader");	
@@ -279,27 +276,6 @@ search_help = function(key = false){
 		})
 	}
 }
-read_notif =  function(item  = false, c = false){
-	if (item) {
-		loading(true);
-		$.ajax({
-			url:base_url+"read_notif",
-			type:"POST",
-			data:{item:item},
-			complete: function(){
-				loading(false);
-			},
-			success: function(res){
-				if (c) {
-					c(res);
-				}
-			},
-			error: function(){
-				internet_error();
-			}
-		})
-	}
-}
 send_chat = function(message = false , to = false){
 	if (!message) {
 		message = $(".ispa-chat-in").val();		
@@ -443,31 +419,6 @@ get_calendar = function(data){
 		})
 	}
 }
-appoint_bus = function(business  = false, sel = false, c = false){
-	if (business) {		
-		loading(true);
-		$.ajax({
-			url:base_url+"appoint_bus",
-			type:"POST",
-			data:{business:business, sel: sel},
-			complete:function(){
-				loading(false);
-			},
-			success:function(response){
-				if (response.status) {
-					if (c) {
-						c(response);
-					}
-				}else{
-					notify(response.m,10000);
-				}
-			},
-			error:function(){
-				internet_error();
-			}
-		})
-	}
-}
 submit_appointment =  function(data = false,editing = false){
 	if (data) {		
 		if (editing) {
@@ -567,7 +518,7 @@ bus_page = function(bus = false){
 					$(".ispa-bs").attr("data-id",response.m.details.identifier);
 					$(".bs-tab-cont.serv").html(response.m.services);
 					$(".ispa-bs-title").html(response.m.details.name);
-					$(".ispa-bs-loc").html(response.m.location.name.substr(0,30));
+					$(".ispa-bs-loc").html(response.m.location.name);
 					$(".w-list").html(response.m.details.working_days);
 					$(".c-phone > .c-val").html(response.m.details.phone);	
 					if (response.m.rating.count == 1) {
@@ -858,7 +809,8 @@ get_appointment = function(item = false){
 						}else if(response.m.confirmed == 1){
 							$(".date-sel").removeClass("editable");
 							$(".appt-bar").attr("class","app-bar appt-bar d-con");
-						}else{	
+						}else{
+							$(".pay-btn").hide();	
 							$(".date-sel").removeClass("editable");						
 							$(".appt-bar").attr("class","app-bar appt-bar d-can");
 						}
@@ -925,7 +877,8 @@ get_day = function(day = false, type = "next"){
 					$(".app-tot").html(response.m.app_tot);
 					cal_dates();
 					tool_tip();		
-					day_func();			
+					day_func();	
+					appt_func();		
 				}else{
 					notify(response.m,3000,"error");
 				}

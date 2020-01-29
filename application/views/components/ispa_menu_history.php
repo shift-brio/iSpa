@@ -2,7 +2,7 @@
 	$user = $_SESSION["user"]->ispa_id;
 	$time = time();
 	$allowance = time() - (10 * 60);
-	$appts = $this->commonDatabase->get_cond("ispa_appointments","user='$user' order by app_time ASC");	
+	$appts = $this->commonDatabase->get_cond("ispa_appointments","user='$user' order by app_time DESC");	
 	$no_img = base_url("uploads/system/cal1.png");	
 ?>		
 <div class="history">
@@ -15,7 +15,7 @@
 				$upc = 0;
 				if ($appts) {					
 					foreach ($appts as $apt) {
-						if ($apt["app_time"] >= time()) {
+						if ($apt["app_time"] >= time() && ($apt["confirmed"] == 1 || $apt["confirmed"] == 0)) {
 							$upc += 1;							
 							echo common::renderAppointment($apt);
 						}
@@ -39,7 +39,7 @@
 			<?php 
 				if ($appts) {					
 					foreach ($appts as $apt) {
-						if ($apt["app_time"] < time()) {							
+						if ($apt["app_time"] < time() || ($apt["confirmed"] > 1)) {							
 							echo common::renderAppointment($apt);
 						}
 					}

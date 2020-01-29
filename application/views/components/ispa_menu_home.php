@@ -38,12 +38,12 @@
 				<button class="click-btn favorite">
 					<i class="material-icons">favorite_outline</i>
 				</button>
-			</div>
+			</div>			
+		</div>
+		<div class="ispa-bs-body">
 			<div class="ispa-bs-loc">
 				
 			</div>
-		</div>
-		<div class="ispa-bs-body">
 			<div class="shop-images">
 				<div class="image-date"></div>
 				<div class="image-slider main">		

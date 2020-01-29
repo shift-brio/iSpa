@@ -4,16 +4,16 @@
 		<?php 
 			$bus = $_SESSION["business"];
 			$yesterday = strtotime(date("d-m-Y")) - (60 * 60 * 24);
-			$day = common::getWorking($yesterday,"next",$bus);
-			$this->load->view("business/appointments_calendar",["date" => date("d-m-Y")]);			
-		  $time = strtotime($day);
-		  $next_day = $time + (60 * 60 *24) - 1;		  
-		  $appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$time' AND app_time <= '$next_day' order by app_time ASC");
-		  $app_tot = $appointments && sizeof($appointments) > 0 ? sizeof($appointments) : "";
+			$day = common::getWorking($yesterday,"cur",$bus);
+				$this->load->view("business/appointments_calendar",["date" => date("d-m-Y")]);			
+			$time = strtotime(date("d-m-Y"), $day);
+			$next_day = $time + (60 * 60 *24) - 1;		  
+			$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$time' AND app_time <= '$next_day' order by app_time DESC");
+			$app_tot = $appointments && sizeof($appointments) > 0 ? sizeof($appointments) : 0;
 		 ?>
 		<div class="day-appointments">
 			<div class="day-appointments-head">
-				<small class="app-tot"><?php echo $app_tot; ?></small> APPOINTMENTS
+				<span class="app-tot badge new"><?php echo $app_tot; ?></span> APPOINTMENTS
 			</div>
 			<div class="day-appointments-body">
 				<?php				  
@@ -35,6 +35,9 @@
 					New sale
 					<i class="material-icons right">add_circle_outline</i>
 				</button>
+				<button class="cal-draw click-btn">
+					<i class="material-icons">swap_vert</i>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -47,7 +50,7 @@
 
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "ispa-appt-b"], true); ?>
 	<div class="modal-top">
-		<button disabled="disabled" class="app-bar"/>
+		<button disabled="disabled" class="app-bar appt-bar"/>
 	</div>
 	<div class="modal-body bus-appt-body">
 		<div class="modal-title lato appt-title">
@@ -57,93 +60,57 @@
 			<div class="appt-content">
 				<div class="appt-in">
 					<label class="input-label">Client Name</label>
-					<div class="input-content">
-						Brian Oriwo
+					<div class="input-content appt-user">
+						
 					</div>
 				</div>				
 				<div class="appt-in">
 					<label class="input-label">Date</label>
 					<div class="input-content date-sel click-btn">
-						<?php echo date("jS F Y"); ?> , 10:30 AM
+						
 					</div>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">Services booked</label>
 					<div class="input-content service-list">
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
+						
 					</div>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">
 						Payment
-						<label class="right payable">Ksh. 300.00</label>
+						<label class="right payable appt-payable"></label>
 					</label>
-					<div class="input-content">
-						Cash, Not paid						
+					<div class="appt-in">  					
+						<p>
+							<input  data-field="appt-paid" checked="checked" value="true" type="checkbox" class="spend-input filled-in appt-paid" id="appt-paid" />
+							<label for="appt-paid">Payment made?</label>
+						</p>               
 					</div>
-				</div>
+				</div>				
 				<div class="appt-in">
 					<br>
 					<label class="input-label"></label>
 					<div class="input-content">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+						
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close cls-bs-appt">
 			<i class="material-icons">arrow_back</i>
 		</button>
 		<div class="appt-tools in-f">			
 			<button id="appt-done" class="bus-appt-tool click-btn">
 				Complete
 				<i class="material-icons right">done</i>				
-			</button>
-			<button id="appt-more" class="bus-appt-tool click-btn">
-				More
-				<i class="material-icons right">expand_less</i>				
-			</button>
+			</button>			
 		</div>
 		<div class="more-tools">
 			<button class="left click-btn close-more">
-				<i class="material-icons">expand_more</i>
+				<i class="material-icons">arrow_back</i>
 			</button>
 			<button id="appt-can" class="more-tool click-btn">
 				Cancel
@@ -167,60 +134,32 @@
 			<div class="appt-content">											
 				<div class="appt-in">
 					<label class="input-label">Services offered</label>
-					<div class="input-content service-list">
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
-						<div class="bs-service-item click-btn" data-amount="150" data-duration="20" data-item="1">		
-							<div class="service-item-name">
-								<div class="service-item-name-box">
-									Manicure
-								</div>
-							</div>
-							<div class="service-item-detail">
-								<div class="service-item-detail-item">
-									Ksh. 150.00
-								</div>
-								<div class="service-item-detail-item">
-									20 Min
-								</div>									
-							</div>
-							<div value="false" class="service-select active">
-								<i class="material-icons">done</i>
-							</div>
-						</div>
+					<div class="input-content service-list walk-list">
+						
 					</div>
 				</div>
 				<div class="appt-in">
 					<label class="input-label">
 						Total
-						<label class="right payable">Ksh. 300.00</label>
+						<label class="right payable wlk-p"></label>
 					</label>					
+				</div>
+				<div class="divider"></div>
+				<div class="appt-in">  					
+					<p class="center">
+						<input  data-field="walk-paid" checked="checked" value="true" type="checkbox" class="spend-input filled-in walk-paid" id="walk-paid" />
+						<label for="walk-paid">Services paid for?</label>
+					</p>               
 				</div>				
 			</div>
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close cls-walk">
 			<i class="material-icons">arrow_back</i>
 		</button>
 		<div class="appt-tools in-f">			
-			<button id="appt-done" class="bus-appt-tool click-btn">
+			<button id="walk-done" class="bus-appt-tool click-btn">
 				Complete
 				<i class="material-icons right">done</i>				
 			</button>			

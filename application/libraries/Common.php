@@ -363,14 +363,18 @@
 						}
 						$x_day = $t_date + (60 * 60 * 24);
 						$a_time = strtotime(date("d-m-Y",$t_date));
-						$appointments = $CI->commonDatabase->get_cond("ispa_appointments","app_time >='$a_time' AND app_time < '$x_day'");
+
+						$appointments = false;
+						if ($date["day"] != "") {
+							$appointments = $CI->commonDatabase->get_cond("ispa_appointments","app_time >='$a_time' AND app_time < '$x_day'");
+						}						
 						if ($appointments) {
 							$ap_cl = "seld";
 						}	else{
 							$ap_cl = "";
 						}		
 						$month_data .= '
-							<div data-tooltip="'.$tooltip.'" data-position="bottom" class="'.$ap_cl.' '.$class.' cal-date" data-day="'.$day.'" data-date="'.date("d-m-Y",$t_date).'" data-month="'.$month.'" data-year="'.$year.'">'.$date["day"].''.$txt.'</div>
+							<div data-tooltip="'.$tooltip.'" data-position="bottom" class="'.$ap_cl.' '.$class.' cal-date" data-day="'.$day.'" data-date="'.date("d-m-Y",$t_date).'" data-month="'.$month.'" data-year="'.$year.'">'.($date["day"] == "" ? "&bull;": $date["day"]).''.$txt.'</div>
 						';		
 					}		
 				}
@@ -469,7 +473,7 @@
 							$cl = "";
 						}
 						$month_data .= '
-							<div data-tooltip="'.date("jS F Y",strtotime($d."-".$month."-".$year)).'" data-position="bottom" class="calendar-day '.$class.' '.$cl.' calendar-date" data-day="'.$d.'">'.$day["day"].'</div>
+							<div data-tooltip="'.date("jS F Y",strtotime($d."-".$month."-".$year)).'" data-position="bottom" class="calendar-day '.$class.' '.$cl.' calendar-date" data-day="'.$d.'">'.($day["day"] == "" ? "-": $day["day"]).'</div>
 						';
 						unset($past);
 					}
@@ -487,10 +491,10 @@
 			$bus = common::getBus($business);
 			if ($bus) {
 				$slots = [];
-				$days = json_decode($bus["working"]);
-				$is_working = false;				
+				$days = json_decode($bus["working"]);				
+				$is_working = false;							
 				if (is_array($days)) {
-					foreach ($days as $d) {						
+					foreach ($days as $d) {											
 						if (strtolower($d->day) == strtolower(date("D",$day))) {
 							$is_working = true;
 							$working_day = [$d->start,$d->end];
@@ -522,7 +526,8 @@
 								"end_time" => $app["app_time"] + ($app_dur * 60) 
 							];							
 							array_push($app_today, $v);
-						}						
+						}
+
 						$ch_dur = false;
 						if (sizeof($app_today) > 0) {							
 							$slots = [];
@@ -539,9 +544,8 @@
 									$end_slot = $app_today[$i]["end_time"];
 									$ch_dur = true;
 								}else{
-										$slots = [];
-
-										if ($app_today["start_time"] > $start_day) {
+										$slots = [];										
+										/*if ($app_today["start_time"] > $start_day) {
 											array_push($slots, common::getSlots($start_day, $app_today[$i]["end_time"], (60 * $dur)));
 										}else{
 											$st = $app_today[$i]["start_time"] + (60 * $dur);
@@ -553,7 +557,7 @@
 											array_push($slots,common::getSlots($app_today[$i]["end_time"], $end_day, (60 * $dur))); 
 										}
 										var_dump($appointments)			;
-										exit();
+										exit();*/
 								}
 							}
 							if (sizeof($slots) > 0) {
@@ -609,7 +613,7 @@
 				$x = $start_time;
 				$slots = [];				
 				while ($x < $end_time) {						
-					if (strtotime(date("d-m-Y h:i A",$x)) >= strtotime( date("d-m-Y ",$x)."12:00 PM")) {
+					if (strtotime(date("d-m-Y h:i A", $x)) >= strtotime( date("d-m-Y ", $x)."12:00 PM")) {
 						$s = "Afternoon";
 					}	else{
 						$s = "Morning";
@@ -637,10 +641,10 @@
 								<div class="suggest-items row">
 			';
 			foreach ($slots as $slot) {
-				$is_avail = false;
-				if ($slot["sl_data"]['dur'] && $slot["sl_data"]['staff'] && $slot["sl_data"]['shop'] && $slot["sl_data"]["start_time"]) {
+				$is_avail = false;				
+				if ($slot["sl_data"]['dur'] && $slot["sl_data"]['staff'] && $slot["sl_data"]['shop'] && $slot["sl_data"]["start_time"]) {	
 
-						$is_avail = common::checkSlot($slot["sl_data"]["start_time"],$slot["sl_data"]['dur'],$slot["sl_data"]['staff'],$slot["sl_data"]['shop']);							
+						$is_avail = common::checkSlot($slot["date"], $slot["sl_data"]['dur'],$slot["sl_data"]['staff'],$slot["sl_data"]['shop']);							
 				}
 				else{
 					$is_avail = true;
@@ -679,7 +683,7 @@
 				foreach ($slots as $slot) {
 					$is_avail = false;
 					if ($slot["sl_data"]['dur'] && $slot["sl_data"]['staff'] && $slot["sl_data"]['shop'] && $slot["sl_data"]["start_time"]) {
-							$is_avail = common::checkSlot($slot["sl_data"]["start_time"],$slot["sl_data"]['dur'],$slot["sl_data"]['staff'],$slot["sl_data"]['shop']);						
+							$is_avail = common::checkSlot($slot["date"],$slot["sl_data"]['dur'],$slot["sl_data"]['staff'],$slot["sl_data"]['shop']);						
 					}
 					else{
 						$is_avail = true;
@@ -742,7 +746,7 @@
 		}
 		return false;
 	}
-	static function busDur($bus = false,$appointment = false){
+	static function busDur($bus = false, $appointment = false){
 		if ($bus) {
 			$CI = &get_instance();
 			$appointments = $CI->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$appointment);
@@ -751,7 +755,7 @@
 				if ($services) {
 					$serv_tot = 0;
 					foreach ($services as $serv) {
-						$s = $CI->commonDatabase->get_data("ispa_services","id",$serv["service_id"]);
+						$s = $CI->commonDatabase->get_data("ispa_services",1,false,"id",$serv["service_id"]);
 						if ($s) {
 							$serv_tot += $s[0]["duration"];
 						}
@@ -843,7 +847,7 @@
 										Services
 									</div>
 									<div class="servs-list">
-										'.$services.'
+										'.(mb_substr($services, 0, 100)).'
 									</div>
 								</div>
 							</div>
@@ -980,8 +984,9 @@
 		}
 		return false;
 	}
-	static function checkSlot($day = false,$dur = false, $staff = false,$business = false,$editing = false){	
+	static function checkSlot($day = false, $dur = false, $staff = false,$business = false,$editing = false){	
 		if ($day && $dur && $staff && $business) {
+
 			$CI = &get_instance();
 			$ch_staff = $CI->commonDatabase->get_data("ispa_staff",1,false,"ispa_id",$staff,"business",$business,'availability',1);			
 			if ($staff) {
@@ -1000,8 +1005,8 @@
 				 			}
 				 		}
 				 		$end  = $apt["app_time"] + ($ap_dur * 60);
-
-				 		if (($apt["app_time"] >= $day && $end <= ($day + $dur)) || $day < time() || ($apt["identifier"] == $editing)) {
+				 		
+				 		if (((int)$apt["app_time"] >= $day && $end <= ($day + ($ap_dur * 60))) || $day < time() || ($apt["identifier"] == $editing)) {
 				 			$slot_booked = true;
 				 		}
 				 	}
@@ -1161,7 +1166,7 @@
 								'.$text.'
 							</div>					
 							<div class="appointment-servs">
-								'.$ss.'
+								'.(mb_strlen($ss) > 30 ? mb_substr($ss, 0, 30)." ...": mb_substr($ss, 0, 30)).'
 							</div>
 						</div>
 						<div class="appointment-tools">
@@ -1175,7 +1180,7 @@
 		}
 		return $appointment;
 	}	
-	static function getWorking($day = false,$type = "next",$bus = false){
+	static function getWorking($day = false, $type = "next",$bus = false){
 	 	if ($day && $bus) {
 	 		if ($type == "next" || $type == "cur") {
 	 			$n_day = $day + (60 * 60 * 24);
@@ -1223,10 +1228,10 @@
 			}
 			$services = $servs;
 			$user = $CI->commonDatabase->get_data("ispa_users",false,false,"ispa_id",$app["user"]);				  		
-			$dur = common::busDur($bus,$app["identifier"]) * 60;				  		
+			$dur = common::busDur($bus,$app["identifier"]) * 60;
 			if ($user) {
 				$start = date("h:i A",$app["app_time"]);
-				$end  = date("h:i A",$app["app_time"]+ $dur);
+				$end  = date("h:i A",$app["app_time"] + $dur);
 				$class = "";
 				$appointment = $app;
 				$time = time();
@@ -1251,10 +1256,10 @@
 							$s_class = "s-con";
 						}else{
 							if ($appointment["confirmed"] == 2) {
-								$text = "d-pend";
+								$text = "d-can";
 								$status = "CANCELLED";
 								$class = "";
-								$s_class = "s-pend";								
+								$s_class = "s-can";								
 							}else{
 								$text = "d-pend";
 								$status = "PENDING CONFIRMATION";
@@ -1277,7 +1282,7 @@
 					</div>
 					<div class="day-detail">
 						<div class="day-detail-item">'.$user[0]["name"].'  <small class="day-status '.$s_class.'">'.$text.'</small></div>
-						<div class="day-detail-item detail-serv">'.$services.' - '.ucfirst($app["place"]).'</div>
+						<div class="day-detail-item detail-serv">'.$services.'</div>
 						<div class="day-tools">											
 							'.$btns.'
 						</div>

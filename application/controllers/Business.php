@@ -12,13 +12,9 @@ class Business extends CI_Controller {
 		$this->load->library('wallet'); 
 		$this->load->model("commonDatabase");     
 	}
-	public function index(){
+	public function index(){		
 		if (isset($_SESSION['business']) && $_SESSION["user"]) {
-			$data['title'] = "iSpa - Business Portal";
-			$data['page'] = "home";		
-			$data['data'] = json_decode(json_encode($data));	
-			$this->load->view("templates/bus_base",$data);
-			$this->load->view("business",$data);			
+			redirect(base_url("business/open/".$_SESSION["business"]));
 		}else{
 			if (isset($_SESSION["user"])) {
 				$data['title'] = "iSpa - Business Portal";
@@ -29,11 +25,12 @@ class Business extends CI_Controller {
 			}else{
 				redirect(base_url());
 			}
-		}		
+		}
 	}
 	public function open($bus = false){
 		if ($bus && isset($_SESSION["user"])) {
 			$user = $_SESSION["user"]->ispa_id;
+
 			$ch_bus = $this->commonDatabase->get_data("ispa_business",1,false,"created_by",$user,"identifier",$bus);
 			if (!$ch_bus) {
 				$ch_bus = $this->commonDatabase->get_data("ispa_staff",1,false,"ispa_id",$user,"business",$bus);
@@ -46,7 +43,12 @@ class Business extends CI_Controller {
 			if ($ch_bus) {
 				$_SESSION["business"] = $bus;
 				$_SESSION["business_name"] = $ch_bus["name"];
-				redirect(base_url("business"));
+
+				$data['title'] = $ch_bus["name"]. " - iSpa Business";
+				$data['page'] = "bus";		
+				$data['data'] = json_decode(json_encode($data));	
+				$this->load->view("templates/bus_base",$data);
+				$this->load->view("business",$data);	
 			}else{
 				show_404();
 			}
@@ -377,7 +379,7 @@ class Business extends CI_Controller {
 			$days = $this->config->item("days");
 			$updated = false;
 
-			if ($shop) {
+			if ($shop) {				
 				$w_days = is_array(json_decode($shop["working"])) ? json_decode($shop["working"]): json_decode(json_encode([]));				
 
 				if ($action == "add") {
@@ -388,16 +390,18 @@ class Business extends CI_Controller {
 							"end" => date("H:i", strtotime(date("d-m-Y ").$_POST["end"])),
 						]));					
 						$in_d = false;
-						$n_in = false;
- 						for ($i = 0; $i < sizeof($w_days); $i++) { 
+						$n_in = false;	
+ 						for ($i = 0; $i < sizeof($w_days); $i++) {  							
  							if (strtolower($w_days[$i]->day) == strtolower($in->day)) {
  								$w_days[$i]->start = $in->start;
  								$w_days[$i]->end = $in->end;
- 							}else{
- 								array_push($w_days, $in);
+ 								$in_d = true;
  							}
  						}
 
+ 						if (!$in_d) { 											
+ 							array_push($w_days, $in);
+ 						}
 
 						$updated = true;
 						$r["status"] = true;
@@ -427,8 +431,9 @@ class Business extends CI_Controller {
 					if (sizeof($w_days) > 0) {	
 						$data = [
 							"working" => json_encode($w_days)
-						];				
-						$this->commonDatabase->update("ispa_business",$data, "identifier", $shop["identifier"]);	
+						];		
+
+					$this->commonDatabase->update("ispa_business",$data, "identifier", $shop["identifier"]);
 					}else{
 						$r["status"] = false;
 						$r["m"] = "Kindly set at least one working day for your shop.";
@@ -442,6 +447,70 @@ class Business extends CI_Controller {
 		}
 		common::emitData($r);
 	}
+	public function walk_in(){
+		$r["status"] = false;
+		if (isset($_SESSION["business"]) && isset($_SESSION["user"])) {
+			if (isset($_POST["items"]) && is_array($_POST["items"]) && isset($_POST["paid"]) && $_POST["paid"] == "true") {
+				$shop = $_SESSION["business"];
+				$bus  = common::getBus($shop);
+				$staff = $user = $_SESSION["user"]->ispa_id;
+				$service_items = $_POST["items"];
+
+				$dur  = 0;
+				$amnt = 0;
+				$all_services_available = true;
+				$serv_data = [];
+
+				$ap_identifier = md5(sha1($shop.$user).time());
+
+				foreach ($service_items as $item) {					
+					$service = $this->commonDatabase->get_data("ispa_services",1,false,"id",$item["id"],"added_by",$shop, "status", 1,"avail", 1);
+					if (!$service) {
+						$all_services_available = false;
+					}else{
+						$dur  +=  $service[0]["duration"] * 60;
+						$amnt += $service[0]["cost"];
+						array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier]);
+					}
+				}
+
+				if ($all_services_available) {
+
+					$ap_data = [
+						"user" => "56ac",
+						"staff_id" => $staff,
+						"shop" => $shop,
+						"identifier" => $ap_identifier,
+						"app_time" => time() - $dur,
+						"date_added" => time(),
+						"payment_status" => 1,
+						"payment_method" => 0,
+						"place" => "shop",
+						"status" => 1,
+						"confirmed" => 1
+					];
+
+					$this->commonDatabase->add("ispa_appointments",$ap_data);		
+
+					/* appointment services */
+					foreach ($serv_data as $sd) {
+						$this->commonDatabase->add("ispa_appointment_services",$sd);
+					}
+
+					$r["status"] = true;
+					$r["m"] = "Success";
+				}else{
+					$r["m"] = "Kindly select a valid service.";
+				}
+			}else{
+				$r["m"] = "Invalid access";
+			}
+		}else{			
+			$r["m"] = "Sorry, you are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+
 	public function save_pref(){
 		$r['status'] = false;
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["value"]) && isset($_POST["item"])) {		
@@ -571,11 +640,11 @@ class Business extends CI_Controller {
 					for ($i=0; $i < sizeof($slots); $i++) {						
 						$slots[$i]["sl_data"] = [
 							"staff" => $staff,
-							"dur" => $slots[$i]["start"]." - ".$slots[$i]["end"],
+							"dur" => $dur,
 							"start_time" => $slots[$i]["start"],
 							"date" => $slots[$i]["start"], 
 							"shop" => $business
-						];
+						];						
 					}					
 					$r["m"] = common::renderSlots($slots);
 					$r["slots"] = $slots;					
@@ -1032,7 +1101,7 @@ class Business extends CI_Controller {
 							"place" => $appointment["place"],
 							"staff" => $ap_staff,
 							"total" => number_format($serv_amnt,2),						
-							"payment" => $pay,
+							"payment" => (int)$appointment["payment_status"] == 0 ? false: true,
 							"s_table" => $serv_list,
 							"staff_name" => $staff_name,
 							"user" => [
@@ -1064,13 +1133,34 @@ class Business extends CI_Controller {
 	}
 	public function get_day(){
 		if (isset($_SESSION["business"]) && isset($_POST["day"]) && isset($_POST["type"])) {
-			if ($_POST["type"] == "next") {
-				$day = strtotime(date("d-m-Y",(strtotime($_POST["day"]) + (60 * 60 * 24))));
+			$cur_m = date("m", strtotime($_POST["day"]));
+			if ($_POST["type"] == "next") {							
+
+				if ((date("m", strtotime($_POST["day"])) + 1) > 12) {
+					$m = 1;
+					$y = date("Y", strtotime($_POST["day"])) + 1;
+				}else{
+					$m = (date("m", strtotime($_POST["day"])) + 1);
+					$y = date("Y", strtotime($_POST["day"]));
+				}
+				
+
+				$day = "01-".($m)."-".($y);
+				$day = strtotime($day);
 			}else{
 				if($_POST["type"] == "cur"){
 					$day = strtotime(date("d-m-Y",strtotime($_POST["day"])));
 				}else{
-					$day = strtotime(date("d-m-Y",(strtotime($_POST["day"]) - (60 * 60 * 24))));
+					if ((date("m", strtotime($_POST["day"])) - 1) < 1) {
+						$m = 12;					
+						$y = date("Y", strtotime($_POST["day"])) - 1;
+					}else{
+						$m = (date("m", strtotime($_POST["day"])) - 1);
+						$y = date("Y", strtotime($_POST["day"]));
+					}	
+
+					$day = cal_days_in_month(CAL_GREGORIAN,(Int)$m,(Int)$y)."-".($m)."-".($y);
+					$day = strtotime($day);
 				}
 			}
 			$bus = $_SESSION["business"];
@@ -1083,8 +1173,8 @@ class Business extends CI_Controller {
 						$is_working = true;
 					}
 				}
-				$day = common::getWorking($day,$_POST["type"],$bus);
-				if ($is_working || $day) {
+				$day = common::getWorking($day,$_POST["type"],$bus);				
+				if ($is_working || $day) {					
 					$day = common::getWorking($day,$_POST["type"],$bus);
 					if ($day) {
 						$cal= common::bus_calendar(date("Y",$day),date("m",$day),date("d",$day),$bus);
@@ -1095,9 +1185,9 @@ class Business extends CI_Controller {
 						$ispa_id = $_SESSION["user"]->ispa_id;
 						$next_day = $t + (60 * 60 *24) - 1;					  
 						if ($shop["created_by"] == $ispa_id) {
-							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' order by app_time ASC");
+							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' order by app_time DESC");
 						}else{
-							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' AND staff_id='$ispa_id' order by app_time ASC");
+							$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$t' AND app_time <= '$next_day' AND staff_id='$ispa_id' order by app_time DESC");
 						}
 						$apps = "";
 						if ($appointments) {
@@ -1112,7 +1202,7 @@ class Business extends CI_Controller {
 							"active" => date("jS F Y",$day),	
 							"date" => date("d-m-Y",$day),
 							"appointments" => $apps,
-							"app_tot" => $appointments && sizeof($appointments) > 0 ? sizeof($appointments): ""
+							"app_tot" => $appointments  ? sizeof($appointments): 0
 						];
 					}else{
 						$r['status'] = false;
@@ -1134,20 +1224,22 @@ class Business extends CI_Controller {
 	}
 	public function confirm_app(){
 		if (isset($_SESSION["business"]) && isset($_POST["item"])) {
-			$app = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$_POST["item"],"confirmed",0);
+			$app = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$_POST["item"],"confirmed", 0);
 			if ($app) {
 				$data = ["confirmed" => 1];
+
 				$this->commonDatabase->update("ispa_appointments",$data,"identifier",$_POST["item"]);
 				$shop = common::getBus($app[0]["shop"]);
 				$not_data = [
 					"user" => $app[0]["user"],
 					"title" => "Appointment confirmation",
-					"content" => "Your appointment for ".date("jS F Y",$app[0]["app_time"])." with ".$shop['name']." has been confirmed.",
+					"content" => "Your appointment scheduled for ".date("jS F Y",$app[0]["app_time"])." with ".$shop['name']." has been confirmed.",
 					"date_added" => time(),
 					"status" => 0
 				];
 				$this->commonDatabase->add("ispa_notifications",$not_data);
-				$r["status"] = true;				
+				$r["status"] = true;	
+				$r["m"] = "Success";
 			}else{
 				$r['status'] = false;
 				$r["m"] = "Appointment not found";
@@ -1159,8 +1251,9 @@ class Business extends CI_Controller {
 		common::emitData($r);
 	}
 	public function cancel_app(){
-		if (isset($_SESSION["business"]) && isset($_POST["item"]) && isset($_POST["note"]) && $_POST["note"] != "") {
-			$app = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$_POST["item"],"status",0);
+		if (isset($_SESSION["business"]) && isset($_POST["item"]) ) {
+			$app = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$_POST["item"],"status",0, "confirmed", 0);
+			$_POST["note"] = "";
 			if ($app) {
 				$data = ["confirmed" => 2];
 				$this->commonDatabase->update("ispa_appointments",$data,"identifier",$_POST["item"]);
@@ -1177,9 +1270,10 @@ class Business extends CI_Controller {
 					"date_added" => time(),
 					"status" => 0
 				];
-				common::refund($_POST["item"]);
+				//common::refund($_POST["item"]);
 				$this->commonDatabase->add("ispa_notifications",$not_data);
-				$r["status"] = true;				
+				$r["status"] = true;
+				$r["m"] = "Cancelled";
 			}else{
 				$r['status'] = false;
 				$r["m"] = "Appointment not found";

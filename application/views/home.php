@@ -158,13 +158,19 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal-tools">
+	<div class="modal-tools pay-tools">
 		<button class="modal-tool left click-btn close-pay close">
 			<i class="material-icons">arrow_back</i>
 		</button>
-		<button class="modal-tool right click-btn complete-pay">
+		<!-- <button class="modal-tool hidden right click-btn complete-pay">
 			Complete payment
 			<i class="material-icons right">done</i>
-		</button>
+		</button> -->
+		<div class="pay-status">
+			<div class="pay-status-txt left">
+				Checking for payment
+			</div>
+			<img src="<?php echo base_url("uploads/system/loading-ellipsis.gif"); ?>" alt="loading" class="pay-load right">
+		</div>
 	</div>	
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>

@@ -22,7 +22,7 @@
 							}
 						}
 					}					
-					$url = base_url("index.php/business/open/".$bus["identifier"]);
+					$url = base_url("business/open/".$bus["identifier"]);
 					echo '<a href="'.$url.'">
 							<div class="switch-item">
 								'.$bus["name"].'

@@ -28,6 +28,7 @@ const menu = () =>{
 						$(".ispa-area").html(res);
 						if (item === "appointments") {
 							bus_calendar();
+							appt_func();
 						}else if(item === "notifications"){
 							notif();
 						}
@@ -424,19 +425,23 @@ bus_calendar = function(){
 			$(this).children("i").html("expand_less");
 		}
 	})
+	function close_cal(){
+		$(".cal").slideUp("fast");
+		$(".cal-more > i").html("expand_more");			
+		$(".cal-draw").show();
+	}
+	function expand_cal(){
+		$(".cal").slideDown("fast");
+		$(".cal-more > i").html("expand_less");			
+		$(".cal-draw").hide();
+	}
 	$(".cal-cur").click(function(){
-		if ($(".cal").is(":visible")) {
-			$(".cal").slideUp("fast");
-			$(".cal-more").children("i").html("expand_more");
-		}else{
-			$(".cal").slideDown("fast");
-			$(".cal-more").children("i").html("expand_less");
-		}
+		close_cal();
 	})
 	$(".cal-next").click(function(){
 		var cur_date = $(".appointments-calendar").attr("data-day");
 		if (cur_date) {
-			get_day(cur_date,"next");
+			get_day(cur_date,"next");			
 		}
 	})
 	$(".cal-prev").click(function(){
@@ -445,18 +450,54 @@ bus_calendar = function(){
 			get_day(cur_date,"prev");
 		}
 	})
+	$(".cal-draw").click(function(){
+		expand_cal();		
+	})
 	cal_dates = function(){
 		$(".cal-date:not(.past)").each(function(){
 			$(this).click(function(){
 				date = $(this).attr("data-date");
 				if (date) {
-					get_day(date,"cur");
+					get_day(date,"cur");					
 				}
 			})
 		})
 	}
 	cal_dates();
 	bus_appointment();
+}
+let get_day = function(day = false, type = "next"){
+	if (day) {
+		loading(true);
+		$.ajax({
+			url:base_url+"get_day",
+			type:"POST",
+			data:{day:day,type:type},			
+			complete:function(){
+				loading(false);
+			},
+			success:function(response){
+				if (response.status) {
+					$(".material-tooltip").hide();
+					$(".cal-cur").html(response.m.active);
+					$(".appointments-calendar").attr("data-day",response.m.date);
+					$(".cal-dates").html(response.m.calendar);
+					$(".day-appointments-body").html(response.m.appointments);
+					$(".app-tot").html(response.m.app_tot);
+					cal_dates();
+					tool_tip();		
+					day_func();	
+					appt_func();
+					$(".cal-cur").click();					
+				}else{
+					notify(response.m,3000,"error");
+				}
+			},
+			error:function(){
+				internet_error();
+			}			
+		})
+	}
 }
 bus_appointment = function(){
 	$(".bus-appoint-back").click(function(){
@@ -505,8 +546,201 @@ bus_appointment = function(){
 			$(".material-tooltip").hide();
 		}
 		
+	})	
+	$(".cls-bs-appt").click(function(){
+		clear_appt();
 	})
+	$(".walk-in").click(function(){
+		$("#ispa-walk").show();
+		$(".walk-list").html("");
+		var bus = $("meta[name='bus']").attr("value") || false;
+		appoint_bus(bus, false, ({m}) => {			
+			$(".walk-list").html(m);
+			walk_sel();
+		});
+	})
+	$(".cls-walk").click(() => {
+		$("#ispa-walk").hide();
+		$(".walk-list").html("");
+	})
+	$("#walk-done").click(function(){
+		var {items} = walk_booked() || false;
+		if (items.length > 0) {
+			var paid = $(".walk-paid").val();
+			if (paid === true || paid === "true") {
+				console.log(items);
+				fetch({items: items, paid: paid}, {url:"walk_in"}, res => {
+					if (res) {
+						notify("Sale added succesfully.")
+						$("#ispa-walk").hide();
+						$(".walk-list").html("");
+
+						/* clear */
+						$("#ispa-appt-b").hide();
+						$("#ispa-appt-b").attr("data-item", "");
+						$(".appt-user").html("");
+						$(".date-sel").html('');
+						$(".service-list").html('');
+						$(".appt-payable").html(0.00);
+						$(".appt-payment").html("");
+					}
+				});
+			}else{
+				notify("The services have not been paid for yet.");
+			}
+		}else{
+			notify("Kindly select a service.")
+		}
+	})
+	$("#appt-more").click(function(){
+		$(".more-tools").show();
+	})
+	$(".close-more").click(function(){		
+		clear_appt();
+	})
+
 	ispa_checkout();
+}
+
+function clear_appt(){
+	$("#ispa-appt-b").attr("data-item", "");
+	$(".appt-user").html("");
+	$(".date-sel").html("");
+	$(".service-list").html("");
+	$(".appt-payable").html("");
+	$(".appt-payment").html("");
+	$(".appt-bar").attr("class","app-bar appt-bar");
+	$(".more-tools").hide();
+	$("#ispa-appt-b").hide();
+	$("#appt-done").show();
+}
+
+function appt_func(){	
+	$(".day-group").each(function(){
+		$(this).click(function(){
+			var item =  $(this).attr("data-item");
+			$("#ispa-appt-b").attr("data-item", "");
+			if (item) {
+				fetch({item: item}, {url: "get_appointment"}, ({ user = {}, time = "", services = "", payment = false, total = 0.00, confirmed = 0, status = 0 }) =>{
+					$("#ispa-appt-b").show();
+					$("#ispa-appt-b").attr("data-item", item);
+					$(".appt-user").html(user.name || "");
+					$(".date-sel").html(time);
+					$(".service-list").html(services);
+					$(".appt-payable").html(total);
+					$("#appt-paid").val(payment);
+					
+					if (payment) {						
+						$("#appt-paid").prop("checked", true);
+					}else{						
+						$("#appt-paid").prop("checked", false);
+					}
+
+					$("#appt-done").hide();
+					$(".more-tools").hide();
+
+					if (confirmed == 1) {
+						if (!status) {
+							$("#appt-done").show();
+						}
+					}else {
+						if (confirmed == 0) {
+							$(".more-tools").show();
+						}
+					}
+
+					/* bar color */
+					if (status === 0) {																	
+						if (confirmed == 0) {												
+							$(".appt-bar").attr("class","app-bar appt-bar d-pend");
+						}else if(confirmed == 1){							
+							$(".appt-bar").attr("class","app-bar appt-bar d-con");
+						}else{								
+							$(".appt-bar").attr("class","app-bar appt-bar d-can");
+						}
+					}else{						
+						if (status == 1) {
+							$(".appt-bar").attr("class","app-bar appt-bar d-done");
+						}else{
+							$(".appt-bar").attr("class","app-bar appt-bar d-can");
+						}
+					}	
+				});
+			}
+		})
+	});
+	$("#appt-con").click(function(){
+		var item = $("#ispa-appt-b").attr("data-item");
+		if (item) {
+			fetch({item: item}, {"url": "confirm_app"}, res =>{
+				if (res) {
+					notify("Appointment confirmed succesfully.");
+					clear_appt();
+					$(".cal-date.active").click();
+				}
+			})
+		}else{
+			notify("No appointment selected.");
+		}
+	})
+	$("#appt-can").click(function(){
+		var item = $("#ispa-appt-b").attr("data-item");
+		if (item) {
+			prompt(true, "You will not be able to undo this action.<br>Cancel this appointment?", res => {
+				if (res) {
+					fetch({item: item}, {"url": "cancel_app"}, res =>{
+						if (res) {
+							notify("Appointment cancelled.");
+							$(".cal-date.active").click();
+							clear_appt();							
+						}
+					});
+				}
+			}, cfg = {n: "Back", p:"Proceed"});
+		}else{
+			notify("No appointment selected.");
+		}
+	})
+}
+
+walk_sel = function(){
+	$(".walk-list > .bs-service-item > .service-select").each(function(){
+		$(this).click(function(){
+			if ($(this).hasClass("active")) {
+				$(this).children("i").html("");
+			}else{
+				$(this).children("i").html("done");
+			}
+			$(this).toggleClass("active");				
+			$(".payable").html(walk_booked().amnt);
+			$(".date-sel").html("");			
+		})
+	})
+}
+walk_booked = function(){
+	var booked = {};
+	var booked_items = [];
+	var booked_dur = 0;
+	var booked_amnt = 0;
+	$(".walk-list > .bs-service-item").each(function(){
+		if ($(this).children(".service-select").hasClass("active")) {
+			var b = {
+				dur: Number($(this).attr("data-duration")),
+				amnt: Number($(this).attr("data-amount")),
+				id: Number($(this).attr("data-item"))
+			}
+			booked_dur += b.dur;
+			booked_amnt += b.amnt;
+			booked_items.push(b);
+		}
+	})
+
+	booked= {
+		items: booked_items,
+		dur: booked_dur,
+		amnt: booked_amnt
+	};
+	return booked;
 }
 ispa_checkout = function(){
 	$(".checkout").click(function(){		
@@ -531,4 +765,5 @@ ispa_checkout = function(){
 $(document).ready(() =>{
 	menu();
 	bus_calendar();
+	appt_func();	
 })

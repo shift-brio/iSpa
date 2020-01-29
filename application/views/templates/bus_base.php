@@ -9,6 +9,7 @@
 	<meta name="theme-color" content="#4506ff">
 	<meta name="description" content="iSpa">
 	<meta name="keywords" content="iSpa">	
+	<meta name="bus" value="<?php echo isset($_SESSION["business"]) ? $_SESSION["business"] : "iSpa - Business portal"; ?>">
 	<meta name="application-name" content="iSpa">
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,8 +22,7 @@
 	<script type="text/javascript" src="<?php echo base_url('bootstrap/js/jquery.min.js'); ?>"></script> 
 	<script type="text/javascript" src="<?php echo base_url('bootstrap/materialize/js/materialize.js'); ?>"></script>
 	  <script type="text/javascript" src="<?php echo base_url('bootstrap/js/lazyload.js'); ?>"></script> 
-	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/commons.js')."?".time(); ?>"></script>
-	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/ispa_loader.js')."?".time(); ?>"></script> 
+	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/commons.js')."?".time(); ?>"></script>	 
 	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/bus_ui.js')."?".time(); ?>"></script>	
 	 <script type="text/javascript" src="<?php echo base_url('bootstrap/js/slider.js')."?".time(); ?>"></script>		
 </head>

@@ -1,14 +1,15 @@
 <?php
-	$prof = base_url("uploads/profiles/default_prof.png"); 
+	$prof = base_url("uploads/profiles/"); 
 	$bus = common::getBus($_SESSION["business"]);				
 	if ($bus) {
+		$bus["profile"] = $bus["profile"] == "default_bus_prof.png" ? "default_bus_prof_white.png": $bus["profile"];
 		$prof = base_url("uploads/profiles/".$bus["profile"]);				
 	}
 	?>
 <div class="menu">
 	<div class="menu-bar" data-menu="active">
 		<div class="user-area" style="">	
-			<img class="account-img" src="<?php echo $prof; ?>">								
+			<img class="account-img" src="<?php echo $prof."?".time(); ?>">								
 			<div class="menu-user"><?php echo  $bus ? $bus["name"] :"";  ?></div>
 			<button class="click-btn manage-ac">
 				<i class="material-icons left">settings</i>
@@ -51,16 +52,7 @@
 				<i class="material-icons menu-icon">notifications</i>
 				<div class="menu-notifs n-indic"><?php echo $count_notifs; ?></div>
 				<div class="menu-name">Notifications</div>
-			</div>
-			<!-- <div data-item="chats" class="menu-item  tooltipped" data-menu="chats" data-tooltip="Notifications" data-position="top">
-								<i class="material-icons menu-icon">chat</i>
-								<div class="menu-notifs chat-notif"><?php echo $count_chats; ?></div>	
-								<div class="menu-name">Messages</div>
-							</div>	 -->				
-			<div data-item="wallet" class="menu-item  tooltipped" data-menu="wallet" data-tooltip="Notifications" data-position="top">
-				<i class="material-icons menu-icon">credit_card</i>	
-				<div class="menu-name">Subscription</div>
-			</div>
+			</div>			
 			<a href="<?php echo base_url(""); ?>">
 				<div data-item="business" class="menu-item  tooltipped" data-menu="clients" data-tooltip="Business portal" data-position="top">
 					<i class="material-icons menu-icon">arrow_back</i>	
