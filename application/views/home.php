@@ -48,6 +48,20 @@
 		</button>
 	</div>
 </div>
+<div class="ispa-about">
+	<div class="about-cont">
+		<div class="about-body">
+			<div class="about-text"></div>
+			<img src="<?php echo base_url("uploads/logo/ispa.svg"); ?>" alt="ispa-logo" class="about-logo">
+			<div class="about-title">&copy; 2019 iSpa Ltd.</div>			
+		</div>
+		<div class="modal-tools about-tools">
+			<button class="modal-tool white-text left click-btn close-about close">
+				<i class="material-icons">arrow_back</i>
+			</button>
+		</div>
+	</div>
+</div>
 
 <?php $this->load->view("components/dialog_box"); ?>
 

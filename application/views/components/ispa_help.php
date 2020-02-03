@@ -33,7 +33,7 @@
 							<div class="help-editor-body">
 								<div class="ispa-group">
 									<label class="ispa-label">Help topic</label>
-									<input placeholder="Help item topic" type="text" class="browser-default ispa-in help-topic">
+									<input placeholder="Help item topic" type="text" class="browser-default appt-input ispa-in help-topic">
 								</div>
 								<div class="ispa-group">
 									<label class="ispa-label">Help content</label>

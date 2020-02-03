@@ -473,7 +473,7 @@
 							$cl = "";
 						}
 						$month_data .= '
-							<div data-tooltip="'.date("jS F Y",strtotime($d."-".$month."-".$year)).'" data-position="bottom" class="calendar-day '.$class.' '.$cl.' calendar-date" data-day="'.$d.'">'.($day["day"] == "" ? "-": $day["day"]).'</div>
+							<div data-tooltip="'.date("jS F Y",strtotime($d."-".$month."-".$year)).'" data-position="bottom" class="calendar-day '.$class.' '.$cl.' calendar-date" data-day="'.$d.'">'.($day["day"] == "" ? "&bull;": $day["day"]).'</div>
 						';
 						unset($past);
 					}
@@ -808,10 +808,10 @@
 		}
 	}
 	static function renderExplore($item = false){		
-		if ($item) {
+		if ($item) {			
 			$CI = &get_instance();
 			$bus = common::getBus($item["shop"]);
-			$loc = common::busLoc($item["shop"]);
+			$loc = common::busLoc($item["shop"]);			
 			$rating = common::busRating($item["shop"]);
 			$services = common::busServices($item["shop"]);
 			if ($rating->count == 1) {
@@ -820,7 +820,7 @@
 				$txt = "people";
 			}
 			$fav = "";
-			if (isset($_SESSION["user"])) {
+			if (isset($_SESSION["user"])) {				
 				$user = $_SESSION["user"]->ispa_id;
 				$shop = $item["shop"];
 				$ch_f = $CI->commonDatabase->get_data("ispa_favorites",1,false,"user", $user,"shop",$shop);
@@ -830,8 +830,8 @@
 				}else{
 					$fav = "favorite_outline";
 				}
-			}
-			if ($services && $bus && $loc && $rating) {
+			}			
+			if ($services && $bus && $loc && $rating) {				
 				return '
 					<div data-id="'.$item["shop"].'" class="ispa-shop click-btn">
 						<div class="shop-body">
@@ -870,6 +870,12 @@
 			$loc = $CI->commonDatabase->get_data("ispa_business_locations",1,false,"business",$identifier);
 			if ($loc) {
 				return json_decode(json_encode($loc[0]));
+			}else{
+				return json_decode(json_encode([
+							"lat" => 0,
+							"lng" => 0,
+							"name" => ""
+						]));
 			}
 			return false;
 		}
@@ -877,8 +883,14 @@
 	static function getBus($identifier = false){
 		if ($identifier) {
 			$CI = &get_instance();
-			$bus = $CI->commonDatabase->get_data("ispa_business",1,false,"identifier",$identifier);
+			$bus = $CI->commonDatabase->get_data("ispa_business",1,false,"identifier",$identifier);			
 			if ($bus) {
+				$loc = $CI->commonDatabase->get_data("ispa_business_locations",1,false,"business",$identifier);
+				if ($loc) {
+					$bus[0]["loc"] = $loc[0]["name"];
+				}else{
+					$bus[0]["loc"] = "";
+				}
 				return $bus[0];
 			}
 			return false;
@@ -1021,6 +1033,22 @@
 			return false;
 		}
 	}
+	static function getServices($shop = false){
+		if ($shop) {
+			$CI = &get_instance();
+			$services = $CI->commonDatabase->get_data("ispa_services", false, false, "added_by", $shop, "status", 1);
+			if ($services) {
+				$s_list = "";
+				foreach ($services as $serv) {
+					$s_list .= common::renderService($serv,"bus");
+				}
+
+				return $s_list;
+			}
+			return [];
+		}
+		return false;
+	}
 	static function busServ($serv = false){
 		$s = "";
 		if ($serv) {
@@ -1088,6 +1116,7 @@
 
 		return $lookup;
 	}
+
 	static function renderAppointment($appointment = false){
 		if ($appointment) {
 			$CI = &get_instance();
@@ -1117,11 +1146,11 @@
 						$s_class = "s-con";
 					}else{
 						if ($appointment["confirmed"] == 2) {
-							$text = "d-pend";
+							$text = "d-can";
 							$status = "CANCELLED";
 							$class = "";
 							$cancel = $c_btn;
-							$s_class = "s-pend";								
+							$s_class = "s-can";								
 						}else{
 							$text = "d-pend";
 							$status = "PENDING CONFIRMATION";
@@ -1166,7 +1195,7 @@
 								'.$text.'
 							</div>					
 							<div class="appointment-servs">
-								'.(mb_strlen($ss) > 30 ? mb_substr($ss, 0, 30)." ...": mb_substr($ss, 0, 30)).'
+								'.(mb_strlen($ss) > 25 ? mb_substr($ss, 0, 25)." ...": $ss).'
 							</div>
 						</div>
 						<div class="appointment-tools">
@@ -1428,37 +1457,14 @@
   				$attr = "";
   			}
   			return '
-  				<div class="staff-item" data-item="'.$staff["ispa_id"].'">
-					<div class="staff-item-body">
-						<img src="'.base_url("uploads/profiles/".$user[0]["profile"]).'" alt="" class="staff-img">
-						<div class="staff-details">
-							<div class="staff-detail-item">'.$user[0]["name"].$txt.'</div>
-							<div class="staff-detail-item">Added: '.date("d-m-Y",$staff["date_added"]).'</div>
-						</div>
+  				<div class="staff click-btn" data-item="'.$staff["ispa_id"].'">
+					<div class="staf-img">
+						<img src="'.base_url("uploads/profiles/".$user[0]["profile"]).'" alt="user-profile" class="stf-prof">
 					</div>
-					<div class="staff-more">
-						<div class="staff-more-item">
-							<div class="more-item-desc">Complete appointments :</div>
-							<div class="more-item-val">'.$count.'</div>
-							<div class="right month-sel">
-								'.$sel.'
-							</div>
-						</div>
-						<div class="staff-more-item">
-							<div class="more-item-desc">Total billed :</div>
-							<div class="more-item-val">Ksh '.number_format($amnt,2).'</div>
-						</div>
+					<div class="stf-content">
+						'.$user[0]["name"].$txt.'
 					</div>
-					<div class="staff-tools">
-						<div class="staff-avail">
-							<p class="avail_p">
-					      <input '.$attr.' value="'.$val.'" type="checkbox" class="filled-in staff_avail" id="staff_avail_'.$staff["id"].'">
-					      <label '.$attr.' for="staff_avail_'.$staff["id"].'" class="avail-label">Available</label>
-					    </p>
-						</div>
-						'.$btn.'
-					</div>
-				</div>
+				</div>  				
   			';
   		}
   	}
@@ -1478,6 +1484,10 @@
   				}else{
   					return true;
   				}
+  			}else{
+  				if ($user == $bus["created_by"]) {
+					return true;
+				}
   			}
   		}
   	}
@@ -1501,9 +1511,10 @@
   		$date = date("jS F Y",$img["date_added"]);
   		$link = base_url("uploads/showcase/".$img["link"]);
   		return '
-  				<div data-caption="'.$img["notes"].'" data-date="'.$date.'" class="col s12 m4 l3 showcase-item">
-						<img data-sh="'.$img["id"].'" src="'.$link.'" alt="" class="showcase-img">
-					</div>
+  				<div data-item="'.$img["id"].'"  data-caption="'.$img["notes"].'" data-date="'.$date.'" class="g-item click-btn col s6 m6 l4">
+					<div class="g-ind click-btn"><i class="material-icons">done</i></div>
+					<img src="'.$link.'" alt="'.(mb_strlen($img["notes"]) > 1 ? $img["notes"]: "gallery-image").'" class="g-img">
+				</div>  				
   		';  		
   	}
   	return false;

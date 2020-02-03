@@ -12,11 +12,11 @@ class Home extends CI_Controller {
 		$this->load->library('wallet'); 
 		$this->load->model("commonDatabase");   
 	}
-    public function onboard(){
-    	$data["data"]["title"] = "Welcome to iSpa";
-    	$this->load->view("templates/base_header",json_decode(json_encode($data)));
-    	$this->load->view("onboarding");
-    }
+	 public function onboard(){
+	 	$data["data"]["title"] = "Welcome to iSpa";
+	 	$this->load->view("templates/base_header",json_decode(json_encode($data)));
+	 	$this->load->view("onboarding");
+	 }
 	public function index(){
 		//common::update_user_session("e28e4aa330278e84680778081028e3bb");		
 		unset($_SESSION["business"]);
@@ -29,10 +29,23 @@ class Home extends CI_Controller {
 			$this->load->view("templates/base_header",$data);
 			$this->load->view("home",$data);
 		}else{
+			if (isset($_SESSION["tested"])) {
+				redirect(base_url("login"));
+			}else{
+				$data["data"]["title"] = "Welcome to iSpa";
+			 	$this->load->view("templates/base_header",json_decode(json_encode($data)));
+			 	$this->load->view("onboarding");
+			}
+		}
+	}
+	public function login(){
+		if (!isset($_SESSION["user"])) {
 			$data['title'] = "iSpa - Log in";
 			$data['data'] = json_decode(json_encode($data));	
 			$this->load->view("templates/base_header",$data);
 			$this->load->view("login",$data);
+		}else{
+			redirect(base_url());
 		}
 	}	
 	public function h_cypher($k = "", $decode = false){
@@ -449,7 +462,7 @@ class Home extends CI_Controller {
 				$r["m"] = "Deleted";
 			}else{
 				$r['status'] = false;
-				$r['m'] = "Sorry, you cannot delete this appointment at this time.";
+				$r['m'] = "You cannot delete this appointment at this time.";
 			}
 		}else{
 			$r['status'] = false;

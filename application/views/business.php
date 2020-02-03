@@ -1,6 +1,11 @@
 <?php 	
 	$shop = $_SESSION["business"];
 	$prefs = $this->commonDatabase->get_data("ispa_bus_prefs", 1, false, "business", $shop);
+	$bus = common::getBus($shop);
+
+	if (!$bus) {
+	  exit("An error occured.");
+	}
 
 	if ($prefs) {
 		$prefs = $prefs[0];
@@ -18,9 +23,7 @@
 		<button data-tooltip="open menu" data-position="right" class="menu-btn tooltipped click-btn material-icons">menu</button>	
 		<div class="ispa-area">
 			<?php $this->load->view("business/ispa_appointments"); ?>
-		</div>
-		<?php $this->load->view("business/ispa_checkout"); ?>		
-		<?php $this->load->view("business/ispa_staff"); ?>				
+		</div>			
 		<div class="ad-cont">
 			<div class="add-list">
 				<div class="add-item click-btn">
@@ -41,9 +44,8 @@
 		<div class="loader-in"></div>
 	</div>
 </div>
-<?php 
-	$this->load->view("components/ispa_map_picker");
-	$this->load->view("ispa_showcase");
+
+<?php 	
 	$this->load->view("components/dialog_box");
 ?>
 
@@ -71,7 +73,7 @@
 				<i class="material-icons right">group</i>
 			</button>
 			<button data-id="show-im" class="manage-item click-btn">
-				Showcase Images
+				Shop Gallery
 				<i class="material-icons right">photo_album</i>
 			</button>
 			<button data-id="prefs" class="manage-item click-btn">
@@ -95,7 +97,7 @@
 		</div>
 		<div class="modal-content">
 			<div class="user-img">
-				<img class="account-image" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
+				<img class="account-image" src="<?php echo base_url("uploads/profiles/".$bus["profile"]); ?>">
 				<div>
 					<button class="click-btn edit-cam">
 						<i class="material-icons">camera_alt</i>
@@ -104,19 +106,19 @@
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Shop Name</label>
-				<div contenteditable="true" class="input-content ed-in edit-name">JM Barbers</div>
+				<input type="text" placeholder="Shop name" value="<?php echo $bus["name"]; ?>" class="browser-default ispa-in edit-name">				
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Email</label>
-				<div contenteditable="true" class="input-content ed-in edit-email">briochieng97@gmail.com</div>
+				<input type="email" placeholder="Email" value="<?php echo $bus["email"]; ?>" class="browser-default ispa-in edit-email">			
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Phone number</label>
-				<div contenteditable="true" class="input-content ed-in edit-phone">+254718457135</div>
+				<input type="text" placeholder="Phone number" value="<?php echo $bus["phone"]; ?>" class="browser-default ispa-in edit-phone">				
 			</div>
 			<div class="appt-in">
 				<label class="input-label">Location</label>
-				<div contenteditable="true" class="input-content ed-in edit-loc">Not set</div>
+				<input type="text" placeholder="Location" value="<?php echo $bus["loc"]; ?>" class="browser-default ispa-in edit-loc">				
 			</div>
 		</div>
 	</div>
@@ -139,7 +141,7 @@
 		<div class="modal-title">
 			Manage Services
 		</div>
-		<div class="modal-content">
+		<div class="modal-content s-list">
 			<?php 
 				$servs = $this->commonDatabase->get_data("ispa_services", false, false, "added_by", $shop, "status",  1);
 
@@ -292,7 +294,7 @@
 			<button class="modal-tool left click-btn close close-wd-settings">
 				<i class="material-icons">arrow_back</i>
 			</button>	
-			<button class="right click-btn serv-go save-wds">Save details</button>		
+			<button class="right click-btn save-wds">Save details</button>		
 		</div>
 	</div>
 </div>
@@ -303,33 +305,116 @@
 		<div class="modal-title">
 			Staff Members
 		</div>
-		<div class="modal-content">
-			
+		<div class="modal-content stf-list">
+			<?php 
+				$staff = $this->commonDatabase->get_data("ispa_staff", false, false, "business", $_SESSION["business"]);
+				if ($staff) {
+					foreach ($staff as $stf) {
+						echo common::renderStaff($stf);
+					}
+				}else{
+					echo '<div class="flow-text center">No staff members added yet</div>';
+				}
+			 ?>			
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close cls-stf">
 			<i class="material-icons">arrow_back</i>
-		</button>		
+		</button>	
+		<button class="right click-btn add-stf">Add staff member</button>	
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
+
+<div class="staff-add">
+	<div class="stf-cont">
+		<div class="modal-title">
+			Add a staff member
+		</div>
+		<div class="center">
+			<small>Staff member needs to have an account with iSpa</small>
+		</div>
+		<input type="text" placeholder="Enter staff email address" class="staff-add-in">		
+		<button class="modal-tool left click-btn close cls-stf-add">
+			<i class="material-icons">arrow_back</i>
+		</button>
+		<button class="right click-btn save-staff">Add staff</button>
+	</div>
+</div>
 
 <!-- showcase images -->
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "show-im"], true); ?>	
 	<div class="modal-body manage-mod-b">
 		<div class="modal-title">
-			Showcase Images
+			Gallery
 		</div>
-		<div class="modal-content">
-			
+		<div class="modal-content g-list row">
+			<?php 
+				$shc = $this->commonDatabase->get_data("ispa_showcase", false, false, "shop", $shop);
+				if ($shc) {
+					foreach ($shc as $img) {
+						echo common::renderShowcase($img);
+					}
+				}else{
+					echo '<div class="flow-text center">No images in gallery</div>';
+				}
+			 ?>
 		</div>
 	</div>
 	<div class="modal-tools">
-		<button class="modal-tool left click-btn close">
+		<button class="modal-tool left click-btn close cls-shwc">
 			<i class="material-icons">arrow_back</i>
+		</button>
+		<button class="modal-tool right click-btn add-g">
+			Upload Image
+			<i class="material-icons right">add_circle_outline</i>
 		</button>		
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
+
+<!-- gallery-image options -->
+<div class="gallery-pop">
+	<div class="g-pop-c">
+		<button id="view" class="g-pop-i click-btn">View Image</button>
+		<button id="delete" class="g-pop-i click-btn">Delete Image</button>
+		<button id="back" class="g-pop-i click-btn">Back</button>
+	</div>
+</div>
+
+<!-- gallery add -->
+<div class="g-add">
+	<div class="g-add-c">
+		<div class="g-add-b">
+			<div class="g-add-img-c">
+				<label for="show-in">
+					<img src="<?php echo base_url("uploads/logo/ispa.svg") ?>" alt="upload-image" class="g-add-img">
+				</label>				
+			</div>
+			<div class="g-add-im-t">
+				<button class="modal-tool left click-btn rm-img">
+					Remove image
+					<i class="material-icons right">delete</i>
+				</button>
+				<label for="show-in">
+					<button class="modal-tool right click-btn sw-img">
+						Select Image
+						<i class="material-icons right">image</i>
+					</button>
+				</label>
+			</div>
+			<input type="file" onchange="read_show(this)" name="show-in" id="show-in" accept="image/*" class="hidden">
+		</div>
+		<div class="modal-tools g-add-t">
+			<button class="modal-tool left click-btn close cls-g-add">
+				<i class="material-icons">close</i>
+			</button>
+			<button class="modal-tool right click-btn save-g">
+				Upload
+				<i class="material-icons right">cloud</i>
+			</button>
+		</div>
+	</div>
+</div>
 
 <!-- preferences -->
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "prefs"], true); ?>	
@@ -391,3 +476,15 @@
 		</button>		
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
+
+<div class="gallery">
+	<div class="image-date"></div>
+	<div class="image-slider">		
+		<div class="slider-img">
+			<img class="sl main" src="<?php echo base_url("uploads/logo/ispa.png"); ?>">
+		</div>		
+	</div>
+	<button class="close-g click-btn">
+		<i class="material-icons">close</i>
+	</button>
+</div>

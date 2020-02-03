@@ -56,17 +56,13 @@ class Business extends CI_Controller {
 			redirect(base_url());
 		}
 	}
-	public function submit_shop(){
-		if (isset($_SESSION["user"]) && isset($_POST["editing"]) && isset($_POST["location"]) && isset($_POST["name"]) && isset($_POST["phone"]) && isset($_POST["services"]) && is_array($_POST["services"]) && isset($_POST["type"]) && isset($_POST["type_curr"]) && isset($_POST["working_days"]) && is_array($_POST["working_days"])) {
+	/*public function submit_shop(){
+		if (isset($_SESSION["user"]) && isset($_POST["loc"]) && isset($_POST["name"]) && isset($_POST["phone"]) && isset($_POST["email"])) {
 
-			$editing = $_POST["editing"] == false || $_POST["editing"] == "false" || $_POST["editing"] == "" ? false : $_POST["editing"];
 			$location = $_POST["location"];
 			$name = $_POST["name"];
 			$phone = $_POST["phone"];
-			$services = $_POST["services"];
-			$type = $_POST["type"];
-			$type_curr = $_POST["type_curr"];
-			$working_days = $_POST["working_days"];
+			$email = $_POST["email"];
 
 
 			if (!(mb_substr($phone, 0,4) == +254 || mb_substr($phone, 0,4) == "+254")) {
@@ -247,7 +243,73 @@ class Business extends CI_Controller {
 			$r["m"] = "Invalid access";
 		}
 		common::emitData($r);
-	}	
+	}	*/
+	public function submit_shop(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_POST["loc"]) && isset($_POST["name"]) && isset($_POST["phone"]) && isset($_POST["email"])) {
+
+			$location = $_POST["loc"];
+			$name = $_POST["name"];
+			$phone = $_POST["phone"];
+			$email = $_POST["email"];
+
+			$identifier = md5(sha1($location.$name.$phone.$email));
+			if (!(mb_substr($phone, 0,4) == +254 || mb_substr($phone, 0,4) == "+254")) {
+				if ($phone != "") {
+					if (mb_substr($phone, 0,1) == 0 || mb_substr($phone, 0,1) == "0") {
+						$phone = "+254".mb_substr($phone,1,strlen($phone));
+					}else{
+						$phone = "+254".$phone;
+					}
+				}else{
+					$phone = "";
+				}
+			}
+
+			$ch_phone = $this->commonDatabase->get_data("ispa_business",false,false,"phone",$phone);
+			if (mb_strlen($email) > 0) {
+				$ch_mail = $this->commonDatabase->get_data("ispa_business",false,false,"email",$email);
+			}else{
+				$ch_mail = false;
+			}
+
+			if (!$ch_phone) {
+				if (!$ch_mail) {
+					$data = [
+						"created_by" => $_SESSION["user"]->ispa_id,
+						"name" => $name,
+						"email" => $email,
+						"phone" => $phone,
+						"identifier" => $identifier,
+						"profile" => "default_bus_prof.png",
+						"date_added" => time(),
+						"last_login" => time(),
+						"working" => json_encode([["day" => "Mon", "start" => "07:00", "end" => "18:00"]])
+					];
+
+					$l_data = [
+						"lat" => 0,
+						"lng" => 0,
+						"name" => $location					
+					];
+					$this->commonDatabase->update("ispa_business_locations", $l_data, "business", $identifier);
+					
+
+					$this->commonDatabase->add("ispa_business", $data);
+					$r["m"]["status"] = true;
+					$r["m"]["identifier"] = $identifier;
+					$r["status"] = true;
+				}else{
+					$r["m"] = "The email address submitted has already been registered with a shop.";
+				}
+			}else{
+				$r["m"] = "The phone number submitted has already been registered with a shop.";
+			}
+		}else{			
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
+	}
 	public function add_service(){
 		$r['status'] = false;
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin")) {
@@ -266,13 +328,14 @@ class Business extends CI_Controller {
 
 				$this->commonDatabase->add("ispa_services",$data);
 				$r["status"] = true;
-				$r["m"] = "Success";
+				$r["m"]["status"] = "Success";
+				$r["m"]["services"] = common::getServices($_SESSION["business"]);
 
 			}else{
 				$r["m"] = "Kindly check service details.";
 			}
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
@@ -294,7 +357,7 @@ class Business extends CI_Controller {
 				$r["m"] = "Service not found.";
 			}
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}	
@@ -318,7 +381,9 @@ class Business extends CI_Controller {
 				if ($ch_s) {
 					$this->commonDatabase->update("ispa_services",$data, "id", $_POST["editing"]);
 					$r["status"] = true;
-					$r["m"] = "Success";
+
+					$r["m"]["status"] = "Success";
+					$r["m"]["services"] = common::getServices($_SESSION["business"]);
 				}else{
 					$r["m"] = "Service not found.";
 				}
@@ -326,7 +391,93 @@ class Business extends CI_Controller {
 				$r["m"] = "Kindly check service details.";
 			}
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function del_gallery(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_POST["item"])) {
+
+			$chi = $this->commonDatabase->get_data("ispa_showcase", 1, false, "shop", $_SESSION["business"], "id", $_POST["item"]);
+
+			if ($chi) {
+				$this->commonDatabase->delete("ispa_showcase","shop", $_SESSION["business"],"id",$_POST["item"]);
+
+				$items = $this->commonDatabase->get_data("ispa_showcase", false, false, "shop", $_SESSION["business"]);
+				if ($items) {
+					$list = "";
+
+					foreach ($items as $item) {
+						$list .= common::renderShowcase($item);
+					}
+				}else{
+					$list = '<div class="flow-text">No images in gallery</div>';
+				}
+
+				$r["status"] = true;
+				$r["m"]["list"] = $list;
+				$r["m"]["status"] = "Success";
+			}else{
+				$r["m"] = "Image not found";
+			}
+
+		}else{			
+			$r["m"] = "You are not authorized to perform this action.";
+		}
+		common::emitData($r);
+	}
+	public function save_show(){
+		$r['status'] = false;
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin") && isset($_FILES)) {
+			if (isset($_FILES["file-0"])) {
+			  $filename = md5(sha1($_SESSION["user"]->ispa_id.time()));
+
+	        $config['upload_path']          = './uploads/showcase/';
+	        $config['allowed_types']        = 'gif|jpg|png|jpeg';
+	        $config['file_name']            = $filename;
+	        $config['max_size']             = 160000;
+	        $this->load->library('upload', $config);  
+
+	        if (!$this->upload->do_upload('file-0'))
+	        {	          
+	          $error  = array('error' => $this->upload->display_errors());             
+	          $r['m'] = $error['error'];          
+	        } 
+	        else{
+	          $data = [
+	          	  "shop" => $_SESSION["business"],
+	              'link' => $filename.$this->upload->data('file_ext'),
+	              "notes" => "",
+	              "added_by" => $_SESSION["user"]->ispa_id,
+	              "date_added" => time()
+	          ];
+
+	          $this->commonDatabase->add("ispa_showcase", $data);
+
+	          /* list */
+
+	         $items = $this->commonDatabase->get_data("ispa_showcase", false, false, "shop", $_SESSION["business"]);
+				if ($items) {
+					$list = "";
+
+					foreach ($items as $item) {
+						$list .= common::renderShowcase($item);
+					}
+				}else{
+					$list = '<div class="flow-text">No images in gallery</div>';
+				}
+
+				$r["status"] = true;
+				$r["m"]["list"] = $list;
+				$r["m"]["status"] = "Success";
+	                
+	        }
+			}else{
+				$r["m"] = "No file selected";
+			}		
+		}else{			
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
@@ -357,7 +508,8 @@ class Business extends CI_Controller {
 					];										
 					
 					$this->commonDatabase->update("ispa_services",$data, "id", $_POST["item"]);
-					$r["status"] = true;					
+					$r["m"]["status"] = "Success";
+					$r["m"]["services"] = common::getServices($_SESSION["business"]);				
 				}else{
 					$r["m"] = "Could not delete service. There are appointments scheduled for this service.";
 				}
@@ -365,7 +517,7 @@ class Business extends CI_Controller {
 				$r["m"] = "Service not found.";
 			}
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
@@ -443,7 +595,7 @@ class Business extends CI_Controller {
 				$r["m"] = "Invalid access";
 			}			
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
@@ -506,7 +658,7 @@ class Business extends CI_Controller {
 				$r["m"] = "Invalid access";
 			}
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
@@ -538,14 +690,46 @@ class Business extends CI_Controller {
 				$r["m"] = "Success";
 			}		
 		}else{			
-			$r["m"] = "Sorry, you are not authorized to perform this action.";
+			$r["m"] = "You are not authorized to perform this action.";
 		}
 		common::emitData($r);
 	}
 	public function update_shop(){
-		if (isset($_SESSION["bus"]) ) {
-			# code...
+		$r["status"] = false;
+		if (isset($_SESSION["business"]) && isset($_SESSION["user"]) && isset($_SESSION["business"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"], "admin")) {
+
+			$loc = $this->commonDatabase->get_data("ispa_business_locations", 1, false, "business", $_SESSION["business"]);
+
+			if (isset($_POST["name"]) && mb_strlen($_POST["name"]) > 2 && isset($_POST["email"]) && isset($_POST["phone"]) && isset($_POST["loc"])) {
+				$data = [
+					"name" => $_POST["name"],
+					"email" => $_POST["email"],
+					"phone" => $_POST["phone"],					
+				];
+
+				$this->commonDatabase->update("ispa_business", $data, "identifier", $_SESSION["business"]);
+
+				$l_data = [
+					"lat" => 0,
+					"lng" => 0,
+					"name" => $_POST["loc"]					
+				];
+				if ($loc) {
+					$this->commonDatabase->update("ispa_business_locations", $l_data, "business", $_SESSION["business"]);
+				}else{
+					$l_data["business"] = $_SESSION["business"];
+					$l_data["type"] = "business";
+					$this->commonDatabase->add("ispa_business_locations", $l_data);
+				}
+				$r["status"] = true;
+				$r["m"] = "Success";
+			}else{
+				$r["m"] = "Error: Invalid details submitted.";
+			}
+		}else{			
+			$r["m"] = "You are not authorized to perform this action.";
 		}
+		common::emitData($r);
 	}
 	public function get_calendar(){
 		if (isset($_SESSION["user"]) && isset($_POST["dur"]) && $_POST["dur"] >= 0 && isset($_POST["business"]) && isset($_POST["month"]) && isset($_POST["year"])) {
@@ -665,7 +849,7 @@ class Business extends CI_Controller {
 			$sel = isset($_POST["sel"]) ? $_POST["sel"] : [];
 			if ($bus) {
 				$identifier = $_POST["business"];
-				$services = $this->commonDatabase->get_cond("ispa_services","added_by='$identifier' AND status='1' AND avail='1' order by id DESC");
+				$services = $this->commonDatabase->get_cond("ispa_services","added_by='$identifier' AND status='1' AND avail='1' order by id ASC");
 				if ($services) {
 					$serv = "";
 					foreach ($services as $service) {	
@@ -762,12 +946,13 @@ class Business extends CI_Controller {
 			$r["m"] = "";
 			$key = $_POST["key"];
 			$searched = [];
-			$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%' or phone like '%$key%'");
+			$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
+
 			if ($bus_names) {
 				foreach ($bus_names as $item) {
 					array_push($searched, ["shop" => $item["identifier"]]);
 				}
-			}
+			}			
 			$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
 			if ($bus_locs) {
 				foreach ($bus_locs as $item) {
@@ -1329,12 +1514,12 @@ class Business extends CI_Controller {
 		common::emitData($r);
 	}
 	public function checkout(){
-		if (isset($_POST["item"]) && isset($_POST["disc"]) && isset($_SESSION["business"])) {
+		if (isset($_POST["item"])  && isset($_SESSION["business"])) {
 			$apt = $_POST["item"];
 			$bus = $_SESSION["business"];			
 			$user = $_SESSION["user"]->ispa_id;
 			$staff = $this->commonDatabase->get_data("ispa_staff",1,false,"ispa_id",$user);
-			$discount = $_POST["disc"];
+			$discount = 0;
 			$time = time();
 			$appointment = $this->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$apt,"status",0);
 			$transaction = true;			
@@ -1353,6 +1538,7 @@ class Business extends CI_Controller {
 						$data = ["status" => 1,"payment_status" => 1,"confirmed" => 1];
 						$this->commonDatabase->update("ispa_appointments",$data,"identifier",$apt);
 						$r["status"] = true;
+						$r["m"] = "true";
 					}else{
 						$r['status'] = false;
 						$r["m"] = "Oops! An error occurred.";
@@ -1477,26 +1663,39 @@ class Business extends CI_Controller {
 		common::emitData($r);
 	}
 	public function add_staff(){
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["user"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin") && isset($_POST["avail"]) && isset($_POST["pass"])) {
+		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["email"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
 
-			$user = $_POST["user"];
+			/*  && isset($_POST["avail"]) && isset($_POST["pass"]) */
+			$email = $_POST["email"];			
 			$bus = $_SESSION["business"];
-			$pass = md5(sha1($_POST["pass"]));
 			$b = common::getBus($bus);
 
-			$u = $this->commonDatabase->get_cond("ispa_users","id='$user' AND pass='$pass'  limit 1");
-			if ($u && $b) {				
+			$u = $this->commonDatabase->get_data("ispa_users",1, false, "email", $email);
+			if ($u && $b) {	
+
 				if (!common::isStaff($u[0]["ispa_id"],$bus)) {
 					$r["status"] = true;
 					$data = [
 						"ispa_id" => $u[0]["ispa_id"],
 						"business" => $bus,
-						"availability" => $_POST["avail"] == false || $_POST["avail"] == "false" ? 0: 1,
+						"availability" => 1,
 						"date_added" => time()
 					];
 					$this->commonDatabase->add("ispa_staff",$data);
 					$data["id"] = time();
-					common::notify($u[0]["ispa_id"], $b["name"]." Added you as their staff member. You can access the business portal by clicking on the Business Portal menu item." ,$b["name"]);
+					$r["m"] = "";
+					common::notify($u[0]["ispa_id"], $b["name"]." Added you as their staff member. You can access the business portal by clicking on the <strong>Business Portal</strong> menu item." ,$b["name"]);
+
+
+					$staff = $this->commonDatabase->get_data("ispa_staff", false, false, "business", $_SESSION["business"]);
+					if ($staff) {
+						foreach ($staff as $stf) {
+							$r["m"] .= common::renderStaff($stf);
+						}
+					}else{
+						$r["m"] .= '<div class="flow-text center">No staff members added yet</div>';
+					}
+
 					$r["m"] = common::renderStaff($data);
 				}else{
 					$r['status'] = false;

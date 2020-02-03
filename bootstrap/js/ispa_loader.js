@@ -28,33 +28,6 @@ loading = function(state = false,wid = false){
 console_log = function(v){
 	console.log(v);
 }
-notify = function(text = false,time = false,type = false,sound = false){
-	var t = 5000;
-	var cls = "info";
-	if (text) {		
-		if (type == 'warning') {
-			var cls = "warning";
-		}else if(type == 'error'){
-			var cls = "error";
-		}else{
-			var cls = ""
-		}				
-		if (time) {
-			t = time;
-		}else{
-			t = 5000;
-		}
-		Materialize.toast(text,t,cls)
-	}
-	if (sound) {
-
-	}	
-	/*setTimeout(function(){
-		$("body").click(function(){
-			$(".toast").hide();
-		})
-	},100)*/	
-}
 alert = function(text){
 	notify(text);
 }	
@@ -538,8 +511,13 @@ bus_page = function(bus = false){
 							prev: "sh-tool.prev",
 							next: "sh-tool.next"
 						}
-						new Slider(list, conf);	
-					}	
+						new Slider(list, conf);
+					}else{
+						$(".image-date").html("");
+						$(".sl").attr("src", base_url+"uploads/logo/ispa.png");
+						$(".sh-tool.prev").unbind();
+						$(".sh-tool.next").unbind();
+					}
 					$(".review-all").html(response.m.rating.rating +" - "+response.m.rating.count+" "+txt);
 					$(".review-items").html(response.m.reviews);
 					if (response.m.u_rating) {
@@ -659,56 +637,6 @@ change_pass = function(data = false){
 			}
 		})
 	}
-}
-save_prof = function(data = false){
-	if (data) {
-		loading(true);
-		$.ajax({
-			url:base_url+"save_prof",
-			type:"POST",
-			data:data,
-			contentType: false,       
-			cache: false,             
-			processData:false,
-			complete:function(){
-				loading(false);
-			},
-			success:function(response){
-				if (response.status) {
-					$(".prof-preview").hide();
-					$(".prof-options").hide();
-					$("#edit-prof").val("");
-					$(".account-image").attr("src",response.m.src);								
-				}else{
-					alert(response.m,5000,"error");
-				}
-			},
-			error:function(){
-				internet_error();
-			}
-		})
-	}
-}
-del_prof = function(){
-	loading(true);
-	$.ajax({
-		url:base_url+"del_prof",
-		type:"POST",			
-		complete:function(){
-			loading(false);
-		},
-		success:function(response){
-			if (response.status) {				
-				$("img.account-image").attr("src",response.m.src);
-				$(".prof-options").hide();							
-			}else{
-				alert(response.m,5000,"error");
-			}
-		},
-		error:function(){
-			internet_error();
-		}
-	})
 }
 save_edit = function(data){
 	if (data) {

@@ -27,6 +27,7 @@ const menu = () =>{
 
 						$(".ispa-area").html(res);
 						if (item === "appointments") {
+							bus_appointment();
 							bus_calendar();
 							appt_func();
 						}else if(item === "notifications"){
@@ -69,7 +70,7 @@ let profile = function(){
 		}, 
 		{n: "Cancel", p: "Remove"});
 	})
-	$(".save-prof").click(function(){
+	$(".save-prof").click(function(){		
 		if ($("#edit-prof").val() != "") {
 			var data = new FormData();
 			inp = $("input#edit-prof");
@@ -85,25 +86,25 @@ let profile = function(){
 		$("#edit-bus-det").hide();
 	})
 	$(".update-go").click(function(){
-		var name = $(".edit-name").html();
-		var email = $(".edit-email").html();
-		var phone = $(".edit-phone").html();
-		/*var location = get_selected();*/		
+		var name = $(".edit-name").val();
+		var email = $(".edit-email").val();
+		var phone = $(".edit-phone").val();
+		var location = $(".edit-loc").val();
 
 		if (get_length(name) >= 2) {
-			if (validateInput(email,"email")) {
+			if (validateInput(email,"email") || email == "") {
 				if (phone == "" || validateInput(phone,"phone")) {
-					if (pass != "") {
-						var data = {
-							name: name,
-							email: email,
-							phone: phone,
-							location: false,							
-						};
-						save_edit(data);
-					}else{
-						notify("Kindly enter your password before you can save your details.");
-					}
+					var data = {
+						name: name,
+						email: email,
+						phone: phone,
+						loc: location,							
+					};
+					fetch(data, {url: "update_shop"}, res =>{
+						if (res) {
+							notify("Shop details updated succesfully.")
+						}
+					});
 				}else{
 					notify("Enter a valid phone number");
 				}
@@ -116,6 +117,37 @@ let profile = function(){
 	})
 	
 }
+
+save_show = function(data = false){
+	if (data) {
+		loading(true);
+		$.ajax({
+			url:base_url+"save_show",
+			type:"POST",
+			data:data,
+			contentType: false,       
+			cache: false,             
+			processData:false,
+			complete:function(){
+				loading(false);
+			},
+			success:function(response){
+				if (response.status) {
+					c_g_add();
+					$(".g-list").html(response.m.list);
+					$(".g-add").hide();
+					g_items();
+				}else{
+					notify(response.m,5000,"error");
+				}
+			},
+			error:function(){
+				internet_error();
+			}
+		})
+	}
+}
+
 let read_prof = (input = false) =>{ 	
 	var t = ".pref-pre";
 	if (FileReader && input && input.files[0]) {
@@ -152,10 +184,16 @@ let bus_manage = () =>{
 		$("#prefs").hide();
 	})
 
+	$(".cls-stf").click(function(){
+		$("#staff-m").hide();
+	})
+
 	profile();
 	mg_s();	
 	wds();
 	prefs();	
+	showc();
+	staff();
 }
 let loading = function(state = false,wid = false){			
 	var loader = $(".main-loader");
@@ -165,29 +203,6 @@ let loading = function(state = false,wid = false){
 	}else{		
 		loader.hide();
 	}
-}
-
-let notify = function(text = false,time = false,type = false,sound = false){
-	var t = 5000;
-	var cls = "info";
-	if (text) {		
-		if (type == 'warning') {
-			var cls = "warning";
-		}else if(type == 'error'){
-			var cls = "error";
-		}else{
-			var cls = ""
-		}				
-		if (time) {
-			t = time;
-		}else{
-			t = 5000;
-		}
-		Materialize.toast(text,t,cls)
-	}
-	if (sound) {
-
-	}		
 }
 
 /* manage services*/
@@ -205,6 +220,9 @@ let mg_s = () =>{
 
 	$(".save-serv").bind("click", add_serv);
 
+	serv_funcs();
+}
+function serv_funcs(){
 	$(".edit-serv").each(function(){
 		$(this).click(function(){
 			editing_item = $(this).parent().parent().attr("data-item");
@@ -227,7 +245,7 @@ let mg_s = () =>{
 			var item = $(this).parent().parent().attr("data-item");
 			var elem = $(this).parent().parent();			
 			if (item) {
-				prompt(true, "Delete this service", (res = false) =>{
+				prompt(true, "Delete this service?", (res = false) =>{
 					if (res) {						
 						fetch({item: item},{url: "del_service"}, (res = false) =>{
 							notify("Service removed succesfully");
@@ -255,6 +273,8 @@ let add_serv = () =>{
 				if (res) {
 					serv_cont({});						
 					notify("Service has been added succesfully");
+					$(".s-list").html(res.services);
+					serv_funcs();
 				}
 			});
 		}else{
@@ -278,6 +298,8 @@ let update_s = () =>{
 					serv_cont({});						
 					notify("Service has been updated succesfully");
 					editing_item = false;
+					$(".s-list").html(res.services);
+					serv_funcs();
 				}
 			});
 		}else{
@@ -338,6 +360,140 @@ let s_wds = ()=>{
 		notify("Kindly select opening hours.")
 	}
 }
+let staff = () =>{	
+	$(".add-stf").click(function(){		
+		$(".staff-add").show();
+	})
+	$(".cls-stf-add, .staff-add").click(function(e){
+		if ($(e.target).is(".cls-stf-add, .cls-stf-add > i, .staff-add")) {
+			$(".staff-add").hide();
+		}
+	})
+	$(".save-staff").click(function(){
+		var email = $(".staff-add-in").val();
+		if (validateInput(email, "email")) {
+			fetch({email: email}, {url: "add_staff"}, res => {
+				if (res) {
+					$(".stf-list").html(res);
+					$(".staff-add").hide();
+					(".staff-add-in").val("")
+				}
+			})
+		}else{
+			notify("Enter a valid email address");
+		}
+	})
+}
+let showc = () =>{
+	$(".cls-shwc").click(function(){
+		$("#show-im").hide();
+	})
+	$(".close-g").click(function(){
+		$(".gallery").hide();
+		$(".sl.main").attr("src", "");		
+	})
+	$(".gallery-pop").click(function(e){
+		if ($(e.target).is(".gallery-pop")) {
+			$(this).hide();
+		}
+	})
+	g_items();
+	$(".g-pop-i").each(function(){
+		$(this).click(function(){
+			var action = $(this).attr("id");
+			var item = $(".gallery-pop").attr("data-item");
+			if (action && item) {
+				if (action == "view") {
+					$(".gallery").show();
+					$(".sl.main").attr("src", $(`.g-item[data-item='${item}'] > img`).attr("src"));
+				}else if(action == "delete"){
+					prompt(true,"Parmanently delete image from shop gallery?", res =>{
+						if (res) {
+							fetch({item: item}, {url: "del_gallery"}, res =>{
+								if (res) {
+									g_pop(false);
+									$(".g-list").html(res.list);
+								}
+							});
+						}
+					}, cfg = {n: "Cancel", p:"Delete"});
+				}else{
+					$(".sl.main").attr("src", "");
+					g_pop(false);
+				}
+				g_pop(false);
+			}
+		})
+	})
+	$(".add-g").click(function(){
+		$(".g-add").show();
+	})
+	g_add();
+}
+let g_items = () =>{
+	$(".g-item").each(function(){
+		$(this).click(function(e){
+			if ($(e.target).is(".g-item, .g-item > img")) {
+				var item = $(this).attr("data-item");				
+				g_pop(item);
+			}
+		})
+	})
+}
+
+let g_pop = i =>{
+	if (i) {
+		$(".gallery-pop").show();
+		$(".gallery-pop").attr("data-item", i);
+	}else{
+		$(".gallery-pop").hide();
+		$(".gallery-pop").removeAttr("data-item");
+	}
+}
+
+function g_add(){
+	$(".cls-g-add").click(function(){
+		$(".g-add").hide();
+		c_g_add();
+	})
+	c_g_add = () =>{
+		$("#show-in").val("");
+		$(".g-add-img").attr("src", `${base_url}uploads/logo/ispa.svg`);
+	}
+	$(".rm-img").click(function(){
+		c_g_add();
+	})
+	$(".sw-img").click(function(){
+		$(".g-add-img").click();
+	})
+
+	$(".save-g").click(function(){
+		if ($(".show-in").val() != "") {
+			var data = new FormData();
+			var inp = $("input#show-in");
+			jQuery.each($(inp)[0].files, function(i, file) {
+				data.append('file-'+i, file);
+			});
+			save_show(data); 
+		}else{
+			notify("No image selected.");
+		}
+	})
+}
+
+let read_show = (input = false) =>{ 	
+	var t = ".g-add-img";
+	if (FileReader && input && input.files[0]) {
+		var file = new FileReader();	     	
+		file.onload = function () {	    	
+			$(t).attr("src", file.result);			
+		}
+		file.readAsDataURL(input.files[0]);
+	}else{
+		$(this).attr("src", `${base_url}uploads/logo/ispa.svg`);
+	}
+}
+
 let serv_cont =  ({ name = "", desc = "", cost = "", dur = "", avail = false })=>{
 	$(".service-name").val(name);
 	$(".service-desc").val(desc);
@@ -463,8 +619,7 @@ bus_calendar = function(){
 			})
 		})
 	}
-	cal_dates();
-	bus_appointment();
+	cal_dates();	
 }
 let get_day = function(day = false, type = "next"){
 	if (day) {
@@ -486,7 +641,6 @@ let get_day = function(day = false, type = "next"){
 					$(".app-tot").html(response.m.app_tot);
 					cal_dates();
 					tool_tip();		
-					day_func();	
 					appt_func();
 					$(".cal-cur").click();					
 				}else{
@@ -612,7 +766,7 @@ function clear_appt(){
 	$(".appt-bar").attr("class","app-bar appt-bar");
 	$(".more-tools").hide();
 	$("#ispa-appt-b").hide();
-	$("#appt-done").show();
+	$("#appt-done").show();	
 }
 
 function appt_func(){	
@@ -655,10 +809,10 @@ function appt_func(){
 							$(".appt-bar").attr("class","app-bar appt-bar d-pend");
 						}else if(confirmed == 1){							
 							$(".appt-bar").attr("class","app-bar appt-bar d-con");
-						}else{								
+						}else{							
 							$(".appt-bar").attr("class","app-bar appt-bar d-can");
 						}
-					}else{						
+					}else{										
 						if (status == 1) {
 							$(".appt-bar").attr("class","app-bar appt-bar d-done");
 						}else{
@@ -688,7 +842,7 @@ function appt_func(){
 		if (item) {
 			prompt(true, "You will not be able to undo this action.<br>Cancel this appointment?", res => {
 				if (res) {
-					fetch({item: item}, {"url": "cancel_app"}, res =>{
+					fetch({item: item}, {url: "cancel_app"}, res =>{
 						if (res) {
 							notify("Appointment cancelled.");
 							$(".cal-date.active").click();
@@ -699,6 +853,23 @@ function appt_func(){
 			}, cfg = {n: "Back", p:"Proceed"});
 		}else{
 			notify("No appointment selected.");
+		}
+	})
+	$("#appt-done").click(function(){
+		var item = $("#ispa-appt-b").attr("data-item");
+		var paid = $(".appt-paid").val();		
+		if (item) {
+			if (paid == true || paid == "true") {
+				fetch({item: item}, {url: "checkout"}, res =>{
+					if (res) {
+						notify("Appointment completed.");
+						$(".cal-date.active").click();
+						clear_appt();							
+					}
+				});
+			}else{
+				notify("Payment not made yet.")
+			}
 		}
 	})
 }
@@ -762,8 +933,58 @@ ispa_checkout = function(){
 	})
 }
 
+let long_press = (el = false) =>{
+	let p = false;
+	$(el).on("mouseup", function(){
+		console.log("doown");
+	})
+}
+
+/* ispa-switcher */
+function switcher(){
+	$(".new-bus-btn").click(function(){
+		$(".add-bus").show();
+	})
+	$(".cls-add-bs").click(function(){
+		$(".add-bus").hide();
+	})
+	$(".add-bs-go").click(function(){
+		var name = $(".bs-name").val();
+		var email = $(".bs-email").val();
+		var phone = $(".bs-phone").val();
+		var loc = $(".bs-loc").val();
+
+		if (get_length(name) > 2) {
+			if (validateInput(email, "email") || email == "") {
+				if (validateInput(phone, "phone")) {
+					var data = {
+						name: name,
+						email: email,
+						phone: phone,
+						loc: loc
+					};
+					fetch(data, {url: "submit_shop"}, res => {
+						if (res && res.identifier) {
+							location.href = `${base_url}business/open/${res.identifier}`;
+						}else{
+							notify("Oops! An error occurred. Try again.")
+						}
+					});
+				}else{
+					notify("Enter a valid phone number");
+				}
+			}else{
+				notify("Enter a valid email")
+			}
+		}else{
+			notify("Enter a valid shop name");
+		}
+	})
+}
 $(document).ready(() =>{
 	menu();
 	bus_calendar();
+	bus_appointment();
 	appt_func();	
+	switcher()
 })

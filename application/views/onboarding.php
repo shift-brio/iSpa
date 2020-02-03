@@ -5,7 +5,8 @@
 		<div class="onb-body">
 			<div class="onb-controls">
 				<button class="onb-control click-btn back">
-					<i class="material-icons">keyboard_arrow_left</i>
+					Back
+					<i class="material-icons left">keyboard_arrow_left</i>
 				</button>
 			</div>		
 			<div class="onb-switcher">
@@ -17,7 +18,8 @@
 			</div>
 			<div class="onb-controls">
 				<button class="onb-control click-btn next">
-					<i class="material-icons">keyboard_arrow_right</i>
+					Next
+					<i class="material-icons right">keyboard_arrow_right</i>
 				</button>
 			</div>	
 		</div>
@@ -41,7 +43,7 @@
 				location.href = base_url+"sign_up";
 			})
 			$(".sign-in").click(() =>{
-				location.href = base_url;
+				location.href = base_url+'login';
 			})
 		})
 	</script>	

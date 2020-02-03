@@ -10,11 +10,36 @@ drop_down = function(){
 		);
 	})
 }
+
 tool_tip = function(){	
 	$('.tooltipped').tooltip({delay: 50,html:true});
 }
+
 ispa_inits = function(){
 	drop_down();tool_tip();
+}
+
+let notify = function(text = false,time = false,type = false,sound = false){
+	var t = 5000;
+	var cls = "info";
+	if (text) {		
+		if (type == 'warning') {
+			var cls = "warning";
+		}else if(type == 'error'){
+			var cls = "error";
+		}else{
+			var cls = ""
+		}				
+		if (time) {
+			t = time;
+		}else{
+			t = 5000;
+		}
+		Materialize.toast(text,t,cls)
+	}
+	$(".toast").click(function(){
+		$(this).hide();
+	})
 }
 function get_length(val = ""){
 	return val.replace(/\s/g, '').length;
@@ -97,7 +122,8 @@ let fetch = (data = {}, config = {type: "POST", process: false, url : ""}, callb
 				cache: false,             
 				processData: false
 			};
-		}		
+		}	
+		loading(true);
 		$.ajax({
 			url: config.url,
 			type: config.type,
@@ -176,6 +202,59 @@ appoint_bus = function(business  = false, sel = false, c = false){
 	}
 }
 
+save_prof = function(data = false){
+	if (data) {
+		loading(true);
+		$.ajax({
+			url:base_url+"save_prof",
+			type:"POST",
+			data:data,
+			contentType: false,       
+			cache: false,             
+			processData:false,
+			complete:function(){
+				loading(false);
+			},
+			success:function(response){
+				if (response.status) {
+					$(".prof-preview").hide();
+					$(".prof-options").hide();
+					$("#edit-prof").val("");
+					$(".account-image, .account-img").attr("src",response.m.src);								
+				}else{
+					alert(response.m,5000,"error");
+				}
+			},
+			error:function(){
+				internet_error();
+			}
+		})
+	}
+}
+del_prof = function(){
+	loading(true);
+	$.ajax({
+		url:base_url+"del_prof",
+		type:"POST",			
+		complete:function(){
+			loading(false);
+		},
+		success:function(response){
+			if (response.status) {				
+				$("img.account-image, .account-img").attr("src",response.m.src);
+				$(".prof-options").hide();							
+			}else{
+				alert(response.m,5000,"error");
+			}
+		},
+		error:function(){
+			internet_error();
+		}
+	})
+}
+let slider_play = x =>{
+
+}
 $(document).ready(() =>{
 	check_box();
 })

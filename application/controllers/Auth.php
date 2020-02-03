@@ -185,11 +185,11 @@ class Auth extends CI_Controller {
   public function del_prof(){
     if (isset($_SESSION["user"])) {
       $data = [
-          'profile' => "default_prof_white.png"
+          'profile' => "profile.svg"
       ];
       if (isset($_SESSION["business"])) {
         $data = [
-            'profile' => "default_bus_prof_white.png"
+            'profile' => "default_bus_prof.png"
         ];
         $this->commonDatabase->update("ispa_business",$data,'identifier',$_SESSION['business']);
       }else{
@@ -270,20 +270,21 @@ class Auth extends CI_Controller {
           $r["status"] = true;
           if ($remember) {
             $_SESSION["remember"] = $email;
+            $_SESSION["tested"]   = true;
           }else{
-            $_SESSION["remember"] = false;
+            unset($_SESSION["remember"]);
           }
         }else{
           $r["status"] = false;
-          $r["m"] = "Wrong email or password entered.";
+          $r["m"] = "Invalid email or password entered";
         }
       }else{
         $r["status"] = false;
-        $r["m"] = "An unknown error occurred.";
+        $r["m"] = "An unknown error occurred";
       }
     }else{
       $r["status"] = false;
-      $r["m"] = "Oops! Someone is already logged in.";
+      $r["m"] = "Oops! Someone is already logged in";
     }
     common::emitData($r);
   }

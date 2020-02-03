@@ -1343,6 +1343,11 @@ ispa_login = function(){
 	$(".log-in").click(function(){
 		ispa_login.prototype.test_login();
 	})
+	$(".login-pass").on("keydown", e =>{
+		if (e.which == 13) {
+			ispa_login.prototype.test_login();
+		}
+	})
 	$(".forgot-a").click(function(){
 		$(".ispa-forgot").show();		
 	})
@@ -1376,7 +1381,13 @@ ispa_login.prototype = {
 		var email = $(".login-email").val();
 		var remember = $(".spend-input.remember").attr("value");
 		if (pass != "" && validateInput(email,"email")) {
-			return {email:email,password:pass,remember:remember};
+			return {email:email,password:pass, remember:remember};
+		}else{
+			if (pass == "") {
+				notify("Enter a valid password");
+			}else{
+				notify("Enter a valid email address")
+			}
 		}	
 		return false;	
 	},
@@ -1385,13 +1396,13 @@ ispa_login.prototype = {
 			data = this.login();
 		}
 		if (data) {
-			loading(true,".login-load");
+			$(".login-load").show();
 			$.ajax({
 				type:"POST",
 				url:base_url+"index.php/test_login",
 				data:data,
 				complete:function(){
-					loading(false,".login-load");
+					$(".login-load").hide();
 				},
 				success:function(response = false){
 					if (response && response.status) {
@@ -1976,11 +1987,19 @@ let menu_more = function(){
 			}else if(item === "business"){
 				location.href = base_url+"business";
 			}else if(item === "help"){
-
+				$(".ispa-help").show();
+				$(".menu-more").click();
 			}else if(item === "about"){
-
+				$(".ispa-about").show();
+				$(".menu-more").click();
 			}
 		})
+	})
+	$(".close-help").click(() =>{
+		$(".ispa-help").hide();
+	})
+	$(".close-about").click(function(){
+		$(".ispa-about").hide();
 	})
 }
 function read_prof(input = false){ 	
@@ -2000,5 +2019,5 @@ $(document).ready(() =>{
 	home_tab();
 	new system();
 	calendar();	
-	apt_funcs();	
+	apt_funcs();		
 })
