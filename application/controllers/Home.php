@@ -394,7 +394,7 @@ class Home extends CI_Controller {
 										$n_data = [
 											"user" => $user, 
 											"title" => "Appointment confirmation",
-											"content" => "Your appointment with ".$bus["name"]." scheduled for ".(date("d-m-Y h:i a", strtotime($app_day)))." has been confirmed.",
+											"content" => "Your appointment with ".$bus["name"]." scheduled for ".(date("jS F Y", strtotime($app_day)))." at ".(date("h:i A", strtotime($app_day)))." has been confirmed.",
 											"date_added" => time()										
 										];
 										$this->commonDatabase->add("ispa_notifications",$n_data);

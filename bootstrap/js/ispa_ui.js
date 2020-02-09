@@ -1684,8 +1684,7 @@ calendar = function(){
 					month:month,
 					year: year
 				}
-				get_calendar(data);
-				$(".booking-calendar").show();
+				get_calendar(data);				
 			}else{
 				notify("Kindly select services you want to book an appointment for first.")
 			}
@@ -1808,7 +1807,7 @@ class system {
 			}
 		})
 	}	
-	menuManager = () => {
+	menuManager() {
 		$(".nav-tab").each((x,y) =>{						
 			$(y).click((x) =>{
 				let obj = null;

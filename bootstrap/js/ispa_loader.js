@@ -334,13 +334,13 @@ submit_shop = function(data = false){
 }
 get_suggests = function(data = false){
 	if (data) {
-		$(".calendar-load-in").show();
+		loading(true);
 		$.ajax({
 			url:base_url+"get_suggests",
 			type:"POST",
 			data:data,
 			complete:function(){
-				$(".calendar-load-in").hide();
+				loading(false);
 			},
 			success:function(response){
 				if (response.status) {
@@ -359,19 +359,17 @@ get_suggests = function(data = false){
 }
 get_calendar = function(data){
 	if (data) {
-		$(".calendar-load-in").show();
-		
-		$(".calendar-dates").html("");
-		$(".book-suggests").html("");
+		loading(true);
 		$.ajax({
 			url:base_url+"get_calendar",
 			type:"POST",
 			data:data,
 			complete:function(){
-				$(".calendar-load-in").hide();				
+				loading(false);				
 			},
 			success:function(response){
 				if (response.status) {
+					$(".booking-calendar").show();
 					$(".calendar-dates").html(response.m.calendar);
 					$(".book-suggests").html('<div class="flow-text center">Click on date to view time slots available</div>');					
 					$(".calendar").attr("data-month",response.m.month);
@@ -650,7 +648,7 @@ save_edit = function(data){
 			},
 			success:function(response){
 				if (response.status) {
-					//location.reload();					
+					notify("Your details have been updated.")					
 
 				}else{
 					alert(response.m, 5000,"error");

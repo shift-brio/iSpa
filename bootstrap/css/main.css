@@ -423,7 +423,7 @@
     margin-right: -5px !important;    
   }
   .pretty-scroll::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 15px;
     border-radius: 15px;
   }
@@ -433,7 +433,7 @@
     -webkit-border-radius: 15px;
     border-radius: 15px;    
     background:  #fafafa;/*#555769;*/ 
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
   }
   .pretty-scroll::-webkit-scrollbar-thumb:window-inactive {
     background: transparent !important;
@@ -446,14 +446,14 @@
   }
   *::-webkit-scrollbar-track {
     border-radius: 8px;    
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);       
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);       
   }
 
   /* Handle */
   *::-webkit-scrollbar-thumb {        
-    background: #fafafa;#555769; 
+    background: #fafafa; 
     border-radius: 8px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
   }
   *::-webkit-scrollbar-thumb:window-inactive {
     background: grey;
@@ -469,14 +469,14 @@
   }
   *:hover::-webkit-scrollbar-track {
     border-radius: 8px;    
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);       
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);       
   }
 
   /* Handle */
   *:hover::-webkit-scrollbar-thumb {        
     background: grey;/*#555769;*/ 
     border-radius: 8px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
   }
   *:hover::-webkit-scrollbar-thumb:window-inactive {
     background: grey;
@@ -1118,6 +1118,8 @@ html,.ispa-body{
   border-radius: 0px !important;
   border: none !important;
   padding-left: 3px !important;
+  animation: slide_up_slow .25s ease;
+  word-break: keep-all !important;
 }
 .material-tooltip{
   padding: 0px !important;
@@ -1243,6 +1245,7 @@ img{
   width: 50px !important;
   padding: 6px !important;   
   margin: 0px !important; 
+  border-radius: 0px !important;
   transition:background .25s ease-out;
 }
 .menu-btn:hover,.in-menu-btn:hover{
@@ -2424,7 +2427,7 @@ img{
       background: rgba(0,0,0,.6);
       left: 0;
       top: 0; 
-      z-index: 1070; 
+      z-index: 1060; 
       display: none;
     }
     .booking-calendar-cont{
@@ -2449,20 +2452,36 @@ img{
       background: #fff;
       max-height: 270px;
     }
-    .calendar-details{
+    .calendar-details:not(.n-d){
       height: 50px;
-      text-align: center;
+      text-align: right;
       font-weight: 600;      
-      background: #4506ff;
-      display: inline-flex;
+      background: #4506ff;      
       width: 100%;
       position: fixed;
+      display: inline-flex;
       bottom: 0;
       left: 0;
     }
+    .n-d{
+      height: 40px !important;
+      text-align: center !important;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    } 
+    .calendar-title{
+      width: calc(100% - 150px);
+      padding: 12px !important;
+      text-align: left;
+      font-weight: 500;
+      font-size: 1.2em;
+    }   
+    .calendar-details{
+      background: #0d1317;
+      color: #fff !important;
+    }
     .calendar-name{
-      width: calc(100% - 120px);
-      padding: 12px;
+      width: 100%;
+      padding: 8px;
       color: #fff;
       font-size: 1.2em;
     }
@@ -2479,11 +2498,12 @@ img{
     .calendar-date{
       background: transparent !important;
       cursor: pointer;
+      transition: border .25s ease;
     }   
     .calendar-day{
       height: 40px;     
       width: calc((100%)/7);        
-      padding: 8px;
+      padding: 10px;
       border-bottom: 1px solid rgba(0,0,0,.15);
       border-right: 1px solid rgba(0,0,0,.15);
       font-weight: 500;
@@ -2503,11 +2523,11 @@ img{
     }
     .calendar-date:not(.past){
       background: rgba(250, 250, 250, 1) !important;
-      color: #000;
+      color: #0d1317;
       border-radius: 0px !important;
     }
     .calendar-date:hover{
-      background: grey !important;
+      background: rgba(0,0,0,.25) !important;
     }
     .calendar-name{
       color: #fff !important;
@@ -2524,10 +2544,10 @@ img{
       border:none;
     }
     .calendar-day:first-child,.calendar-day:nth-child(7){
-      color: orange;
+      color: #e81010;
     }
     .calendar-day:first-child{
-      color: orange;
+      color: #e81010;
     }
     .calendar-dates{
       width: 100%;
@@ -2546,10 +2566,11 @@ img{
       margin-right: 4px;
     }
     .calendar-date.active{
-      border: 2px solid #ffa500;
+      border: 2px solid #4506ff;
       color: #0d1317  !important;
       background: #fff !important;
       font-weight: 600 !important;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.45); 
     }    
     .service-total{
       color: #fff;
@@ -3384,14 +3405,26 @@ a > .welcome-message{
   width: 100%;  
   overflow-y: auto;
   margin-top: 6px !important;
-  padding: 5px !important;
+  padding: 5px !important;  
+}
+.suggest-group:last-child{
+  padding-bottom: 30px !important;
+}
+.suggest-items.row{
+  margin-bottom: 0px !important;
+}
+.suggest-group{
+  animation:slide_up_slow .25s ease;  
 }
 .suggest-group > .suggest-title{
   text-align: center;
   font-weight: 600;
   color: grey;
-  width: 100%;
-  animation:slide_up .5s ease-out;  
+  width: 100%;  
+}
+.suggest-title{  
+  margin-bottom: 10px !important;
+  color: #bea117 !important;
 }
 .book-suggestion{
   height: 40px;
@@ -3405,8 +3438,7 @@ a > .welcome-message{
   border-radius: 5px;
   cursor: pointer;  
   border: 1px solid rgba(0,0,0,.15) !important;  
-  transition: transform .25s ease-out ,background .25s ease-out, color .15s ease-out;;
-  animation: slide_up .5s ease-out;    
+  transition: transform .25s ease-out ,background .25s ease-out, color .15s ease-out;;   
 }
 .book-suggestion.active::before{
   content: "✓";
@@ -4109,7 +4141,7 @@ a > .welcome-message{
     }
     .cal{
       width: 100% ; 
-      display: none;
+      /* display: none; */
     }
     .cal-body{
       /*animation:slide_up .45s ease-out;*/
@@ -4129,7 +4161,7 @@ a > .welcome-message{
       text-align: center;
     }
     .cal-day:first-child,.cal-day:last-child{
-      color: #bea117;
+      color: #f41515;
     }
     .cal-dates{
       height: auto;
@@ -4185,14 +4217,18 @@ a > .welcome-message{
       width: 100%;
       height: auto;  
       background: #fff;
-      min-height: calc(100% - 300px);
+      max-height: calc(100% - 340px);
+      overflow-y: auto;
+    }
+    .day-appointments.more{
+      max-height: 100% !important;
     }
     .day-appointments-head{
       height: 40px;  
       padding: 8px;
       font-weight: 600;
-      color: #0d1317;
-      border-bottom: 1px solid rgba(0,0,0,.15);     
+      color: #bea117;
+      border-bottom: 3px solid #bea117;     
       text-align: left;
     }
     .app-tot{
@@ -4209,8 +4245,9 @@ a > .welcome-message{
       width: 100%;
       padding: 3px;
       min-height: calc(100% - 40px);
-      padding-bottom: 30px;
+      padding-bottom: 50px;
       overflow-y: auto;
+      background: rgba(0,0,0,.05);
     }
     .appointment-bottom{
       height: 50px;
@@ -4219,7 +4256,10 @@ a > .welcome-message{
       position: fixed;
       bottom: 0;
       left: 0;
+      background: #fff;
       width: 100%;
+      border-top: 1px solid rgba(0,0,0,.15);
+      box-shadow: 0px 0px 6px rgba(0,0,0,.05)
     }
     .walk-in{
       border-radius: 20px;
@@ -4247,7 +4287,7 @@ a > .welcome-message{
     .day-group{
       width: 100%;
       display: inline-flex;
-      height: 80px;  
+      min-height: 80px;  
       margin-bottom: 5px;
       cursor: pointer;
       border-radius: 3px;
@@ -4255,14 +4295,16 @@ a > .welcome-message{
       border-right: 1px solid rgba(0,0,0,.15);
       border-bottom: 1px solid rgba(0,0,0,.15);
       border-left: 5px solid rgba(0,0,0,.15);
-      
+      background: #fff;
       box-shadow: 0px 0px 8px rgba(0,0,0,.25);
+      animation: slide_up_slow .35s ease;
     }
     .day-group:hover{
       background: #f2f2f2;
     }
     .day-times{
-      height: 100%;
+      height: auto;
+      min-height: 100%;
       width: 80px;
       border-right: 1px solid rgba(0,0,0,.15);
     }
@@ -4288,7 +4330,7 @@ a > .welcome-message{
       height: 100%;  
     }
     .day-detail-item{
-      height: 20px;
+      height: auto;
       width: 100%;
       color: #0d1317;
       font-weight: 600;
@@ -4298,10 +4340,13 @@ a > .welcome-message{
       font-weight: 300;  
     }
     .day-tools{
-      height: 40px;
+      height: auto;
       width: 100%;
-      text-align: right;
-      padding: 2px;
+      text-align: left;
+      padding: 8px;
+    }
+    .staff-ind{
+      color: #bea117;
     }
     .day-tool{
       height: 30px;
@@ -4374,21 +4419,24 @@ a > .welcome-message{
   font-size: .8em;
 }
 .s-can{
-  background: rgba(255, 0, 0, .25);
+  background: rgba(255, 0, 0, .05);
   color: #af1414;
-  box-shadow: 0px 0px 2px rgba(255, 0, 0, .3);
+  border: 1px solid rgba(255, 0, 0, .15);
 }
 .s-con{
-  background:rgba(144, 238, 144, .3);
+  background:rgba(144, 238, 144, .15);
   color: green;
+  border: 1px solid rgba(144, 238, 144, .35);
 }
 .s-done{
-  background: rgba(72, 169, 218, .25);
+  background: rgba(72, 169, 218, .05);
   color: #1b6388;
+  border: 1px solid rgba(72, 169, 218, .15);
 }
 .s-pend{
   color: #b77906;
-  background:rgba(255, 165, 0, .25);  
+  background:rgba(255, 165, 0, .05);
+  border: 1px solid rgba(255, 165, 0, .15);
 }
 .bus-appointment{
   background: rgba(0,0,0,.7);
@@ -5640,7 +5688,7 @@ a > .welcome-message{
   font-size: 1.2em; 
   color: #000;
   border-color: lightgrey;   
-  transition: box-shadow .25s ease-out;
+  transition: box-shadow .25s ease, border-bottom .25s ease;
 }
 .login-in:focus{
   border-bottom: 2px solid #0d1317 !important;
@@ -5853,7 +5901,7 @@ a > .welcome-message{
   border-radius: 0px 0px 20px 20px;
   height: calc(100% - 56px);
   width: 100%;
-  background: #fff;  
+  background: #fff;    
 }
 .app-content > :first-child{
   overflow-y: auto;
@@ -6536,7 +6584,8 @@ a > .welcome-message{
   content: "Date of appointment";
 }
 .date-sel.editable::after{
-  content: "Click to change date";
+  content: "Click to change date and time";
+  color: #bea117 !important;
   display: block;
   font-weight: 400;
   font-size: .9rem;  
@@ -6795,10 +6844,11 @@ a > .welcome-message{
 
   /*--history--*/
   .history{
-    height: 100%;
-    padding-bottom: 20px;
+    height: 100%;    
     width: 100%;
     overflow-x: hidden;
+    padding-bottom: 80px !important;
+    border-radius: 0px 0px 20px 20px;
   }
   .upcoming{
     color: rgba(69, 6, 255, 1);
@@ -7099,11 +7149,11 @@ a > .welcome-message{
     margin-left: calc(50% - 150px);
     background: #fff;
     border-radius: 8px;
-    animation: black_hole .15s ease, black_hole .15s ease;
+    animation: black_hole .25s ease;
     box-shadow: 0px 0px 6px rgba(0,0,0,.25);    
   }
   .dialog-tools{
-    border-top: 1px solid  #bea117;
+    border-top: 1px solid  rgba(0,0,0,.15);
     height: 50px !important;
   }
   .dialog-body{
@@ -7114,11 +7164,13 @@ a > .welcome-message{
     font-size: 1.2rem;
   }
   .dialog-tool{
-    background: transparent !important;
-    font-weight: 600;
+    border-radius: 8px;
+    background: rgba(0,0,0,.05) !important;
+    font-weight: 600;    
   }
-  .dialog-tool.negative{
+  .dialog-tool:not(.negative){
     color: #a51616;
+    background: rgba(165, 22, 22, 0.05) !important;
   }
 
   /*--update pass--*/
@@ -7731,10 +7783,9 @@ a > .welcome-message{
     margin-left: 5px;
     height: 100px;
     background: rgba(0,0,0,.05);    
-    border: 1px solid rgba(0,0,0,.15);
+    border-top: 1px solid rgba(0,0,0,.15);
     display: inline-flex;
     margin-bottom: 5px;
-    border-radius: 5px;
   }
   .wd-details{
     width: calc(100% - 50px);

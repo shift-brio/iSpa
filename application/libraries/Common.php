@@ -1258,6 +1258,18 @@
 			$services = $servs;
 			$user = $CI->commonDatabase->get_data("ispa_users",false,false,"ispa_id",$app["user"]);				  		
 			$dur = common::busDur($bus,$app["identifier"]) * 60;
+			$staff = $CI->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $app["staff_id"]);
+
+			if ($staff) {
+				$u = $CI->commonDatabase->get_data("ispa_users", 1, false, "ispa_id", $staff[0]["ispa_id"]);
+				if ($u) {
+					$staff = "<span class='staff-ind'>&raquo; </span>".$u[0]["name"];
+				}else{
+					$staff = "";
+				}
+			}else{
+				$staff = "";
+			}
 			if ($user) {
 				$start = date("h:i A",$app["app_time"]);
 				$end  = date("h:i A",$app["app_time"] + $dur);
@@ -1313,7 +1325,7 @@
 						<div class="day-detail-item">'.$user[0]["name"].'  <small class="day-status '.$s_class.'">'.$text.'</small></div>
 						<div class="day-detail-item detail-serv">'.$services.'</div>
 						<div class="day-tools">											
-							'.$btns.'
+							'.$staff.'
 						</div>
 					</div>
 				</div>

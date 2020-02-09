@@ -583,13 +583,15 @@ bus_calendar = function(){
 	})
 	function close_cal(){
 		$(".cal").slideUp("fast");
-		$(".cal-more > i").html("expand_more");			
-		$(".cal-draw").show();
+		$(".cal-more > i").html("expand_more");
+		$(".day-appointments").addClass("more");
+		/*$(".cal-draw").show();*/
 	}
 	function expand_cal(){
 		$(".cal").slideDown("fast");
-		$(".cal-more > i").html("expand_less");			
-		$(".cal-draw").hide();
+		$(".cal-more > i").html("expand_less");
+		$(".day-appointments").removeClass("more");			
+		/*$(".cal-draw").hide();*/
 	}
 	$(".cal-cur").click(function(){
 		close_cal();
@@ -607,7 +609,11 @@ bus_calendar = function(){
 		}
 	})
 	$(".cal-draw").click(function(){
-		expand_cal();		
+		if ($(".cal").is(":visible")) {
+			close_cal();
+		}else{
+			expand_cal();
+		}
 	})
 	cal_dates = function(){
 		$(".cal-date:not(.past)").each(function(){
@@ -642,7 +648,7 @@ let get_day = function(day = false, type = "next"){
 					cal_dates();
 					tool_tip();		
 					appt_func();
-					$(".cal-cur").click();					
+					/*$(".cal-cur").click();*/
 				}else{
 					notify(response.m,3000,"error");
 				}
@@ -826,7 +832,7 @@ function appt_func(){
 	$("#appt-con").click(function(){
 		var item = $("#ispa-appt-b").attr("data-item");
 		if (item) {
-			fetch({item: item}, {"url": "confirm_app"}, res =>{
+			fetch({item: item}, {url: "confirm_app"}, res =>{
 				if (res) {
 					notify("Appointment confirmed succesfully.");
 					clear_appt();

@@ -176,6 +176,9 @@ read_notif =  function(item  = false, c = false){
 		})
 	}
 }
+x = res =>{
+	res ? console.log(res) : "";
+}
 appoint_bus = function(business  = false, sel = false, c = false){
 	if (business) {		
 		loading(true);

@@ -11,10 +11,10 @@
 			$appointments = $this->commonDatabase->get_cond("ispa_appointments","shop='$bus' AND app_time >= '$time' AND app_time <= '$next_day' order by app_time DESC");
 			$app_tot = $appointments && sizeof($appointments) > 0 ? sizeof($appointments) : 0;
 		 ?>
-		<div class="day-appointments">
-			<div class="day-appointments-head">
-				<span class="app-tot badge new"><?php echo $app_tot; ?></span> APPOINTMENTS
-			</div>
+		<div class="day-appointments-head">
+			<span class="app-tot badge new"><?php echo $app_tot; ?></span> APPOINTMENTS
+		</div>
+		<div class="day-appointments">			
 			<div class="day-appointments-body">
 				<?php				  
 				  if ($appointments) {
