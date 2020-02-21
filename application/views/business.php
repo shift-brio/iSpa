@@ -298,7 +298,7 @@
 		</div>
 	</div>
 </div>
-
+.......
 <!-- staff members -->
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "staff-m"], true); ?>	
 	<div class="modal-body manage-mod-b">
@@ -326,6 +326,7 @@
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
 
+<!-- add staff -->
 <div class="staff-add">
 	<div class="stf-cont">
 		<div class="modal-title">
@@ -477,6 +478,7 @@
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
 
+<!-- shop gallery -->
 <div class="gallery">
 	<div class="image-date"></div>
 	<div class="image-slider">		

@@ -18,23 +18,35 @@ class Home extends CI_Controller {
 	 	$this->load->view("onboarding");
 	 }
 	public function index(){
-		//common::update_user_session("e28e4aa330278e84680778081028e3bb");		
-		unset($_SESSION["business"]);
-		unset($_SESSION["business_name"]);	
-		if (isset($_SESSION["user"])) {
-			common::update_user_session($_SESSION["user"]->ispa_id);	
-			$data['title'] = "iSpa";						
-			$data['page'] = "home";		
-			$data['data'] = json_decode(json_encode($data));	
-			$this->load->view("templates/base_header",$data);
-			$this->load->view("home",$data);
-		}else{
-			if (isset($_SESSION["tested"])) {
-				redirect(base_url("login"));
+		if (!$this->agent->mobile()) {
+			if (isset($_SESSION["tested"]) || isset($_SESSION["user"])) {
+				$data["data"]["title"] = "Welcome to iSpa";
+			 	$this->load->view("templates/base_header",json_decode(json_encode($data)));
+			 	$this->load->view("desktop_view");
 			}else{
 				$data["data"]["title"] = "Welcome to iSpa";
 			 	$this->load->view("templates/base_header",json_decode(json_encode($data)));
 			 	$this->load->view("onboarding");
+			}
+		}else{
+			//common::update_user_session("e28e4aa330278e84680778081028e3bb");		
+			unset($_SESSION["business"]);
+			unset($_SESSION["business_name"]);	
+			if (isset($_SESSION["user"])) {
+				common::update_user_session($_SESSION["user"]->ispa_id);	
+				$data['title'] = "iSpa";						
+				$data['page'] = "home";		
+				$data['data'] = json_decode(json_encode($data));	
+				$this->load->view("templates/base_header",$data);
+				$this->load->view("home",$data);
+			}else{
+				if (isset($_SESSION["tested"])) {
+					redirect(base_url("login"));
+				}else{
+					$data["data"]["title"] = "Welcome to iSpa";
+				 	$this->load->view("templates/base_header",json_decode(json_encode($data)));
+				 	$this->load->view("onboarding");
+				}
 			}
 		}
 	}
@@ -70,7 +82,7 @@ class Home extends CI_Controller {
 		echo  common::h_cypher_encode($k);;
 	}
 	public function menu_item(){
-		if (isset($_POST["item"]) && isset($_POST['type'])) {
+		if (isset($_SESSION["user"]) && isset($_POST["item"]) && isset($_POST['type'])) {
 			if ($_POST['type'] == "client" && in_array($_POST["item"], $this->config->item("client_tabs"))) {
 				$r['status'] = true;
 				$r['m'] = $this->load->view("components/ispa_menu_".$_POST["item"],$data = "",true);

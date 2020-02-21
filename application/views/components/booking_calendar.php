@@ -16,9 +16,8 @@
 					<div class="calendar-day">SAT</div>
 				</div>
 				<div class="calendar-dates">
-					<?php 									
-					$month_data = common::monthCalendar(date("m"),date("Y"));	
-					echo $month_data;				
+					<?php 										
+					echo common::monthCalendar(date("m"),date("Y"));				
 					?>								 
 				</div>
 			</div>			
