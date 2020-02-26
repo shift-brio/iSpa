@@ -85,7 +85,7 @@ menu = function(){
 			btn.html("menu");
 			in_btn.html("menu");
 		}
-	})	
+	})
 	explorer = function(){
 		explore_inp = $(".ispa-explorer");
 		explore_cont = $(".ispa-explore");
