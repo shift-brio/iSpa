@@ -160,7 +160,7 @@ class Home extends CI_Controller {
 	}
 	public function search_help(){
 		if (isset($_POST["key"])) {
-			$key = $_POST["key"];
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
 			$items = $this->commonDatabase->get_cond("ispa_help","visible='1' AND (topic like '%$key%' or content like '%$key%') order by id DESC");
 			if ($items) {
 				$r['m'] = '';

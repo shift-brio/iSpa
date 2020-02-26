@@ -944,37 +944,42 @@ class Business extends CI_Controller {
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
 			$r['status'] = true;
 			$r["m"] = "";
-			$key = $_POST["key"];
-			$searched = [];
-			$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
+			if (mb_strlen($key) > 1) {								
+				$searched = [];
+				$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
 
-			if ($bus_names) {
-				foreach ($bus_names as $item) {
-					array_push($searched, ["shop" => $item["identifier"]]);
-				}
-			}			
-			$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
-			if ($bus_locs) {
-				foreach ($bus_locs as $item) {
-					if (!in_array($item["business"], $searched)) {
-						array_push($searched, ["shop" => $item["business"]]);
+				if ($bus_names) {
+					foreach ($bus_names as $item) {
+						array_push($searched, ["shop" => $item["identifier"]]);
+					}
+				}			
+				$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
+				if ($bus_locs) {
+					foreach ($bus_locs as $item) {
+						if (!in_array($item["business"], $searched)) {
+							array_push($searched, ["shop" => $item["business"]]);
+						}
 					}
 				}
-			}
-			$bus_types = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%'");
-			if ($bus_types) {
-				foreach ($bus_types as $item) {
-					if (!in_array($item["identifier"], $searched)) {
-						array_push($searched, ["shop" => $item["identifier"]]);
-					}					
-				}
-			}			
-			if (sizeof($searched) > 0) {
-				foreach ($searched as $item) {					
-					$r["m"] .= common::renderExplore($item);
+				$bus_types = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%'");
+				if ($bus_types) {
+					foreach ($bus_types as $item) {
+						if (!in_array($item["identifier"], $searched)) {
+							array_push($searched, ["shop" => $item["identifier"]]);
+						}					
+					}
+				}			
+				if (sizeof($searched) > 0) {
+					foreach ($searched as $item) {					
+						$r["m"] .= common::renderExplore($item);
+					}
+				}else{
+					$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
 				}
 			}else{
-				$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
+				$r['status'] = true;
+				$r["m"] = "";
 			}
 		}else{
 			$r['status'] = false;
@@ -1143,7 +1148,7 @@ class Business extends CI_Controller {
 	}
 	public function service_lookup(){
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
-			$key = $_POST["key"];
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
 			$lookups = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%' group by name");			
 			$r["status"] = true;
 			$r["m"] = "";
@@ -1632,7 +1637,7 @@ class Business extends CI_Controller {
 	}
 	public function suggest_staff(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["key"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-			$key = $_POST["key"];
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
 			$bus = $_SESSION["business"];
 			$suggests = $this->commonDatabase->get_cond("ispa_users","name like '%$key%' or email like '%$key%' or phone like '%$key%' limit 10");
 			if ($suggests) {
