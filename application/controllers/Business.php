@@ -944,37 +944,42 @@ class Business extends CI_Controller {
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
 			$r['status'] = true;
 			$r["m"] = "";
-			$key = $_POST["key"];
-			$searched = [];
-			$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
+			if (mb_strlen($key) > 1) {								
+				$searched = [];
+				$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
 
-			if ($bus_names) {
-				foreach ($bus_names as $item) {
-					array_push($searched, ["shop" => $item["identifier"]]);
-				}
-			}			
-			$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
-			if ($bus_locs) {
-				foreach ($bus_locs as $item) {
-					if (!in_array($item["business"], $searched)) {
-						array_push($searched, ["shop" => $item["business"]]);
+				if ($bus_names) {
+					foreach ($bus_names as $item) {
+						array_push($searched, ["shop" => $item["identifier"]]);
+					}
+				}			
+				$bus_locs = $this->commonDatabase->get_cond("ispa_business_locations","name like '%$key%'");
+				if ($bus_locs) {
+					foreach ($bus_locs as $item) {
+						if (!in_array($item["business"], $searched)) {
+							array_push($searched, ["shop" => $item["business"]]);
+						}
 					}
 				}
-			}
-			$bus_types = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%'");
-			if ($bus_types) {
-				foreach ($bus_types as $item) {
-					if (!in_array($item["identifier"], $searched)) {
-						array_push($searched, ["shop" => $item["identifier"]]);
-					}					
-				}
-			}			
-			if (sizeof($searched) > 0) {
-				foreach ($searched as $item) {					
-					$r["m"] .= common::renderExplore($item);
+				$bus_types = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%'");
+				if ($bus_types) {
+					foreach ($bus_types as $item) {
+						if (!in_array($item["identifier"], $searched)) {
+							array_push($searched, ["shop" => $item["identifier"]]);
+						}					
+					}
+				}			
+				if (sizeof($searched) > 0) {
+					foreach ($searched as $item) {					
+						$r["m"] .= common::renderExplore($item);
+					}
+				}else{
+					$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
 				}
 			}else{
-				$r["m"] .= '<div class="flow-text center explore-none">No shops found</div>';
+				$r['status'] = true;
+				$r["m"] = "";
 			}
 		}else{
 			$r['status'] = false;
@@ -1143,7 +1148,7 @@ class Business extends CI_Controller {
 	}
 	public function service_lookup(){
 		if (isset($_POST["key"]) && isset($_SESSION["user"])) {
-			$key = $_POST["key"];
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
 			$lookups = $this->commonDatabase->get_cond("ispa_business_types","name like '%$key%' group by name");			
 			$r["status"] = true;
 			$r["m"] = "";
@@ -1632,7 +1637,7 @@ class Business extends CI_Controller {
 	}
 	public function suggest_staff(){
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["key"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-			$key = $_POST["key"];
+			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
 			$bus = $_SESSION["business"];
 			$suggests = $this->commonDatabase->get_cond("ispa_users","name like '%$key%' or email like '%$key%' or phone like '%$key%' limit 10");
 			if ($suggests) {
@@ -1805,142 +1810,6 @@ class Business extends CI_Controller {
 		}else{
 			$r['status'] = false;
 			$r["m"] = "Invalid access";
-		}
-		common::emitData($r);
-	}
-	public function get_stf(){
-		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["stf"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-
-			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["stf"], "business", $_SESSION["business"]);
-			if ($ch) {
-				$user = $this->commonDatabase->get_data("ispa_users", 1, false, "ispa_id", $ch[0]["ispa_id"]);	
-				$servs = $this->commonDatabase->get_data("staff_services", false, false, "ispa_id", $_POST["stf"], "shop", $_SESSION["business"]);
-				$shop_servs = $this->commonDatabase->get_data("ispa_services", false, false, "added_by",$_SESSION["business"], "avail", 1);
-				$s = [];
-				foreach ($shop_servs as $serv) {
-					$x = [];
-					$x["serv"] = [
-						"id" => $serv["id"],
-						"name" => $serv["name"],
-						"cost" => number_format($serv["cost"], 2),
-						"dur" => $serv["duration"]
-					];
-					$x["sel"] = false;
-					if ($servs) {
-						for ($i=0; $i < sizeof($servs); $i++) { 
-							if ($serv["id"]  == $servs[$i]["service"]) {
-								$x["sel"] = true;
-							}
-						}
-					}
-					array_push($s, $x);
-					$x = [];					
-				}
-				if ($user) {
-					json_decode($user[0]["location"]);					
-					$res = [
-						"res" => true,
-						"details" => [
-							"id" => $user[0]["ispa_id"],
-							"profile" => base_url("uploads/profiles/".$user[0]["profile"]),
-							"name" => $user[0]["name"],
-							"date" => date("jS F Y", $ch[0]["date_added"]),
-							"phone" => $user[0]["phone"],
-							"avail" => (Int)$ch[0]["availability"] == 1 ? true: false,
-							"admin" => $ch[0]["is_admin"] == 1 ? true: false,
-							"loc" => "",
-						],
-					   "servs" => sizeof($s) > 0 ? $s : []
-					];
-					$r["status"] = true;
-					$r["m"] = $res;
-				}else{
-					$r["m"] = "Staff member not found.";
-				}
-			}else{
-				$r["m"] = "Staff member not found.";
-			}
-			
-		}else{			
-			$r["m"] = "Invalid access";
-		}
-		common::emitData($r);
-	}
-	public function del_staff(){
-		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["staff"])  && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-
-			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["staff"], "business", $_SESSION["business"]);
-			if ($ch) {
-				$this->commonDatabase->delete("ispa_staff", "ispa_id", $_POST["staff"]);
-				/*Should send notification to staff member*/
-
-				$r["status"] = true;
-				$r["m"] = "Done.";
-			}else{
-				$r["m"] = "Staff member not found.";
-			}
-			
-		}else{			
-			$r["m"] = "Invalid access";
-		}
-		common::emitData($r);
-	}
-	public function stf_edit(){
-		$r['status'] = false;
-		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["type"])  && isset($_POST["staff"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
-
-			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["staff"], "business", $_SESSION["business"]);
-			$type = $_POST["type"] === "admin" ? "admin": $_POST["type"] == "servs" ? "servs" : "avail";
-			$sel  = ! isset($_POST["sel"]) || $_POST["sel"] === false || $_POST["sel"] === "false" ? false: true;
-			$servs = [];
-			if ($type == "servs") {
-				$servs = isset($_POST["servs"]) ? $_POST["servs"]: [];
-			}
-			$staff = $_POST["staff"];
-			if ($ch) {
-				if ($type == "avail" || $type == "admin") {					
-					$data = $type == "avail" ? [
-						"availability" => $sel
-					] : [
-						"is_admin" => $sel
-					];
-					$this->commonDatabase->update("ispa_staff", $data, "ispa_id", $_POST["staff"]);
-					$r["status"] = true;
-					$r["m"] = "Success.";
-				}else{					
-					if ($type == "servs") {						
-						if (is_array($_POST["servs"])) {							
-							$this->commonDatabase->delete("staff_services","ispa_id", $staff);
-							foreach ($servs as $serv) {
-								if (is_array($serv) && isset($serv["a"]) && isset($serv["s"])) {
-									$c =  $this->commonDatabase->get_data("ispa_services", 1, false, "added_by", $_SESSION["business"], "id", $serv["a"]);
-									if ($c && ($serv["a"] == 1 || $serv["a"] == "1")) {					
-										$x = [
-											"ispa_id" => $staff,
-											"shop" => $_SESSION["business"],
-											"service" => $serv["s"]
-										];										
-										$this->commonDatabase->add("staff_services",$x,"ispa_id", $staff);
-										$r["status"] = true;
-										$r["m"] = "Success";
-									}
-								}								
-							}
-						}else{
-							$r["m"] = "";
-						}
-					}else{
-						$r["m"] = "An error occurred";
-					}
-				}
-				
-			}else{
-				$r["m"] = "Staff member not found.";
-			}
-		}else{			
-			$r["m"] = "Invalid image";
 		}
 		common::emitData($r);
 	}
