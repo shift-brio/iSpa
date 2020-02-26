@@ -359,7 +359,7 @@ class Home extends CI_Controller {
 							}else{
 								$dur  +=  $service[0]["duration"] * 60;
 								$amnt += $service[0]["cost"];
-								array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier]);
+								array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier, "amount" => $item["cost"]]);
 							}
 						}
 						$slot = common::checkSlot($app_day,$dur,$staff,$shop, false);
@@ -440,7 +440,7 @@ class Home extends CI_Controller {
 				$r["status"] = true;
 			}else{
 				$r['status'] = false;
-				$r['m'] = "Email has alredy been registered.";
+				$r['m'] = "The email address has already been registered.";
 			}
 		}else{
 			$r['status'] = false;
