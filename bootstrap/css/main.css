@@ -7820,9 +7820,7 @@ a > .welcome-message{
   }
 
   /*- staff members -*/
-  #staff-m{
-    display: block;
-  }
+  #staff-m{}
   .staff{
     width: 100%;
     height: auto;
