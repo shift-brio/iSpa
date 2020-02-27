@@ -8598,3 +8598,46 @@ a > .welcome-message{
   .close-about{
     color: #bea117 !important;
   }
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(0,0,0,.95);
+  }
+  .welcome-top, .welcome-bottom{
+    height: 50%;
+    width: 100%;      
+  }
+  .welc-logo{
+    width: 150px;
+    height: 150px;
+    margin-left: calc(50% - 75px);
+    margin-top: 50px;
+    animation: slide_up_slow .25s ease;
+  }
+  .welc-txt{
+    font-size: 3.5em;
+    color: #bea117;
+    font-weight: 400;
+    animation: slide_up_slow .5s ease;
+  }
+  .welc-go{    
+    border-radius: 8px !important;
+    padding: 3px 18px 3px 18px !important;
+    float: right;
+    border: 2px solid #bea117;
+    background: #bea117 !important;
+    color: #0d1317;
+    font-weight: 600;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 20px;
+    right: 0;
+    margin-right: 10px;
+    font-size: 1.2em;    
+  }
+  .welc-go > i{
+    font-weight: 600 !important;
+  }
