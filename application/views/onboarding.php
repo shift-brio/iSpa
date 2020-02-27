@@ -34,6 +34,18 @@
 			</button>
 		</div>
 	</div>
+	<div class="welcome">
+		<div class="welcome-top">
+			<img src="<?php echo base_url("uploads/logo/ispa_white.png"); ?>" alt="" class="welc-logo">
+		</div>
+		<div class="welcome-bottom">
+			<div class="flow-text center welc-txt">iSpa</div>
+			<button class="click-btn welc-go right">
+				Next
+				<i class="material-icons right">arrow_forward</i>
+			</button>
+		</div>
+	</div>
 	<script type="text/javascript" src="<?php echo base_url('bootstrap/js/slider.js')."?".time(); ?>">
 	</script>
 	<script type="text/javascript">
@@ -44,6 +56,9 @@
 			})
 			$(".sign-in").click(() =>{
 				location.href = base_url+'login';
+			})
+			$(".welc-go").click(function(){
+				$(".welcome").hide();
 			})
 		})
 	</script>	
