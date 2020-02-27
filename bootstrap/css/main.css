@@ -8104,32 +8104,34 @@ a > .welcome-message{
     height: 100%;
     width: 100%;
     z-index: 1067;
-    display: none;
+    display: no;
   }
   .sl-h-cont{
-    height: 100%;
+    height: 230px;
     width: calc(100% - 10px);
-    margin-left: 15px;    
+    margin-left: 15px; 
+    position: absolute;
+    bottom: 0;   
     border-radius: 20px 0px 0px 20px;
     animation: slide_left_slow .45s ease;
   }
   .sl-h-t{
-    
+    background: #fff;  
   }
   .sl-h-body{
     height: calc(100% - 50px);
-    width: 100%;    
+    width: 100%; 
+    background: #fff;  
+    text-align: center;    
   }
   .sl-h-top{
     height: calc(100% - 100px);
     width: 100%;
     overflow-y: auto;
-    background: #fff;
-    border-radius: 0px 0px 0px 20px;
+    background: #fff;    
   }
   .slh-b{
-    background: #fff;
-    border-radius: 20px 0px 0px 0px;
+    background: #fff;    
   }
   .ref-data{
     background: transparent !important;
@@ -8139,6 +8141,8 @@ a > .welcome-message{
   .sl-h-tools{
     text-align: center;
     display: inline-flex;
+    margin-top: 5px; 
+    border: none !important;
   }
   .sl-h-tool{
     border-radius: 20px !important;
@@ -8231,6 +8235,7 @@ a > .welcome-message{
   }
   .sl-h-stats{
     height: auto;
+    display: none;
     width: 100%;
     margin-top: 15px;
   }
