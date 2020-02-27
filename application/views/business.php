@@ -274,6 +274,7 @@
 	</div>
 <?php echo $this->load->view("components/row_holder",["p" => "close"], true); ?>
 
+<!-- working days -->
 <div class="wd-settings">
 	<div class="wd-cont">
 		<div class="wd-body">
@@ -298,12 +299,12 @@
 		</div>
 	</div>
 </div>
-.......
+
 <!-- staff members -->
 <?php echo $this->load->view("components/row_holder",["p" => "open", "id" => "staff-m"], true); ?>	
 	<div class="modal-body manage-mod-b">
 		<div class="modal-title">
-			Staff Members
+			Staff members
 		</div>
 		<div class="modal-content stf-list">
 			<?php 
@@ -340,6 +341,167 @@
 			<i class="material-icons">arrow_back</i>
 		</button>
 		<button class="right click-btn save-staff">Add staff</button>
+	</div>
+</div>
+
+
+<!-- manage-staff -->
+<div class="m-staff">
+	<div class="m-staff-cont">
+		<div class="m-staff-body">
+			<div class="modal-title app-title">
+				Staff details
+			</div>
+			<div class="staff-details">
+				<div class="staff-prof">					
+					<img src="<?php echo base_url("uploads/profiles/profile.svg"); ?>" alt="" class="staff-img">
+					<div class="stf-data">
+						<div class="stf-name">
+							Brian Ochieng
+						</div>
+						<div class="stf-date">
+							<?php echo date("jS F Y"); ?>
+						</div>
+					</div>
+				</div>
+				<div class="stf-tools">
+					<button class="left click-btn stf-info">
+						<i class="right material-icons">phone</i>						
+					</button>
+					<button class="right click-btn stf-stats">
+						<i class="right material-icons">today</i>
+						View sales history
+					</button>
+				</div>
+				<div class="res-h pref-h">
+					Staff settings
+				</div>
+				<div class="stf-settings">
+					<div class="stf-sett" id="avail">
+						<div class="pref-details">
+							<div class="pref-name">
+								Services attended to
+							</div>
+							<div class="pref-det">
+								Select service(s) that  
+								<strong class="stf-n-s">
+									<?php echo "Brian ochieng"; ?>										
+								</strong>
+								 can be booked for
+							</div>
+						</div>
+						<div class="pref-tool">
+							<button class="click-btn o-stf-servs">
+								Edit
+							</button>
+						</div>
+					</div>
+					<div class="stf-sett" id="avail">
+						<div class="pref-details">
+							<div class="pref-name">
+								Booking availability
+							</div>
+							<div class="pref-det">
+								Indicate if staff is currently available for booking
+							</div>
+						</div>
+						<div class="pref-tool">
+							<div class="switch">
+								<label for="stf-avail">	
+									<?php 								
+										$cash = $prefs["app_cash"] == 1 ? "checked='checked'":""; 
+										$cash_s = $prefs["app_cash"] == 1 ? true: false;
+									 ?>						
+									<input type="checkbox" id="stf-avail" name="stf-avail" class="stf-avail" value="<?php echo $cash_s; ?>" <?php echo $cash; ?>>
+									<span class="lever"></span>							
+								</label>
+							</div>
+						</div>
+					</div>					
+					<div class="stf-sett" id="avail">
+						<div class="pref-details">
+							<div class="pref-name">
+								Make Administrator
+							</div>
+							<div class="pref-det">
+								Let <strong class="stf-n-s"></strong> have access to administrative functions 
+							</div>
+						</div>
+						<div class="pref-tool">
+							<div class="switch">
+								<label for="stf-admin">														
+									<input type="checkbox" id="stf-admin" name="stf-admin" class="stf-admin" value="false">
+									<span class="lever"></span>							
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-tools">
+			<button class="modal-tool left click-btn close cls-m-stf">
+				<i class="material-icons">arrow_back</i>
+			</button>	
+			<button class="right click-btn rm-stf-m">Remove staff member</button>	
+		</div>
+	</div>
+</div>
+
+<!-- staff-info -->
+<div class="staff-info">
+	<div class="stf-info-cont">
+		<div class="stf-info-title center app-title">
+			Staff contact details
+		</div>
+		<div class="stf-info-data">
+			<div class="stf-info-item">
+				<div class="stf-info-item name">
+					Phone number : &nbsp;
+				</div>
+				<span class="stf-info-item data stf-info-phone"></span>
+			</div>			
+		</div>
+	</div>
+</div>
+
+<!-- staff-services -->
+<div class="stf-services">
+	<div class="stf-services-cont">
+		<div class="stf-service-body">
+			<div class="app-title modal-title center">
+				Staff &nbsp;services
+			</div>
+			<div class="stf-serv-list">
+				<div class="bs-service-item click-btn" data-amount="200" data-duration="30" data-item="2">
+					<div class="service-item-name">
+						<div class="service-item-name-box">
+							Hair cut
+						</div>
+					</div>
+					<div class="service-item-detail">
+						<div class="service-item-detail-item">
+							Ksh. 200.00
+						</div>
+						<div class="service-item-detail-item">
+							30 Min
+						</div>									
+					</div>
+					<div value="1" class="service-select active">
+						<i class="material-icons">done</i>
+					</div>
+				</div>				
+			</div>
+		</div>
+		<div class="modal-tools">
+			<button class="modal-tool left click-btn close cls-stf-servs">
+				<i class="material-icons">arrow_back</i>
+			</button>	
+			<button class="right click-btn u-stf-serv">
+				Update
+				<i class="material-icons right">done</i>
+			</button>	
+		</div>
 	</div>
 </div>
 
