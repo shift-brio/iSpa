@@ -987,10 +987,180 @@ function switcher(){
 		}
 	})
 }
+class Staff{
+	constructor(){
+		$(".stf-info").click(function(){
+			$(".staff-info").show();			
+		})
+		$(".staff-info").click(function(e){
+			if ($(e.target).is(".staff-info")) {
+				$(".staff-info").hide();
+			}
+		})
+		$(".cls-m-stf").click(function(){
+			$(".m-staff").hide();
+			$(".staff-img").attr("src", `${base_url}uploads/profiles/profile.svg`);
+			$(".stf-name").html("");
+			$(".stf-date").html("");
+			$(".stf-info-phone").html("");
+			$(".stf-info-loc").html("");
+			$("#stf-avail").val(false);
+			$("#stf-avail").removeAttr("checked");
+			$(".stf-serv-list").html("");
+			$(".m-staff").attr("data-item", "");
+		})
+		$(".o-stf-servs").click(function(){
+			$(".stf-services").show();
+		})
+		$(".cls-stf-servs").click(function(){
+			$(".stf-services").hide();
+		})
+		$(".rm-stf-m").click(function(){
+			let item = $(".m-staff").attr("data-item");
+			prompt(true, "Remove this staff member from shop?", (res = false) =>{
+				if (res) {					
+					fetch({staff: item}, {url: "del_staff"}, res => {
+						if (res) {							
+							$(".cls-m-stf").click();
+							$(`.staff[data-item="${item}"]`).slideUp();
+							setTimeout(() => {
+								$(`.staff[data-item="${item}"]`).remove();
+							}, 450);
+						}
+					});
+				}else{
+					prompt(false);
+				}
+			}, 
+			{n: "Cancel", p: "Remove"});
+		})
+		$(".staff").each(function(){
+			$(this).click(() =>{
+				var item = $(this).attr("data-item");
+				$(".sl-h-t, .stf-n-s").html("");
+				fetch({stf: item}, {url: "get_stf"}, ({res = false, details = {}, servs = []}) => {
+					if (res) {
+						$(".m-staff").show();
+						$(".staff-img").attr("src", details.profile);
+						$(".stf-name").html(details.name);
+						$(".stf-date").html(details.date);
+						$(".stf-info-phone").html(details.phone);
+						$(".stf-info-loc").html(details.loc);
+						$("#stf-avail").val(details.avail);
+						details.avail ? $("#stf-avail").prop("checked", "checked"): $("#stf-avail").removeAttr("checked");
+						details.admin ? $("#stf-admin").prop("checked", "checked"): $("#stf-admin").removeAttr("checked");
+						$(".stf-serv-list").html(servs);
+						$(".m-staff").attr("data-item", details.id);
+						$(".sl-h-t").html(`${details.name} sales history`);
+						$(".stf-n-s").html(details.name);
+						let s_list = "";						
+						if (servs.length > 0) {
+							for (var i = 0 ; i < servs.length; i++) {
+								var s = servs[i]
+								var val = s.sel ? 1: 0;
+								var cls = s.sel ? "active": "";
+								s_list +=`
+										<div class="bs-service-item click-btn" data-amount="${s.serv.cost}" data-duration="${s.serv.dur}" data-item="${s.serv.id}">
+											<div class="service-item-name">
+												<div class="service-item-name-box">
+													${s.serv.name}
+												</div>
+											</div>
+											<div class="service-item-detail">
+												<div class="service-item-detail-item">
+													Ksh. ${s.serv.cost}
+												</div>
+												<div class="service-item-detail-item">
+													${s.serv.dur} Min
+												</div>									
+											</div>
+											<div value="${val}" class="service-select ${cls}">
+												<i class="material-icons">done</i>
+											</div>
+										</div>
+								`
+							}
+						}						
+						$(".stf-serv-list").html(s_list);
+						$(".stf-serv-list > .bs-service-item > .service-select").each(function(){
+							$(this).click(function(){
+								var item = $(this).parent().attr("data-item");
+								if ($(this).attr("value") === 0 || $(this).attr("value") === "0" ) {
+									$(this).attr("value", 1);
+									$(this).addClass("active");
+								}else{
+									$(this).attr("value", 0);
+									$(this).removeClass("active");
+								}
+							})
+						})
+					}
+				});
+			})
+		})
+		$(".stf-avail, .stf-admin").on("change", function(){
+			var sel = $(this).val() || false;
+			var stf = $(".m-staff").attr("data-item") || false;
+			var type = $(this).is(".stf-avail") ? "avail" : "admin";
+			if (sel) {
+				fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
+					if (res) {
+						notify("Setting updated");
+					}
+				});
+			}else{
+				prompt(true, "Declare staff member as unavailable? They will not be able to be booked.", (res = false) =>{
+					if (res) {
+						fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
+							if (res) {
+								notify("Setting changed.");
+							}
+						});
+					}else{
+						prompt(false);
+					}
+				}, 
+				{n: "Cancel", p: "Proceed"});
+			}
+		})
+		$(".stf-stats").click(function(){
+			$(".sl-h").show();
+		})
+		$(".close-sl-h").click(function(){
+			$(".sl-h").hide();
+		})
+		$(".u-stf-serv").click(function(){			
+			var servs = [];
+			var staff = $(".m-staff").attr("data-item");
+			$(".stf-serv-list > .bs-service-item").each(function(){
+				var val = Number($(this).children(".service-select ").attr("value"));
+				var item = $(this).attr("data-item");
+				if (val) {
+					servs.push({
+						s: item,
+						a: val
+					});					
+				}
+			})
+			console.log(servs);
+			if (staff) {
+				fetch({servs: servs, staff: staff, type: "servs"}, {url: "stf_edit"}, res => {
+					if (res) {
+						notify("Staff services updated");
+						$(".stf-services").hide();
+					}
+				});
+			}else{
+				notify("Staff not found");
+			}
+		})
+	}
+}
 $(document).ready(() =>{
 	menu();
 	bus_calendar();
 	bus_appointment();
 	appt_func();	
-	switcher()
+	switcher();
+	let staff = new Staff();
 })
