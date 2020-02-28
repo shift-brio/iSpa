@@ -1897,14 +1897,14 @@ class Business extends CI_Controller {
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["type"])  && isset($_POST["staff"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
 
 			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["staff"], "business", $_SESSION["business"]);
-			$type = $_POST["type"] === "admin" ? "admin": $_POST["type"] == "servs" ? "servs" : "avail";
+			$type = $_POST["type"];
 			$sel  = ! isset($_POST["sel"]) || $_POST["sel"] === false || $_POST["sel"] === "false" ? false: true;
 			$servs = [];
 			if ($type == "servs") {
 				$servs = isset($_POST["servs"]) ? $_POST["servs"]: [];
 			}
 			$staff = $_POST["staff"];
-			if ($ch) {
+			if ($ch) {				
 				if ($type == "avail" || $type == "admin") {					
 					$data = $type == "avail" ? [
 						"availability" => $sel

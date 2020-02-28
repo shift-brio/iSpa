@@ -7159,7 +7159,7 @@ a > .welcome-message{
   .dialog-body{
     height: calc(100% - 50px);
     width: 100%;
-    text-align: center;
+    text-align: left;
     padding: 12px;
     font-size: 1.2rem;
   }
@@ -8152,7 +8152,7 @@ a > .welcome-message{
     height: 100%;
     width: 100%;
     z-index: 1067;
-    display: no;
+    display: none;
   }
   .sl-h-cont{
     height: 230px;
@@ -8598,6 +8598,7 @@ a > .welcome-message{
   .close-about{
     color: #bea117 !important;
   }
+  .welcome{
     position: fixed;
     top: 0;
     left: 0;

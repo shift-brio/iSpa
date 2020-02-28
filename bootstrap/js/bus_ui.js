@@ -828,7 +828,10 @@ function appt_func(){
 				});
 			}
 		})
-	});
+	});	
+}
+
+bus_appt = function(){
 	$("#appt-con").click(function(){
 		var item = $("#ispa-appt-b").attr("data-item");
 		if (item) {
@@ -1122,10 +1125,10 @@ class Staff{
 				}, 
 				{n: "Cancel", p: "Proceed"});
 			}
-		})
-		$(".stf-stats").click(function(){
-			$(".sl-h").show();
-		})
+		})				
+		$(".stf-stats").click(function(){			
+			$(".sl-h").show();			
+		})		
 		$(".close-sl-h").click(function(){
 			$(".sl-h").hide();
 		})
@@ -1141,8 +1144,7 @@ class Staff{
 						a: val
 					});					
 				}
-			})
-			console.log(servs);
+			})			
 			if (staff) {
 				fetch({servs: servs, staff: staff, type: "servs"}, {url: "stf_edit"}, res => {
 					if (res) {
@@ -1156,11 +1158,13 @@ class Staff{
 		})
 	}
 }
+let s;
 $(document).ready(() =>{
 	menu();
 	bus_calendar();
 	bus_appointment();
 	appt_func();	
 	switcher();
-	let staff = new Staff();
+	bus_appt();
+	s = new Staff();
 })
