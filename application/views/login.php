@@ -37,9 +37,10 @@
 					<div class="divider"></div>
 					<div class="center">
 						<a href="<?php echo base_url("sign_up"); ?>">
-							<button class="click-btn jumper">Sign up now</button>
+							<button class="click-btn jumper"><br>Sign up now</button>
 						</a>
 					</div>
+					<br>
 				</div>
 			</div>
 		</div>

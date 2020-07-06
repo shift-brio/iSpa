@@ -30,6 +30,7 @@ const menu = () =>{
 							bus_appointment();
 							bus_calendar();
 							appt_func();
+							bus_appt();
 						}else if(item === "notifications"){
 							notif();
 						}
@@ -877,7 +878,7 @@ bus_appt = function(){
 					}
 				});
 			}else{
-				notify("Payment not made yet.")
+				notify("Payment not made yet")
 			}
 		}
 	})
@@ -914,13 +915,12 @@ walk_booked = function(){
 			booked_items.push(b);
 		}
 	})
-
-	booked= {
-		items: booked_items,
-		dur: booked_dur,
-		amnt: booked_amnt
-	};
-	return booked;
+	
+	return {
+				items: booked_items,
+				dur: booked_dur,
+				amnt: booked_amnt
+			};
 }
 ispa_checkout = function(){
 	$(".checkout").click(function(){		
@@ -1056,11 +1056,13 @@ class Staff{
 						$(".m-staff").attr("data-item", details.id);
 						$(".sl-h-t").html(`${details.name} sales history`);
 						$(".stf-n-s").html(details.name);
-						let s_list = "";						
+						let s_list = "";	
+						var tot_servs = 0;					
 						if (servs.length > 0) {
 							for (var i = 0 ; i < servs.length; i++) {
 								var s = servs[i]
 								var val = s.sel ? 1: 0;
+								s.sel ? tot_servs += 1: "";
 								var cls = s.sel ? "active": "";
 								s_list +=`
 										<div class="bs-service-item click-btn" data-amount="${s.serv.cost}" data-duration="${s.serv.dur}" data-item="${s.serv.id}">
@@ -1082,6 +1084,7 @@ class Staff{
 											</div>
 										</div>
 								`
+								$(".serv-cnt").html(tot_servs);
 							}
 						}						
 						$(".stf-serv-list").html(s_list);
@@ -1096,7 +1099,8 @@ class Staff{
 									$(this).removeClass("active");
 								}
 							})
-						})
+						})	
+						staff_stats();					
 					}
 				});
 			})
@@ -1105,26 +1109,27 @@ class Staff{
 			var sel = $(this).val() || false;
 			var stf = $(".m-staff").attr("data-item") || false;
 			var type = $(this).is(".stf-avail") ? "avail" : "admin";
-			if (sel) {
-				fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
-					if (res) {
-						notify("Setting updated");
-					}
-				});
-			}else{
-				prompt(true, "Declare staff member as unavailable? They will not be able to be booked.", (res = false) =>{
-					if (res) {
-						fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
-							if (res) {
-								notify("Setting changed.");
-							}
-						});
-					}else{
-						prompt(false);
-					}
-				}, 
-				{n: "Cancel", p: "Proceed"});
-			}
+			var mes = sel == false ? "Declare staff member as unavailable? They will not be able to be booked." : "Declare this staff member as available for booking.?";
+			if (type == "admin") {
+				var mes = sel == false ? "Make this member an administrator? The member will be able to access funtionalities like managing shop data." : "Remove administrative privileges of this staff member?";				
+			}			
+
+			/*prompt(true, mes, (res = false) =>{
+				if (res) {
+					
+				}else{
+					$(this).is(".stf-avail") ? $(`[for="stf-avail"]`).click() : $(`[for="stf-admin"]`).click();
+					prompt(false);
+				}
+			}, 
+			{n: "Cancel", p: "Proceed"});*/
+
+			/* confirmation prompt */
+			fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
+				if (res) {
+					notify("Setting updated");
+				}
+			});
 		})				
 		$(".stf-stats").click(function(){			
 			$(".sl-h").show();			
@@ -1150,12 +1155,29 @@ class Staff{
 					if (res) {
 						notify("Staff services updated");
 						$(".stf-services").hide();
+						$(".serv-cnt").html(servs.length);
 					}
 				});
 			}else{
 				notify("Staff not found");
 			}
 		})
+		$(".sl-h-year, .sl-h-mon").on("change", () =>{			
+			staff_stats();
+		});
+	}
+}
+function staff_stats(){
+	var m = $(".sl-h-mon").val();
+	var y = $(".sl-h-year").val();
+	var stf = $(".m-staff").attr("data-item");
+	if (m && y) {
+		fetch({month:m, year:y, staff: stf}, {url: "staff_stats"}, ({total = 0.00, customers = 0.00}) => {
+			$(".sl-h-amnt").html(`${total}`);
+			$(".sl-h-cus").html(`${customers}`);
+		});
+	}else{
+		notify("Kindly select a valid year and month.");
 	}
 }
 let s;

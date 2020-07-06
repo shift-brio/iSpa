@@ -3055,6 +3055,9 @@ a > .welcome-message{
   box-shadow: 0 0 5px rgba(0,0,0,.25);  
   border-radius: 12px 12px 0px 0px;
 }
+.ispa-sign-up-body > .ispa-group > p > label > a {
+  color: #bea117;
+}
 .folded-cover{
   display: none;
 }
@@ -3986,6 +3989,7 @@ a > .welcome-message{
       background: #4506ff !important;
       color: #fff !important;
       font-weight: 600;
+      padding: 8px 15px 4px 15px !important;
     }
     .add-bus{
       position: fixed;
@@ -5707,7 +5711,7 @@ a > .welcome-message{
   margin-top: 5px;
   font-weight: 600;
   padding: 4px;
-  font-size: 1.2em;
+  font-size: 1.4em;
   width: auto; 
   min-height: 40px;
   color: rgba(0,0,0,.75);
@@ -5720,14 +5724,15 @@ a > .welcome-message{
   font-weight: 400;
   height: auto !important;
   font-family: lato, serif;
-  content: "Don't have an account yet?";
+  content: "If you don't have an account with us yet";
 }
 .sign-j::before{
- content: "Have an account already?" !important;
+ content: "Do you have an account with us already?" !important;
 }
 .forgot-a{
-  font-weight: 600;  
-  color: #039be5 !important;
+  font-weight: 500; 
+  font-size: 1.1em; 
+  color: #bea117 !important;
 }
 .ispa-forgot{
   width: 100%;
@@ -6279,9 +6284,9 @@ a > .welcome-message{
   padding: 0px !important;
   background: #fff !important;
   border-radius: 50%;
-  color: #0d1317;
+  color:rgba(0, 0, 0, 0.75);
   font-weight: 600;
-  border: 1px solid rgba(0,0,0, .15);
+  border: 1px solid rgba(0,0,0,.15);
   box-shadow: 0 0 9px 0px rgba(0, 0, 0, 0.05) !important;
 }
 .slider-img{
@@ -6531,6 +6536,7 @@ a > .welcome-message{
   margin-top: 10px;
   width: calc(100%/4);
   border-radius: 20px;
+  background: rgba(0,0,0,.15);
   border: none !important;  
 }
 .modal-title{
@@ -6792,6 +6798,7 @@ a > .welcome-message{
   width: calc(100% - 50px);
   text-align: right;
   height: 50px;
+  animation: fadeIn .4s ease;
   display: none;
 }
 .pay-status-txt{
@@ -8531,7 +8538,7 @@ a > .welcome-message{
     padding-left: 5px;
   }
   .pref-tool{
-    width: 80px;
+    width: 110px;
     padding-top: 5px;
     text-align: right;
     padding-left: 15px;
@@ -8615,29 +8622,45 @@ a > .welcome-message{
     width: 150px;
     height: 150px;
     margin-left: calc(50% - 75px);
-    margin-top: 50px;
-    animation: slide_up_slow .25s ease;
+    margin-top: 30px;
+    animation: slide_down_slow .65s ease;
   }
   .welc-txt{
     font-size: 3.5em;
     color: #bea117;
     font-weight: 400;
-    animation: slide_up_slow .5s ease;
+    animation: slide_down_slow .65s ease;
+  }
+  .welc{
+    color: rgba(255,255,255,.6);
+    margin-top: 40px;
+    font-size: 1.6em;
+    font-weight: 600;
+    display: none;
+    animation: slide_down_slow .65s ease;
   }
   .welc-go{    
     border-radius: 8px !important;
     padding: 3px 18px 3px 18px !important;
     float: right;
-    border: 2px solid #bea117;
-    background: #bea117 !important;
-    color: #0d1317;
+    border: 2px solid #4506ff;
+    background: #4506ff !important;
+    color: #fff;
     font-weight: 600;
     position: fixed;
     bottom: 0;
     margin-bottom: 20px;
     right: 0;
     margin-right: 10px;
-    font-size: 1.2em;    
+    font-size: 1.2em;  
+    animation: slide_right_slow .8s ease;  
+  }
+  @keyframes welc{
+    0%{
+      margin-right: -100px !important;
+    }100%{
+      margin-right: 0px !important;
+    }
   }
   .welc-go > i{
     font-weight: 600 !important;

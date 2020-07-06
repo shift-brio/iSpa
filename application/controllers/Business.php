@@ -611,7 +611,7 @@ class Business extends CI_Controller {
 				$dur  = 0;
 				$amnt = 0;
 				$all_services_available = true;
-				$serv_data = [];
+				$sd = [];
 
 				$ap_identifier = md5(sha1($shop.$user).time());
 
@@ -622,7 +622,7 @@ class Business extends CI_Controller {
 					}else{
 						$dur  +=  $service[0]["duration"] * 60;
 						$amnt += $service[0]["cost"];
-						array_push($serv_data, ["service_id" => $item["id"],"appointment_id" => $ap_identifier]);
+						array_push($sd, ["service_id" => $item["id"],"appointment_id" => $ap_identifier, "amount" => $service[0]["cost"]]);
 					}
 				}
 
@@ -635,7 +635,7 @@ class Business extends CI_Controller {
 						"identifier" => $ap_identifier,
 						"app_time" => time() - $dur,
 						"date_added" => time(),
-						"payment_status" => 1,
+						"payment_status" => 1,						
 						"payment_method" => 0,
 						"place" => "shop",
 						"status" => 1,
@@ -1945,7 +1945,48 @@ class Business extends CI_Controller {
 				$r["m"] = "Staff member not found.";
 			}
 		}else{			
-			$r["m"] = "Invalid image";
+			$r["m"] = "Invalid access";
+		}
+		common::emitData($r);
+	}
+	public function staff_stats(){
+		$r["status"] = false;
+		if (isset($_SESSION["business"]) && isset($_SESSION["user"]) && isset($_POST["staff"]) && isset($_POST["year"]) && isset($_POST["month"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
+			$month = $_POST["month"];
+			$year = $_POST["year"];
+
+			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["staff"], "business", $_SESSION["business"]);
+
+			$start_date = strtotime("01-".$month."-".$year);
+			$end_date   = strtotime(cal_days_in_month(CAL_GREGORIAN,(Int)$month,(Int)$year)."-".$month."-".$year);
+			if ($ch) {
+				$staff = $ch[0]['ispa_id'];
+				$appts = $this->commonDatabase->get_cond("ispa_appointments","staff_id='$staff' && (app_time > '$start_date' or  app_time = '$start_date') && (app_time < '$end_date' or app_time = '$end_date')");
+
+				$totals = 0;
+				$customers = 0;
+				if ($appts) {
+					$customers = sizeof($appts);
+					foreach ($appts as $appt) {
+						$servs = $this->commonDatabase->get_data("ispa_appointment_services", false, false, "appointment_id", $appt["identifier"]);
+						if ($servs) {
+							foreach ($servs as $s) {
+								$totals += $s["amount"];
+							}
+						}
+					}
+				}
+
+				$r["status"] = true;
+				$r["m"] = [
+					"total" => number_format($totals,2),
+					"customers" => $customers
+				];
+			}else{
+				$r["m"] = "Staff not found.";
+			}
+		}else{			
+			$r["m"] = "Invalid access";
 		}
 		common::emitData($r);
 	}

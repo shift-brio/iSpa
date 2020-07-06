@@ -1604,6 +1604,13 @@ let apt_funcs = function(){
 			notify("Kindly select a service first.");
 		}
 	})
+	$(".mpesa-trig").click(function(){
+		$(".pay-status").show();
+		setTimeout( () =>{
+			notify("An error occured, try again later.")
+			$(".pay-status").hide();
+		}, 2000);
+	})
 	$(".copy-ac").click(function(){
 		copyText("acc-no", "Till Number copied successfully.");
 	})

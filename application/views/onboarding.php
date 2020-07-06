@@ -11,8 +11,7 @@
 			</div>		
 			<div class="onb-switcher">
 				<p class="onb-title center app-title">
-					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut.
+					
 				</p>
 				<img class="onb-img" src="<?php echo base_url("uploads/onboarding/teams.svg"); ?>">
 			</div>
@@ -40,8 +39,9 @@
 		</div>
 		<div class="welcome-bottom">
 			<div class="flow-text center welc-txt">iSpa</div>
+			<div class="flow-text center welc">welcome...</div>
 			<button class="click-btn welc-go right">
-				Next
+				Welcome
 				<i class="material-icons right">arrow_forward</i>
 			</button>
 		</div>

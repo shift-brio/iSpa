@@ -51,14 +51,20 @@ class Home extends CI_Controller {
 		}
 	}
 	public function login(){
-		if (!isset($_SESSION["user"])) {
-			$data['title'] = "iSpa - Log in";
-			$data['data'] = json_decode(json_encode($data));	
-			$this->load->view("templates/base_header",$data);
-			$this->load->view("login",$data);
+		if (!$this->agent->mobile()) {
+			$data["data"]["title"] = "Welcome to iSpa";
+			$this->load->view("templates/base_header",json_decode(json_encode($data)));
+			$this->load->view("desktop_view");
 		}else{
-			redirect(base_url());
-		}
+			if (!isset($_SESSION["user"])) {
+				$data['title'] = "iSpa - Log in";
+				$data['data'] = json_decode(json_encode($data));	
+				$this->load->view("templates/base_header",$data);
+				$this->load->view("login",$data);
+			}else{
+				redirect(base_url());
+			}
+		}		
 	}	
 	public function h_cypher($k = "", $decode = false){
 		if ($k != "") {
@@ -481,5 +487,49 @@ class Home extends CI_Controller {
 			$r['m'] = "Invalid access.";
 		}
 		common::emitData($r);
+	}
+	public function saf(){	   	  
+	   $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+	  	$key = $this->config->item("c_key");
+	  	$sec = $this->config->item("c_secret");
+
+
+	   $curl = curl_init();
+	   curl_setopt($curl, CURLOPT_URL, $url);
+	   $credentials = base64_encode($key.':'.$sec);
+
+	   //setting a custom http header
+	   curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json','Authorization: Basic '.$credentials));
+
+	   curl_setopt($curl, CURLOPT_HEADER, false);
+	   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	   curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+	   $res = json_decode(curl_exec($curl));	   	   
+	   
+	   //end of access token request   
+	   if (isset($res->access_token)) {
+		  $url = 'https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl';
+	  
+		  $curl = curl_init();
+		  curl_setopt($curl, CURLOPT_URL, $url);
+		  curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json','Authorization:'.$res->access_token.'')); //setting custom header		 			 
+		  $curl_post_data = array(
+		    //Fill in the request parameters with valid values
+		    'ShortCode' => '490704',
+		    'ResponseType' => ' ',
+		    'ConfirmationURL' => 'http://ip_address:port/confirmation',
+		    'ValidationURL' => 'http://ip_address:port/validation_url'
+		  );
+		  
+		  $data_string = json_encode($curl_post_data);
+		  
+		  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		  curl_setopt($curl, CURLOPT_POST, true);
+		  curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+		  
+		  $curl_response = curl_exec($curl);
+		  print_r($curl_response);	
+	   }
 	}
 }

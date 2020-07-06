@@ -50,7 +50,7 @@
 				<i class="material-icons">arrow_back</i>
 			</a>
 		 	<button class="click-btn new-bus-btn right">
-		 		ADD A BUSINESS ACCOUNT
+		 		ACCOUNTS
 		 		<i class="material-icons right">add_circle_outline</i>
 		 	</button>
 		 </div>		

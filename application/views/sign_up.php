@@ -40,12 +40,13 @@
 				<div class="ispa-group center">
 					<button class="sign-go click-btn">
 						Create Account
+						<i class="material-icons right">done</i>
 					</button>
 				</div>
 				<div class="divider"></div>
 				<div class="center">
 					<a href="<?php echo base_url(); ?>">
-						<button class="click-btn jumper sign-j">Sign In</button>
+						<button class="click-btn jumper sign-j"><br>Sign In</button>
 					</a>
 				</div>
 			</div>

@@ -750,10 +750,10 @@
 		if ($bus) {
 			$CI = &get_instance();
 			$appointments = $CI->commonDatabase->get_data("ispa_appointments",1,false,"identifier",$appointment);
+			$serv_tot = 0;
 			if ($appointments) {
 				$services = $CI->commonDatabase->get_data("ispa_appointment_services",false,false,"appointment_id",$appointment);
-				if ($services) {
-					$serv_tot = 0;
+				if ($services) {					
 					foreach ($services as $serv) {
 						$s = $CI->commonDatabase->get_data("ispa_services",1,false,"id",$serv["service_id"]);
 						if ($s) {
@@ -1270,14 +1270,16 @@
 			}else{
 				$staff = "";
 			}
-			if ($user) {
-				$start = date("h:i A",$app["app_time"]);
-				$end  = date("h:i A",$app["app_time"] + $dur);
-				$class = "";
-				$appointment = $app;
-				$time = time();
-				$btns = '';
-				$s_class = '';
+			$s_ = "";	
+			$start = date("h:i A",$app["app_time"]);
+			$end  = date("h:i A",$app["app_time"] + $dur);
+			$class = "";								
+			$appointment = $app;
+			$time = time();
+			$btns = '';
+			$s_class = '';
+			$text = "";
+			if ($user) {				
 				if ($appointment["status"] == 1) {
 					$status = "DONE";
 					$text =  "d-done";
@@ -1313,7 +1315,7 @@
 				$s_ = $text;
 				$text = $status;
 				$status = $s_;
-			}	
+			}			
 			return '
 				<div class="day-group '.$s_.'" data-item="'.$app["identifier"].'">
 					<div class="day-times">

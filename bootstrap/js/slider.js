@@ -20,22 +20,47 @@ class Slider {
 
 		$(`.${this.config.title}`).html(this.list[this.c_i].title)
 		$(`.${this.config.img}`).attr("src", this.list[this.c_i].img);
+		$(`.${this.config.prev}`).hide();
 	}
 	prev(){		
 		if (this.c_i > 0) {			
 			this.c_i -= 1;
 			this.update();
+			if (this.c_i == (this.list.length - 1) || this.c_i == 0) {
+				if (this.c_i == (this.list.length - 1)) {
+					$(`.${this.config.next}`).hide();
+					$(`.${this.config.prev}`).show();
+				}else{
+					$(`.${this.config.next}`).show();
+					$(`.${this.config.prev}`).hide();
+				}
+			}else{
+				$(`.${this.config.next}`).show();
+				$(`.${this.config.prev}`).show();
+			}
 		}
 	}
 	next(){					
 		if (this.c_i < (this.list.length - 1)) {			
 			this.c_i += 1;
 			this.update();
+			if (this.c_i == (this.list.length - 1) || this.c_i == 0) {
+				if (this.c_i == (this.list.length - 1)) {
+					$(`.${this.config.next}`).hide();
+					$(`.${this.config.prev}`).show();
+				}else{
+					$(`.${this.config.next}`).show();
+					$(`.${this.config.prev}`).hide();
+				}
+			}else{
+				$(`.${this.config.next}`).show();
+				$(`.${this.config.prev}`).show();
+			}
 		}
 	}
 	update(){		
 		$(`.${this.config.title}`).html(this.list[this.c_i].title)
-		$(`.${this.config.img}`).attr("src", this.list[this.c_i].img);
+		$(`.${this.config.img}`).attr("src", this.list[this.c_i].img);		
 	}
 };
 
