@@ -1,6 +1,5 @@
 <?php 
- class Common
- {
+ class Common{
  	
  	public function __construct() {
 		$CI = & get_instance();      
@@ -787,7 +786,7 @@
 		}
 		$rating = [
 			"rating" => $r,
-			"count" => common::format_number($rate_count,1)
+			"count" => common::format_number($rate_count, 1)
 		];
 		return json_decode(json_encode($rating));
 	}
@@ -1431,9 +1430,9 @@
   	if ($staff && isset($_SESSION['business'])) {
   		$bus = $_SESSION["business"];
   		$appointments = $CI->commonDatabase->get_data("ispa_appointments",false,false,"staff_id",$staff["ispa_id"],"shop",$bus,"status",1);
-  		$bus = common::getBus($bus);
+  		$bus   = common::getBus($bus);
   		$count = 0;
-  		$amnt = 0;
+  		$amnt  = 0;
   		if ($appointments) {
   			$staff_count = common::staffCount($appointments);
   			$count =  $staff_count->count;

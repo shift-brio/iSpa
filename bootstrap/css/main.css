@@ -4221,11 +4221,15 @@ a > .welcome-message{
       width: 100%;
       height: auto;  
       background: #fff;
+<<<<<<< HEAD
       max-height: calc(100% - 340px);
       overflow-y: auto;
     }
     .day-appointments.more{
       max-height: 100% !important;
+=======
+      height: calc(100% - 50px);
+>>>>>>> master
     }
     .day-appointments-head{
       height: 40px;  
@@ -4248,8 +4252,13 @@ a > .welcome-message{
     .day-appointments-body{
       width: 100%;
       padding: 3px;
+<<<<<<< HEAD
       min-height: calc(100% - 40px);
       padding-bottom: 50px;
+=======
+      height: calc(100% - 40px);
+      padding-bottom: 100px;
+>>>>>>> master
       overflow-y: auto;
       background: rgba(0,0,0,.05);
     }
@@ -4291,7 +4300,12 @@ a > .welcome-message{
     .day-group{
       width: 100%;
       display: inline-flex;
+<<<<<<< HEAD
       min-height: 80px;  
+=======
+      height: 100px;  
+      max-height: 100px;
+>>>>>>> master
       margin-bottom: 5px;
       cursor: pointer;
       border-radius: 3px;
@@ -5193,7 +5207,7 @@ a > .welcome-message{
     height: calc(100% - 40px);
     width: 100%;
     background: #fff;
-    animation:slide_up .45s ease-out;
+    animation: slide_up .45s ease-out;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -5814,7 +5828,7 @@ a > .welcome-message{
   display: none;
 }
 /*--ispa css '19.10.2--*/
-.app-title{
+.app-title, .modal-title{
   font-size: 1.6rem !important;
   font-weight: 600 !important;
   font-family: lato, roboto, sans-serif !important;
@@ -7160,15 +7174,26 @@ a > .welcome-message{
     box-shadow: 0px 0px 6px rgba(0,0,0,.25);    
   }
   .dialog-tools{
+<<<<<<< HEAD
     border-top: 1px solid  rgba(0,0,0,.15);
+=======
+    border-top: 1px solid  rgba(6, 6, 6, 0.15);
+>>>>>>> master
     height: 50px !important;
   }
   .dialog-body{
     height: calc(100% - 50px);
+<<<<<<< HEAD
     width: 100%;
     text-align: left;
+=======
+    width: 100%;    
+>>>>>>> master
     padding: 12px;
     font-size: 1.2rem;
+  }
+  .dialog-body > strong{
+    text-align: center !important;
   }
   .dialog-tool{
     border-radius: 8px;
@@ -7562,7 +7587,7 @@ a > .welcome-message{
     height: 50px;
     background: #fff;
     border-top: 1px solid rgba(0,0,0,.15);
-    width: 100%;
+    width: 100%;    
     animation: slide_up .35s ease;
     text-align: right;
     display: none;
@@ -7574,6 +7599,7 @@ a > .welcome-message{
     border-radius: 20px;
     font-weight: 500 !important;
     letter-spacing: .5px;
+    padding: 6px 15px 6px 15px !important;
   }
   .close-more{
     background: transparent !important;
@@ -7874,9 +7900,7 @@ a > .welcome-message{
   }
 
   /*- staff members -*/
-  #staff-m{
-    
-  }
+  #staff-m{}
   .staff{
     width: 100%;
     height: auto;
@@ -7959,8 +7983,9 @@ a > .welcome-message{
     margin-top: 15px;
     padding: 9px;
     font-size: 1.3em;
-    text-align: center;
+    text-align: left;
   }
+
   .m-staff{
     position: fixed;
     z-index: 1050;
@@ -8133,6 +8158,181 @@ a > .welcome-message{
     display: inline-flex;
     text-align: center;
   }
+<<<<<<< HEAD
+  .m-staff{
+    position: fixed;
+    z-index: 1050;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.75);
+    display: none;
+  }
+  .m-staff-cont{    
+    bottom: 0;
+    width: 100%;    
+    background: #fff;
+    position: absolute;
+    height: calc(100% - 10px);
+    animation: slide_up_slow .35s ease;
+  }
+  .m-staff-body{
+    height: calc(100% - 50px);
+    width: 100%;
+  }
+  .staff-details{
+    max-height: calc(100% - 50px);
+    overflow-y: auto;
+    width: 100%;
+  }
+  .staff-prof{
+    text-align: left;
+    display: inline-flex;
+    width: calc(100% - 10px);
+    margin-left: 5px;
+    padding: 6px;        
+    border-bottom: 1px solid rgba(0,0,0,.25);    
+  }  
+  .staff-img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+  .stf-data{    
+    width: calc(100% - 110px);
+    height: 100%;
+  }
+  .stf-name{
+    font-size: 1.4em;
+    padding: 8px;
+    text-align: right;
+    color: #4506ff;
+    font-weight: 450;
+  }
+  .stf-date{
+    padding: 6px;
+    font-size: 1em;
+    text-align: right;
+  }
+  .stf-date::before{
+    content: "Added on ";
+  }
+  .stf-tools{
+    width: 100%;
+    height: auto;
+    padding-top: 10px;
+    overflow-y: hidden;
+  }
+  .stf-info{
+    background: rgba(0,0,0,.05) !important;
+    color: #4506ff !important;
+    padding: 8px !important;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+  .stf-stats{
+    border: 2px solid #bea117;
+    font-weight: 500;
+    background: #fff !important;
+    color: #bea117 !important;
+    border-radius: 20px;
+    font-size: 1.2em !important;
+    padding: 6px !important;
+  } 
+  .pref-h{
+    padding: 8px;
+    font-size: 1.4em;
+    font-weight: 500;
+    text-align: left !important;
+    background: rgba(0,0,0,.05) !important;
+  } 
+  .stf-settings{
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    height: auto;
+  }
+  .stf-sett{
+    padding: 6px;
+    width: 100%;
+    display: inline-flex;    
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 50px;
+    border-bottom: 1px solid rgba(0,0,0,.15);
+  }
+  .pref-name{
+    font-size: 1.2em;
+    font-weight: 500 !important;
+  }
+  .pref-det{
+    margin-top: 5px;
+  }
+  .o-stf-servs{
+    border: 0px solid #4506ff !important;
+    background: #0d1317 !important;
+    font-weight: 600;
+    color: #fff !important;
+    padding: 5px 10px 5px 10px;
+    border-radius: 20px !important;
+    font-size: 1.2em !important;
+    width: 100% !important;
+    margin-left: 0px !important;
+  }
+  .staff-info{
+    position: fixed;
+    z-index: 1060;
+    background: rgba(0,0,0,.3);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+  }
+  .stf-info-cont{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 80px;
+    width: calc(100% - 90px);
+    background: #0d1317;
+    height: 150px;
+    margin-top: 165px;
+    border-radius: 20px;
+    animation: slide_right_slow .35s ease;
+  }
+  .stf-info-cont::before{
+    width: 20px;
+    height: 20px;
+    background: #0d1317;
+    content: " ";
+    position: absolute;
+    margin-left: -10px;
+    margin-top: 35px;
+    transform: rotate(-45deg) !important;
+  }
+  .stf-info-title{
+    color: rgba(255, 255, 255, 1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.65) !important;
+    font-size: 1.3em !important;
+    padding: 8px;
+    text-align: left;
+    padding-left: 15px !important;
+  }
+  .stf-info-data{
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    padding-left: 10px;
+  }
+  .stf-info-item{
+    padding: 4px;
+    display: inline-flex;
+    text-align: center;
+  }
+=======
+>>>>>>> master
   .stf-info-item > .name{
     color: rgba(255, 255, 255, 0.85);
     font-weight: 600;
@@ -8159,7 +8359,11 @@ a > .welcome-message{
     height: 100%;
     width: 100%;
     z-index: 1067;
+<<<<<<< HEAD
     display: none;
+=======
+    display: no;
+>>>>>>> master
   }
   .sl-h-cont{
     height: 230px;
@@ -8604,7 +8808,11 @@ a > .welcome-message{
   }
   .close-about{
     color: #bea117 !important;
+<<<<<<< HEAD
   }
+=======
+  }  
+>>>>>>> master
   .welcome{
     position: fixed;
     top: 0;
@@ -8622,13 +8830,19 @@ a > .welcome-message{
     width: 150px;
     height: 150px;
     margin-left: calc(50% - 75px);
+<<<<<<< HEAD
     margin-top: 30px;
     animation: slide_down_slow .65s ease;
+=======
+    margin-top: 50px;
+    animation: slide_up_slow .25s ease;
+>>>>>>> master
   }
   .welc-txt{
     font-size: 3.5em;
     color: #bea117;
     font-weight: 400;
+<<<<<<< HEAD
     animation: slide_down_slow .65s ease;
   }
   .welc{
@@ -8638,20 +8852,30 @@ a > .welcome-message{
     font-weight: 600;
     display: none;
     animation: slide_down_slow .65s ease;
+=======
+    animation: slide_up_slow .5s ease;
+>>>>>>> master
   }
   .welc-go{    
     border-radius: 8px !important;
     padding: 3px 18px 3px 18px !important;
     float: right;
+<<<<<<< HEAD
     border: 2px solid #4506ff;
     background: #4506ff !important;
     color: #fff;
+=======
+    border: 2px solid #bea117;
+    background: #bea117 !important;
+    color: #0d1317;
+>>>>>>> master
     font-weight: 600;
     position: fixed;
     bottom: 0;
     margin-bottom: 20px;
     right: 0;
     margin-right: 10px;
+<<<<<<< HEAD
     font-size: 1.2em;  
     animation: slide_right_slow .8s ease;  
   }
@@ -8661,6 +8885,9 @@ a > .welcome-message{
     }100%{
       margin-right: 0px !important;
     }
+=======
+    font-size: 1.2em;    
+>>>>>>> master
   }
   .welc-go > i{
     font-weight: 600 !important;

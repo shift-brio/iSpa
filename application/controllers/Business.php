@@ -945,9 +945,14 @@ class Business extends CI_Controller {
 			$r['status'] = true;
 			$r["m"] = "";
 			$key = str_replace('"', "", str_replace("'", "", $_POST["key"]));
+<<<<<<< HEAD
 			if (mb_strlen($key) > 1) {								
 				$searched = [];
 				$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
+=======
+			$searched = [];
+			$bus_names = $this->commonDatabase->get_cond("ispa_business","name like '%$key%'");
+>>>>>>> master
 
 				if ($bus_names) {
 					foreach ($bus_names as $item) {
@@ -1897,14 +1902,22 @@ class Business extends CI_Controller {
 		if (isset($_SESSION["user"]) && isset($_SESSION["business"]) && isset($_POST["type"])  && isset($_POST["staff"]) && common::isStaff($_SESSION["user"]->ispa_id,$_SESSION["business"],"admin")) {
 
 			$ch = $this->commonDatabase->get_data("ispa_staff", 1, false, "ispa_id", $_POST["staff"], "business", $_SESSION["business"]);
+<<<<<<< HEAD
 			$type = $_POST["type"];
+=======
+			$type = $_POST["type"] === "admin" ? "admin": $_POST["type"] == "servs" ? "servs" : "avail";
+>>>>>>> master
 			$sel  = ! isset($_POST["sel"]) || $_POST["sel"] === false || $_POST["sel"] === "false" ? false: true;
 			$servs = [];
 			if ($type == "servs") {
 				$servs = isset($_POST["servs"]) ? $_POST["servs"]: [];
 			}
 			$staff = $_POST["staff"];
+<<<<<<< HEAD
 			if ($ch) {				
+=======
+			if ($ch) {
+>>>>>>> master
 				if ($type == "avail" || $type == "admin") {					
 					$data = $type == "avail" ? [
 						"availability" => $sel
@@ -1945,6 +1958,7 @@ class Business extends CI_Controller {
 				$r["m"] = "Staff member not found.";
 			}
 		}else{			
+<<<<<<< HEAD
 			$r["m"] = "Invalid access";
 		}
 		common::emitData($r);
@@ -1987,6 +2001,9 @@ class Business extends CI_Controller {
 			}
 		}else{			
 			$r["m"] = "Invalid access";
+=======
+			$r["m"] = "Invalid image";
+>>>>>>> master
 		}
 		common::emitData($r);
 	}

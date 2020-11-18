@@ -850,7 +850,7 @@ bus_appt = function(){
 	$("#appt-can").click(function(){
 		var item = $("#ispa-appt-b").attr("data-item");
 		if (item) {
-			prompt(true, "You will not be able to undo this action.<br>Cancel this appointment?", res => {
+			prompt(true, "<strong>Cancel this appointment?</strong> <br/>You will not be able to undo this action.", res => {
 				if (res) {
 					fetch({item: item}, {url: "cancel_app"}, res =>{
 						if (res) {
@@ -1056,13 +1056,20 @@ class Staff{
 						$(".m-staff").attr("data-item", details.id);
 						$(".sl-h-t").html(`${details.name} sales history`);
 						$(".stf-n-s").html(details.name);
+<<<<<<< HEAD
 						let s_list = "";	
 						var tot_servs = 0;					
+=======
+						let s_list = "";						
+>>>>>>> master
 						if (servs.length > 0) {
 							for (var i = 0 ; i < servs.length; i++) {
 								var s = servs[i]
 								var val = s.sel ? 1: 0;
+<<<<<<< HEAD
 								s.sel ? tot_servs += 1: "";
+=======
+>>>>>>> master
 								var cls = s.sel ? "active": "";
 								s_list +=`
 										<div class="bs-service-item click-btn" data-amount="${s.serv.cost}" data-duration="${s.serv.dur}" data-item="${s.serv.id}">
@@ -1084,7 +1091,10 @@ class Staff{
 											</div>
 										</div>
 								`
+<<<<<<< HEAD
 								$(".serv-cnt").html(tot_servs);
+=======
+>>>>>>> master
 							}
 						}						
 						$(".stf-serv-list").html(s_list);
@@ -1099,8 +1109,12 @@ class Staff{
 									$(this).removeClass("active");
 								}
 							})
+<<<<<<< HEAD
 						})	
 						staff_stats();					
+=======
+						})
+>>>>>>> master
 					}
 				});
 			})
@@ -1109,6 +1123,7 @@ class Staff{
 			var sel = $(this).val() || false;
 			var stf = $(".m-staff").attr("data-item") || false;
 			var type = $(this).is(".stf-avail") ? "avail" : "admin";
+<<<<<<< HEAD
 			var mes = sel == false ? "Declare staff member as unavailable? They will not be able to be booked." : "Declare this staff member as available for booking.?";
 			if (type == "admin") {
 				var mes = sel == false ? "Make this member an administrator? The member will be able to access funtionalities like managing shop data." : "Remove administrative privileges of this staff member?";				
@@ -1134,6 +1149,32 @@ class Staff{
 		$(".stf-stats").click(function(){			
 			$(".sl-h").show();			
 		})		
+=======
+			if (sel) {
+				fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
+					if (res) {
+						notify("Setting updated");
+					}
+				});
+			}else{
+				prompt(true, "Declare staff member as unavailable? They will not be able to be booked.", (res = false) =>{
+					if (res) {
+						fetch({sel: sel, staff: stf, type: type}, {url: "stf_edit"}, res => {
+							if (res) {
+								notify("Setting changed.");
+							}
+						});
+					}else{
+						prompt(false);
+					}
+				}, 
+				{n: "Cancel", p: "Proceed"});
+			}
+		})
+		$(".stf-stats").click(function(){
+			$(".sl-h").show();
+		})
+>>>>>>> master
 		$(".close-sl-h").click(function(){
 			$(".sl-h").hide();
 		})
@@ -1149,19 +1190,28 @@ class Staff{
 						a: val
 					});					
 				}
+<<<<<<< HEAD
 			})			
+=======
+			})
+			console.log(servs);
+>>>>>>> master
 			if (staff) {
 				fetch({servs: servs, staff: staff, type: "servs"}, {url: "stf_edit"}, res => {
 					if (res) {
 						notify("Staff services updated");
 						$(".stf-services").hide();
+<<<<<<< HEAD
 						$(".serv-cnt").html(servs.length);
+=======
+>>>>>>> master
 					}
 				});
 			}else{
 				notify("Staff not found");
 			}
 		})
+<<<<<<< HEAD
 		$(".sl-h-year, .sl-h-mon").on("change", () =>{			
 			staff_stats();
 		});
@@ -1181,12 +1231,20 @@ function staff_stats(){
 	}
 }
 let s;
+=======
+	}
+}
+>>>>>>> master
 $(document).ready(() =>{
 	menu();
 	bus_calendar();
 	bus_appointment();
 	appt_func();	
 	switcher();
+<<<<<<< HEAD
 	bus_appt();
 	s = new Staff();
+=======
+	let staff = new Staff();
+>>>>>>> master
 })

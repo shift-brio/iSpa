@@ -39,9 +39,14 @@
 		</div>
 		<div class="welcome-bottom">
 			<div class="flow-text center welc-txt">iSpa</div>
+<<<<<<< HEAD
 			<div class="flow-text center welc">welcome...</div>
 			<button class="click-btn welc-go right">
 				Welcome
+=======
+			<button class="click-btn welc-go right">
+				Next
+>>>>>>> master
 				<i class="material-icons right">arrow_forward</i>
 			</button>
 		</div>
