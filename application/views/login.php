@@ -31,7 +31,7 @@
 								Log In
 								<i class="material-icons right">arrow_forward</i>														
 							</button><br>
-							<a href="#!forgot?" class="forgot-a">Forgot password?</a>	
+							<a href="" class="forgot-a">Forgot password?</a>	
 						</div>				
 					</div><br>
 					<div class="divider"></div>

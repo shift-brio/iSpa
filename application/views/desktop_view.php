@@ -20,6 +20,6 @@
 <div class="center desktop-cont">
 	<img src="<?php echo base_url("uploads/logo/ispa.svg"); ?>" alt="ispa-logo" class="desktop-logo">
 	<div class="flow-text desktop-message">
-		iSpa is currently only available through your smartphone browser
+		We're sorry for the inconvenience, iSpa is currently only available through your smartphone browser
 	</div>
 </div>
