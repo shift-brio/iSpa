@@ -4221,15 +4221,12 @@ a > .welcome-message{
       width: 100%;
       height: auto;  
       background: #fff;
-<<<<<<< HEAD
       max-height: calc(100% - 340px);
       overflow-y: auto;
     }
     .day-appointments.more{
       max-height: 100% !important;
-=======
       height: calc(100% - 50px);
->>>>>>> master
     }
     .day-appointments-head{
       height: 40px;  
@@ -4252,13 +4249,10 @@ a > .welcome-message{
     .day-appointments-body{
       width: 100%;
       padding: 3px;
-<<<<<<< HEAD
       min-height: calc(100% - 40px);
       padding-bottom: 50px;
-=======
       height: calc(100% - 40px);
       padding-bottom: 100px;
->>>>>>> master
       overflow-y: auto;
       background: rgba(0,0,0,.05);
     }
@@ -4300,12 +4294,9 @@ a > .welcome-message{
     .day-group{
       width: 100%;
       display: inline-flex;
-<<<<<<< HEAD
       min-height: 80px;  
-=======
       height: 100px;  
       max-height: 100px;
->>>>>>> master
       margin-bottom: 5px;
       cursor: pointer;
       border-radius: 3px;
@@ -7174,21 +7165,15 @@ a > .welcome-message{
     box-shadow: 0px 0px 6px rgba(0,0,0,.25);    
   }
   .dialog-tools{
-<<<<<<< HEAD
     border-top: 1px solid  rgba(0,0,0,.15);
-=======
     border-top: 1px solid  rgba(6, 6, 6, 0.15);
->>>>>>> master
     height: 50px !important;
   }
   .dialog-body{
     height: calc(100% - 50px);
-<<<<<<< HEAD
     width: 100%;
     text-align: left;
-=======
     width: 100%;    
->>>>>>> master
     padding: 12px;
     font-size: 1.2rem;
   }
@@ -8331,8 +8316,6 @@ a > .welcome-message{
     display: inline-flex;
     text-align: center;
   }
-=======
->>>>>>> master
   .stf-info-item > .name{
     color: rgba(255, 255, 255, 0.85);
     font-weight: 600;
@@ -8359,11 +8342,7 @@ a > .welcome-message{
     height: 100%;
     width: 100%;
     z-index: 1067;
-<<<<<<< HEAD
-    display: none;
-=======
-    display: no;
->>>>>>> master
+    display: none;    
   }
   .sl-h-cont{
     height: 230px;
@@ -8826,19 +8805,15 @@ a > .welcome-message{
     width: 150px;
     height: 150px;
     margin-left: calc(50% - 75px);
-<<<<<<< HEAD
     margin-top: 30px;
     animation: slide_down_slow .65s ease;
-=======
     margin-top: 50px;
     animation: slide_up_slow .25s ease;
->>>>>>> master
   }
   .welc-txt{
     font-size: 3.5em;
     color: #bea117;
     font-weight: 400;
-<<<<<<< HEAD
     animation: slide_down_slow .65s ease;
   }
   .welc{
@@ -8848,30 +8823,24 @@ a > .welcome-message{
     font-weight: 600;
     display: none;
     animation: slide_down_slow .65s ease;
-=======
     animation: slide_up_slow .5s ease;
->>>>>>> master
   }
   .welc-go{    
     border-radius: 8px !important;
     padding: 3px 18px 3px 18px !important;
     float: right;
-<<<<<<< HEAD
     border: 2px solid #4506ff;
     background: #4506ff !important;
     color: #fff;
-=======
     border: 2px solid #bea117;
     background: #bea117 !important;
     color: #0d1317;
->>>>>>> master
     font-weight: 600;
     position: fixed;
     bottom: 0;
     margin-bottom: 20px;
     right: 0;
     margin-right: 10px;
-<<<<<<< HEAD
     font-size: 1.2em;  
     animation: slide_right_slow .8s ease;  
   }
@@ -8880,10 +8849,7 @@ a > .welcome-message{
       margin-right: -100px !important;
     }100%{
       margin-right: 0px !important;
-    }
-=======
-    font-size: 1.2em;    
->>>>>>> master
+    }  
   }
   .welc-go > i{
     font-weight: 600 !important;
