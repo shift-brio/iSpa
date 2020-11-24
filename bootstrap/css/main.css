@@ -5652,7 +5652,7 @@ a > .welcome-message{
   width: 100%;
   overflow-y: auto;
   background: #fff;
-  padding-bottom: 20px;
+  padding-bottom: 50px;
 }
 .login-top,.login-bottom{  
   width: 100% !important;
@@ -5738,7 +5738,7 @@ a > .welcome-message{
   font-weight: 400;
   height: auto !important;
   font-family: lato, serif;
-  content: "If you don't have an account with us yet";
+  content: "Don't have an account with us yet";
 }
 .sign-j::before{
  content: "Do you have an account with us already?" !important;
@@ -8808,11 +8808,7 @@ a > .welcome-message{
   }
   .close-about{
     color: #bea117 !important;
-<<<<<<< HEAD
-  }
-=======
-  }  
->>>>>>> master
+   }
   .welcome{
     position: fixed;
     top: 0;
